@@ -1,0 +1,13 @@
+{
+    "name": "Slide",
+    "alias": "slide",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Slide\\Providers\\SlideServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

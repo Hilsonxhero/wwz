@@ -1,0 +1,9 @@
+{
+    "Product": true,
+    "Category": true,
+    "Brand": true,
+    "Shipment": true,
+    "Warranty": true,
+    "Slide": true,
+    "Comment": true
+}
