@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Http\Request;
+use Modules\Category\Http\Controllers\Api\CategoryController;
+use Modules\Category\Http\Controllers\CategoryConrollerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +15,12 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/category', function (Request $request) {
-    return $request->user();
+// Route::middleware('auth:api')->get('/category', function (Request $request) {
+//     return $request->user();
+// });
+
+
+
+Route::prefix('v1')->group(function () {
+    Route::resource("/categories", CategoryController::class);
 });

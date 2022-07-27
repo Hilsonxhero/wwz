@@ -9,6 +9,9 @@
 </head>
 
 <body class="antialiased">
+    <div class="ml-4 text-2xl py-8  text-gray-700 text-center sm:ml-0">
+        Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
+    </div>
     <div id="app"></div>
 </body>
 

@@ -1,6 +1,8 @@
 <?php
 
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Route;
+use Modules\Category\Entities\Category;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,5 +16,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+
+
     return view('welcome');
 });
