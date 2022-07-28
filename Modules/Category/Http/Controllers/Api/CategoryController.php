@@ -2,6 +2,7 @@
 
 namespace Modules\Category\Http\Controllers\Api;
 
+use App\Http\Resources\CategoryCollection;
 use App\Services\ApiService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -22,14 +23,12 @@ class CategoryController extends Controller
         $this->categoryRepo = $categoryRepo;
     }
 
-    /**
-     * Display a listing of the resource.
-     * @return Response
-     */
+
     public function index()
     {
-        $categories = $this->categoryRepo->allActive();
-        ApiService::_success($categories);
+        $categories = $this->categoryRepo->all();
+        // ApiService::_success($categories);
+        return new CategoryCollection($categories);
     }
 
     /**
@@ -45,6 +44,7 @@ class CategoryController extends Controller
             'link' => ['nullable'],
             'parent_id' => ['nullable', 'exists:categories,id'],
         ]);
+
         $data = [
             'title' => $request->title,
             'description' => $request->description,
@@ -52,6 +52,8 @@ class CategoryController extends Controller
             'parent_id' => $request->parent_id,
         ];
         $category = $this->categoryRepo->create($data);
+
+        $request->image ?  $category->addMedia($request->image)->toMediaCollection() : '';
         ApiService::_success($category);
     }
 

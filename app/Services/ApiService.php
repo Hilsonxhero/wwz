@@ -43,6 +43,7 @@ class ApiService
 
     public static function _response($data, $code, $success = false)
     {
+
         // response()->json((new ResponseService($message, $success, $code))->getArray(), $code)->send();
         // exit();
 

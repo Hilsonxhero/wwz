@@ -2,14 +2,18 @@
 
 namespace Modules\Category\Entities;
 
+use Illuminate\Support\Str;
+use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Cviebrock\EloquentSluggable\Sluggable;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Category extends Model
+class Category extends Model implements HasMedia
 {
-    use HasFactory, SoftDeletes, Sluggable;
+    use HasFactory, SoftDeletes, Sluggable, InteractsWithMedia;
 
     protected $fillable = [
         'title',
@@ -53,5 +57,28 @@ class Category extends Model
                 'source' => 'title'
             ]
         ];
+    }
+
+    public static function last()
+    {
+        return static::all()->last();
+    }
+
+    public function registerMediaConversions(Media $media = null): void
+    {
+        $this->addMediaConversion('thumb')
+            ->width(368)
+            ->height(232)
+            ->sharpen(10);
+    }
+
+    public function children()
+    {
+        return $this->hasMany(Category::class, 'parent_id')->with('children');
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(Category::class, 'parent_id');
     }
 }
