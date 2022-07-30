@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Http\Resources;
+namespace Modules\Category\Transformers;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
-use Modules\Category\Entities\Category;
 
 class CategoryCollection extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
+     * @param  \Illuminate\Http\Request
+     * @return array
      */
     public function toArray($request)
     {

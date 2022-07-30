@@ -19,6 +19,7 @@ class CategoryRepository implements CategoryRepositoryInterface
     {
         return Category::orderBy('created_at', 'desc')
             ->where('status', Category::ENABLE_STATUS)
+            ->with('parent')
             ->paginate();
     }
 

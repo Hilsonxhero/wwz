@@ -2,12 +2,15 @@
 
 namespace Modules\Category\Http\Controllers\Api;
 
-use App\Http\Resources\CategoryCollection;
+
+use Illuminate\Http\File;
 use App\Services\ApiService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Modules\Category\Entities\Category;
+use Modules\Category\Transformers\CategoryResource;
+use Modules\Category\Transformers\CategoryCollection;
 use Modules\Category\Repository\CategoryRepositoryInterface;
 
 class CategoryController extends Controller
@@ -40,22 +43,29 @@ class CategoryController extends Controller
     {
         ApiService::Validator($request->all(), [
             'title' => ['required'],
+            'title_en' => ['required'],
             'description' => ['required'],
             'link' => ['nullable'],
-            'parent_id' => ['nullable', 'exists:categories,id'],
+            'parent' => ['nullable', 'exists:categories,id'],
         ]);
 
         $data = [
             'title' => $request->title,
+            'title_en' => $request->title_en,
             'description' => $request->description,
             'link' => $request->link,
-            'parent_id' => $request->parent_id,
+            'parent_id' => $request->parent,
         ];
         $category = $this->categoryRepo->create($data);
 
-        $request->image ?  $category->addMedia($request->image)->toMediaCollection() : '';
+        $request->image ?  $category->addMediaFromBase64($request->image)->toMediaCollection() : '';
         ApiService::_success($category);
     }
+
+
+
+
+
 
     /**
      * Show the specified resource.
@@ -65,7 +75,8 @@ class CategoryController extends Controller
     public function show($id)
     {
         $category = $this->categoryRepo->show($id);
-        ApiService::_success($category);
+        // ApiService::_success($category);
+        return new CategoryResource($category);
     }
 
     /**
@@ -78,17 +89,26 @@ class CategoryController extends Controller
     {
         ApiService::Validator($request->all(), [
             'title' => ['required'],
+            'title_en' => ['required'],
             'description' => ['required'],
             'link' => ['nullable'],
-            'parent_id' => ['nullable', 'exists:categories,id'],
+            'parent' => ['nullable', 'exists:categories,id'],
         ]);
         $data = [
             'title' => $request->title,
+            'title_en' => $request->title_en,
             'description' => $request->description,
             'link' => $request->link,
-            'parent_id' => $request->parent_id,
+            'parent_id' => $request->parent,
         ];
-        $this->categoryRepo->update($id, $data);
+        $category =  $this->categoryRepo->update($id, $data);
+
+        if ($request->image) {
+            // $category->last()->delete();
+            $category->clearMediaCollectionExcept('default');
+            $category->addMediaFromBase64($request->image)->toMediaCollection();
+        }
+
 
         ApiService::_success(trans('response.responses.200'));
     }
