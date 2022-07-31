@@ -1,37 +1,33 @@
 <?php
 
-namespace Modules\Category\Http\Controllers\Api;
+namespace Modules\Brand\Http\Controllers\Api\v1;
 
-
-use Illuminate\Http\File;
 use App\Services\ApiService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
-use Modules\Category\Entities\Category;
-use Modules\Category\Transformers\CategoryResource;
-use Modules\Category\Transformers\CategoryCollection;
-use Modules\Category\Repository\CategoryRepositoryInterface;
+use Illuminate\Validation\Rule;
+use Modules\Brand\Entities\Brand;
+use Modules\Brand\Repository\BrandRepositoryInterface;
+use Modules\Brand\Transformers\BrandCollectionResource;
+use Modules\Brand\Transformers\BrandResource;
 
-class CategoryController extends Controller
+class BrandController extends Controller
 {
 
     /**
-     * @var CategoryRepositoryInterface
+     * @var BrandRepositoryInterface
      */
-    private $categoryRepo;
+    private $brandRepo;
 
-    public function __construct(CategoryRepositoryInterface $categoryRepo)
+    public function __construct(BrandRepositoryInterface $brandRepo)
     {
-        $this->categoryRepo = $categoryRepo;
+        $this->brandRepo = $brandRepo;
     }
-
-
     public function index()
     {
-        $categories = $this->categoryRepo->all();
-        // ApiService::_success($categories);
-        return new CategoryCollection($categories);
+        $brands = $this->brandRepo->all();
+        return new BrandCollectionResource($brands);
     }
 
     /**
@@ -46,7 +42,7 @@ class CategoryController extends Controller
             'title_en' => ['required'],
             'description' => ['required'],
             'link' => ['nullable'],
-            'parent' => ['nullable', 'exists:categories,id'],
+            'category_id' => ['nullable', 'exists:categories,id'],
         ]);
 
         $data = [
@@ -54,12 +50,14 @@ class CategoryController extends Controller
             'title_en' => $request->title_en,
             'description' => $request->description,
             'link' => $request->link,
-            'parent_id' => $request->parent,
+            'category_id' => $request->category_id,
+            'is_special' =>  $request->is_special
         ];
-        $category = $this->categoryRepo->create($data);
+        $brand = $this->brandRepo->create($data);
 
-        $request->image ?  $category->addMediaFromBase64($request->image)->toMediaCollection() : '';
-        ApiService::_success($category);
+        base64($request->image) ? $brand->addMediaFromBase64($request->image)->toMediaCollection()
+            : $brand->addMedia($request->image)->toMediaCollection();
+        ApiService::_success($brand);
     }
 
     /**
@@ -69,9 +67,9 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        $category = $this->categoryRepo->show($id);
-        // ApiService::_success($category);
-        return new CategoryResource($category);
+        $brand = $this->brandRepo->show($id);
+        // ApiService::_success($brand);
+        return new BrandResource($brand);
     }
 
     /**
@@ -87,21 +85,25 @@ class CategoryController extends Controller
             'title_en' => ['required'],
             'description' => ['required'],
             'link' => ['nullable'],
-            'parent' => ['nullable', 'exists:categories,id'],
+            'status' => ['nullable', Rule::in(Brand::$statuses)],
+            'category_id' => ['nullable', 'exists:categories,id'],
         ]);
         $data = [
             'title' => $request->title,
             'title_en' => $request->title_en,
             'description' => $request->description,
             'link' => $request->link,
-            'parent_id' => $request->parent,
+            'status' => $request->status,
+            'category_id' => $request->category_id,
+            'is_special' =>  $request->is_special
         ];
-        $category =  $this->categoryRepo->update($id, $data);
+        $brand =  $this->brandRepo->update($id, $data);
 
         if ($request->image) {
-            // $category->last()->delete();
-            $category->clearMediaCollectionExcept();
-            $category->addMediaFromBase64($request->image)->toMediaCollection();
+            // $brand->last()->delete();
+            $brand->clearMediaCollectionExcept();
+            base64($request->image) ? $brand->addMediaFromBase64($request->image)->toMediaCollection()
+                : $brand->addMedia($request->image)->toMediaCollection();
         }
 
 
@@ -115,7 +117,7 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        $this->categoryRepo->delete($id);
+        $this->brandRepo->delete($id);
         ApiService::_success(trans('response.responses.200'));
     }
 }

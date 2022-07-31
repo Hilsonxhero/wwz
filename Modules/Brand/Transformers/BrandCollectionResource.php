@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Http\Resources;
+namespace Modules\Brand\Transformers;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
-use Modules\Category\Entities\Category;
 
-class CategoryCollection extends ResourceCollection
+class BrandCollectionResource extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
+     * @param  \Illuminate\Http\Request
+     * @return array
      */
     public function toArray($request)
     {
@@ -25,7 +24,7 @@ class CategoryCollection extends ResourceCollection
                     'link' => $data->link,
                     'description' => $data->description,
                     'short_review' => truncate($data->description, 25),
-                    'parent' => $data->parent,
+                    'category' => $data->category,
                     'status' => $data->status,
                     'media' => [
                         'main' => $data->getFirstMediaUrl(),

@@ -25,14 +25,6 @@ class Category extends Model implements HasMedia
         'status',
     ];
 
-
-
-
-    //INFO:enum value
-    // protected $casts = [
-    //     'status' =>  \Modules\Category\Enum\CategoryEnum::class
-    // ];
-
     protected static function newFactory()
     {
         return \Modules\Category\Database\factories\CategoryFactory::new();

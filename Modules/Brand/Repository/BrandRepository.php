@@ -1,24 +1,24 @@
 <?php
 
-namespace Modules\Category\Repository;
+namespace Modules\Brand\Repository;
 
 use App\Services\ApiService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Modules\Category\Entities\Category;
+use Modules\Brand\Entities\Brand;
 
-class CategoryRepository implements CategoryRepositoryInterface
+class BrandRepository implements BrandRepositoryInterface
 {
 
     public function all()
     {
-        return Category::orderBy('created_at', 'desc')
+        return Brand::orderBy('created_at', 'desc')
             ->paginate();
     }
 
     public function allActive()
     {
-        return Category::orderBy('created_at', 'desc')
-            ->where('status', Category::ENABLE_STATUS)
+        return Brand::orderBy('created_at', 'desc')
+            ->where('status', Brand::ENABLE_STATUS)
             ->with('parent')
             ->paginate();
     }
@@ -26,7 +26,7 @@ class CategoryRepository implements CategoryRepositoryInterface
 
     public function create($data)
     {
-        $category =  Category::query()->create($data);
+        $category =  Brand::query()->create($data);
         return $category;
     }
     public function update($id, $data)
@@ -44,7 +44,7 @@ class CategoryRepository implements CategoryRepositoryInterface
     public function find($id)
     {
         try {
-            $category = Category::query()->where('id', $id)->firstOrFail();
+            $category = Brand::query()->where('id', $id)->firstOrFail();
             return $category;
         } catch (ModelNotFoundException $e) {
             return  ApiService::_response(trans('response.responses.404'), 404);
