@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Shipment\Http\Controllers\Api\v1;
+namespace Modules\Shipment\Http\Controllers\v1\Panel;
 
 use App\Services\ApiService;
 use Illuminate\Http\Request;

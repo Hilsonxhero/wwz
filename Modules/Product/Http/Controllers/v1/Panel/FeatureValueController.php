@@ -1,27 +1,28 @@
 <?php
 
-namespace Modules\Product\Http\Controllers\Panel;
+namespace Modules\Product\Http\Controllers\v1\Panel;
 
 use App\Services\ApiService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Validation\Rule;
-use Modules\Product\Entities\Feature;
-use Modules\Product\Repository\FeatureRepositoryInterface;
+use Modules\Product\Entities\FeatureValue;
+use Modules\Product\Repository\FeatureValueRepositoryInterface;
 
-class FeatureController extends Controller
+class FeatureValueController extends Controller
 {
 
     /**
-     * @var FeatureRepositoryInterface
+     * @var FeatureValueRepositoryInterface
      */
-    private $featureRepo;
+    private $featureValueRepo;
 
-    public function __construct(FeatureRepositoryInterface $featureRepo)
+    public function __construct(FeatureValueRepositoryInterface $featureValueRepo)
     {
-        $this->featureRepo = $featureRepo;
+        $this->featureValueRepo = $featureValueRepo;
     }
+
 
     /**
      * Display a listing of the resource.
@@ -29,8 +30,8 @@ class FeatureController extends Controller
      */
     public function index()
     {
-        $features = $this->featureRepo->all();
-        ApiService::_success($features);
+        $values = $this->featureValueRepo->all();
+        ApiService::_success($values);
     }
 
     /**
@@ -42,17 +43,16 @@ class FeatureController extends Controller
     {
         ApiService::Validator($request->all(), [
             'title' => ['required'],
-            'category_id' => ['required', 'exists:categories,id'],
+            'feature_id' => ['required', 'exists:features,id'],
         ]);
 
         $data = [
             'title' => $request->title,
-            'category_id' => $request->category_id,
-            'parent_id' => $request->parent_id,
+            'feature_id' => $request->feature_id,
             'status' => $request->status,
         ];
 
-        $this->featureRepo->create($data);
+        $this->featureValueRepo->create($data);
 
         ApiService::_success(trans('response.responses.200'));
     }
@@ -64,19 +64,8 @@ class FeatureController extends Controller
      */
     public function show($id)
     {
-        $feature =  $this->featureRepo->find($id);
+        $feature =  $this->featureValueRepo->find($id);
         ApiService::_success($feature);
-    }
-
-    /**
-     * Show the specified resource.
-     * @param int $id
-     * @return Response
-     */
-    public function values($id)
-    {
-        $values =  $this->featureRepo->values($id);
-        ApiService::_success($values);
     }
 
     /**
@@ -89,18 +78,17 @@ class FeatureController extends Controller
     {
         ApiService::Validator($request->all(), [
             'title' => ['required'],
-            'status' => ['required', Rule::in(Feature::$statuses)],
-            'category_id' => ['required', 'exists:categories,id'],
+            'feature_id' => ['required', 'exists:features,id'],
+            'status' => ['required', Rule::in(FeatureValue::$statuses)]
         ]);
 
         $data = [
             'title' => $request->title,
-            'category_id' => $request->category_id,
-            'parent_id' => $request->parent_id,
+            'feature_id' => $request->feature_id,
             'status' => $request->status,
         ];
 
-        $this->featureRepo->update($id, $data);
+        $this->featureValueRepo->update($id, $data);
 
         ApiService::_success(trans('response.responses.200'));
     }
@@ -112,7 +100,7 @@ class FeatureController extends Controller
      */
     public function destroy($id)
     {
-        $this->featureRepo->delete($id);
+        $this->featureValueRepo->delete($id);
         ApiService::_success(trans('response.responses.200'));
     }
 }

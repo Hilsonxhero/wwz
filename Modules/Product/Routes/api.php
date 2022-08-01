@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Http\Request;
-use Modules\Product\Http\Controllers\Panel\FeatureController;
-use Modules\Product\Http\Controllers\Panel\FeatureValueController;
+use Modules\Product\Http\Controllers\v1\Panel\FeatureController;
+use Modules\Product\Http\Controllers\v1\Panel\FeatureValueController;
 
 Route::prefix('v1/panel')->group(function () {
     Route::resource("/features", FeatureController::class);

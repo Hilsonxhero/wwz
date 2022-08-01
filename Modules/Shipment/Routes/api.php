@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
-use Modules\Shipment\Http\Controllers\Api\v1\ShipmentController;
+use Modules\Shipment\Http\Controllers\v1\Panel\ShipmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +14,6 @@ use Modules\Shipment\Http\Controllers\Api\v1\ShipmentController;
 |
 */
 
-Route::prefix('v1')->group(function () {
+Route::prefix('v1/panel')->group(function () {
     Route::resource("/shipments", ShipmentController::class);
 });

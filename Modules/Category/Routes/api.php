@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
-use Modules\Category\Http\Controllers\Api\CategoryController;
+use Modules\Category\Http\Controllers\v1\Panel\CategoryController;
 
 
 /*
@@ -21,6 +21,6 @@ use Modules\Category\Http\Controllers\Api\CategoryController;
 
 
 
-Route::prefix('v1')->group(function () {
+Route::prefix('v1/panel')->group(function () {
     Route::resource("/categories", CategoryController::class);
 });

@@ -1,37 +1,32 @@
 <?php
 
-namespace Modules\Product\Http\Controllers\Panel;
+namespace Modules\Warranty\Http\Controllers\v1\Panel;
 
 use App\Services\ApiService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
-use Illuminate\Validation\Rule;
-use Modules\Product\Entities\FeatureValue;
-use Modules\Product\Repository\FeatureValueRepositoryInterface;
+use Modules\Warranty\Repository\WarrantyRepositoryInterface;
 
-class FeatureValueController extends Controller
+class WarrantyController extends Controller
 {
-
     /**
-     * @var FeatureValueRepositoryInterface
+     * @var WarrantyRepositoryInterface
      */
-    private $featureValueRepo;
+    private $warrantyRepo;
 
-    public function __construct(FeatureValueRepositoryInterface $featureValueRepo)
+    public function __construct(WarrantyRepositoryInterface $warrantyRepo)
     {
-        $this->featureValueRepo = $featureValueRepo;
+        $this->warrantyRepo = $warrantyRepo;
     }
-
-
     /**
      * Display a listing of the resource.
      * @return Response
      */
     public function index()
     {
-        $values = $this->featureValueRepo->all();
-        ApiService::_success($values);
+        $warranties = $this->warrantyRepo->all();
+        ApiService::_success($warranties);
     }
 
     /**
@@ -43,18 +38,16 @@ class FeatureValueController extends Controller
     {
         ApiService::Validator($request->all(), [
             'title' => ['required'],
-            'feature_id' => ['required', 'exists:features,id'],
+            'description' => ['required'],
         ]);
 
         $data = [
             'title' => $request->title,
-            'feature_id' => $request->feature_id,
-            'status' => $request->status,
+            'description' => $request->description,
         ];
+        $shipment = $this->warrantyRepo->create($data);
 
-        $this->featureValueRepo->create($data);
-
-        ApiService::_success(trans('response.responses.200'));
+        ApiService::_success($shipment);
     }
 
     /**
@@ -64,8 +57,8 @@ class FeatureValueController extends Controller
      */
     public function show($id)
     {
-        $feature =  $this->featureValueRepo->find($id);
-        ApiService::_success($feature);
+        $shipment = $this->warrantyRepo->show($id);
+        ApiService::_success($shipment);
     }
 
     /**
@@ -78,17 +71,15 @@ class FeatureValueController extends Controller
     {
         ApiService::Validator($request->all(), [
             'title' => ['required'],
-            'feature_id' => ['required', 'exists:features,id'],
-            'status' => ['required', Rule::in(FeatureValue::$statuses)]
+            'description' => ['required'],
         ]);
 
         $data = [
             'title' => $request->title,
-            'feature_id' => $request->feature_id,
-            'status' => $request->status,
+            'description' => $request->description,
         ];
 
-        $this->featureValueRepo->update($id, $data);
+        $shipment =  $this->warrantyRepo->update($id, $data);
 
         ApiService::_success(trans('response.responses.200'));
     }
@@ -100,7 +91,7 @@ class FeatureValueController extends Controller
      */
     public function destroy($id)
     {
-        $this->featureValueRepo->delete($id);
+        $this->warrantyRepo->delete($id);
         ApiService::_success(trans('response.responses.200'));
     }
 }

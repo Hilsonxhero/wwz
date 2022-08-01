@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Modules\Warranty\Http\Controllers\v1\Panel\WarrantyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +14,6 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/warranty', function (Request $request) {
-    return $request->user();
+Route::prefix('v1/panel')->group(function () {
+    Route::resource("/warranties", WarrantyController::class);
 });
