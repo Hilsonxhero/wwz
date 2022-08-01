@@ -16,7 +16,5 @@ use Modules\Category\Entities\Category;
 */
 
 Route::get('/', function () {
-
-
     return view('welcome');
 });

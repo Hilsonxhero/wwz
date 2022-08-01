@@ -3,7 +3,8 @@
 namespace Modules\Product\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Database\Eloquent\Factory;
+
+
 
 class ProductServiceProvider extends ServiceProvider
 {
@@ -38,6 +39,7 @@ class ProductServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->register(RouteServiceProvider::class);
+        $this->app->register(ProductRepoServiceProvider::class);
     }
 
     /**

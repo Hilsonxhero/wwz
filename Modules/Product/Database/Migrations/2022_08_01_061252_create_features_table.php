@@ -18,7 +18,7 @@ return new class extends Migration
             $table->id();
             $table->string("title");
             $table->foreignId("category_id")->constrained('categories')->onDelete('cascade');
-            $table->foreignId("parent_id")->constrained('features')->onDelete('cascade');
+            $table->foreignId("parent_id")->nullable()->constrained('features')->onDelete('cascade');
             $table->integer("position")->default(0);
             $table->enum('status', Feature::$statuses)->default(Feature::ENABLE_STATUS);
             $table->softDeletes();
