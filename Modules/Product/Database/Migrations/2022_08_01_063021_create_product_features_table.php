@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Modules\Product\Entities\FeatureValue;
 
 return new class extends Migration
 {
@@ -13,10 +14,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('shipments', function (Blueprint $table) {
+        Schema::create('product_features', function (Blueprint $table) {
             $table->id();
-            $table->string("title");
-            $table->text("description");
+            $table->foreignId('feature_id')->constrained('features')->onDelete('cascade');
+            $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
+            $table->foreignId('feature_value_id')->constrained('feature_values')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -28,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('shipments');
+        Schema::dropIfExists('product_features');
     }
 };

@@ -1,17 +1,16 @@
 <?php
 
-namespace Modules\Shipment\Entities;
+namespace Modules\Product\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Shipment extends Model
+class FeatureValue extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'title',
-        'description'
+        'feature_id', 'title', 'status',
     ];
 
     const DISABLE_STATUS = 'disable';
@@ -24,6 +23,12 @@ class Shipment extends Model
 
     protected static function newFactory()
     {
-        return \Modules\Shipment\Database\factories\ShipmentFactory::new();
+        return \Modules\Product\Database\factories\FeatureValueFactory::new();
+    }
+
+
+    public function feature()
+    {
+        return $this->belongsTo(Feature::class);
     }
 }

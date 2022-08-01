@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Modules\Product\Entities\FeatureValue;
 
 return new class extends Migration
 {
@@ -13,10 +14,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('shipments', function (Blueprint $table) {
+        Schema::create('feature_values', function (Blueprint $table) {
             $table->id();
-            $table->string("title");
-            $table->text("description");
+            $table->foreignId('feature_id')->constrained('features')->onDelete('cascade');
+            $table->string('title');
+            $table->enum('status', FeatureValue::$statuses)->default(FeatureValue::ENABLE_STATUS);
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -28,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('shipments');
+        Schema::dropIfExists('feature_values');
     }
 };

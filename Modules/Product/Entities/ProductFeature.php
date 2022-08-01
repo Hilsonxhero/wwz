@@ -5,20 +5,14 @@ namespace Modules\Product\Entities;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Product extends Model
+class ProductFeature extends Model
 {
     use HasFactory;
 
     protected $fillable = [];
-
+    
     protected static function newFactory()
     {
-        return \Modules\Product\Database\factories\ProductFactory::new();
-    }
-
-
-    public function features()
-    {
-        return $this->hasMany(ProductFeature::class);
+        return \Modules\Product\Database\factories\ProductFeatureFactory::new();
     }
 }
