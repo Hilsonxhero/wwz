@@ -37,6 +37,7 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
+
         ApiService::Validator($request->all(), [
             'title' => ['required'],
             'title_en' => ['required'],

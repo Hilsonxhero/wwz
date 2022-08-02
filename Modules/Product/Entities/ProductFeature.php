@@ -9,8 +9,8 @@ class ProductFeature extends Model
 {
     use HasFactory;
 
-    protected $fillable = [];
-    
+    protected $fillable = ['feature_id', 'product_id', 'feature_value_id'];
+
     protected static function newFactory()
     {
         return \Modules\Product\Database\factories\ProductFeatureFactory::new();
