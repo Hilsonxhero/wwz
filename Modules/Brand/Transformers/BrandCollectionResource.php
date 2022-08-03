@@ -26,6 +26,7 @@ class BrandCollectionResource extends ResourceCollection
                     'short_review' => truncate($data->description, 25),
                     'category' => $data->category,
                     'status' => $data->status,
+                    'special' => $data->is_special,
                     'media' => [
                         'main' => $data->getFirstMediaUrl(),
                         'thumb' => $data->getFirstMediaUrl('default', 'thumb')

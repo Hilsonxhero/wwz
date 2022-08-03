@@ -12,8 +12,11 @@ function truncate($text, $limit = 35): ?string
 
 
 
-function base64($file): ?string
+function base64($file)
 {
-    if (base64_encode(base64_decode($file, true)) === $file) return true;
-    return false;
+    if (!preg_match('/^(?:[data]{4}:(text|image|application)\/[a-z]*)/', $file)) {
+        return false;
+    } else {
+        return true;
+    }
 }

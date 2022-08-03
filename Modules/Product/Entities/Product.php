@@ -39,6 +39,13 @@ class Product extends Model implements HasMedia
         return $this->belongsToMany(Feature::class, 'product_features');
     }
 
+
+    public function variants()
+    {
+        return $this->belongsTo(ProductVariant::class, 'product_variant_combination');
+    }
+
+
     public function category()
     {
         return $this->belongsTo(Category::class);

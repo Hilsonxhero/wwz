@@ -43,9 +43,9 @@ class BrandController extends Controller
             'title_en' => ['required'],
             'description' => ['required'],
             'link' => ['nullable'],
-            'image' => ['required'],
+            'logo' => ['required'],
             'is_special' => ['required', 'boolean'],
-            'category_id' => ['nullable', 'exists:categories,id'],
+            'category_id' => ['required', 'exists:categories,id'],
         ]);
 
         $data = [
@@ -57,9 +57,26 @@ class BrandController extends Controller
             'is_special' =>  $request->is_special
         ];
         $brand = $this->brandRepo->create($data);
+        // if (base64($request->logo)) {
+        //     return "base 64";
+        // } else {
+        //     return "not base 64";
+        // }
+        // if (base64($request->logo)) {
+        //     return "base 64";
+        // } else {
+        //     return "not base 64";
+        // }
 
-        base64($request->image) ? $brand->addMediaFromBase64($request->image)->toMediaCollection()
-            : $brand->addMedia($request->image)->toMediaCollection();
+        // if (base64($request->logo)) {
+        //     return "base 64";
+        // } else {
+        //     return $request->logo;
+        // }
+
+
+        base64($request->logo) ? $brand->addMediaFromBase64($request->logo)->toMediaCollection()
+            : $brand->addMedia($request->logo)->toMediaCollection();
         ApiService::_success($brand);
     }
 
