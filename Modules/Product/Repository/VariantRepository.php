@@ -4,30 +4,21 @@ namespace Modules\Product\Repository;
 
 use App\Services\ApiService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Modules\Product\Entities\Feature;
+use Modules\Product\Entities\Variant;
 
-class FeatureRepository implements FeatureRepositoryInterface
+class VariantRepository implements VariantRepositoryInterface
 {
 
     public function all()
     {
-        return Feature::orderBy('created_at', 'desc')
-            ->with(['parent', 'category'])
+        return Variant::orderBy('created_at', 'desc')
+            ->with('group')
             ->paginate();
     }
-
-    public function allActive()
-    {
-        return Feature::orderBy('created_at', 'desc')
-            ->where('status', Feature::ENABLE_STATUS)
-            ->with('parent')
-            ->paginate();
-    }
-
 
     public function create($data)
     {
-        $feature =  Feature::query()->create($data);
+        $feature =  Variant::query()->create($data);
         return $feature;
     }
     public function update($id, $data)
@@ -44,7 +35,7 @@ class FeatureRepository implements FeatureRepositoryInterface
 
     public function select($id)
     {
-        return Feature::select('id', 'title')->whereNot('id', $id)->orderBy('created_at', 'desc')
+        return Variant::select('id', 'title')->whereNot('id', $id)->orderBy('created_at', 'desc')
             ->get();
     }
 
@@ -58,7 +49,7 @@ class FeatureRepository implements FeatureRepositoryInterface
     public function find($id)
     {
         try {
-            $feature = Feature::query()->where('id', $id)->firstOrFail();
+            $feature = Variant::query()->where('id', $id)->with('group')->firstOrFail();
             return $feature;
         } catch (ModelNotFoundException $e) {
             return  ApiService::_response(trans('response.responses.404'), 404);

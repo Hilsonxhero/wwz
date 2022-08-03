@@ -24,7 +24,7 @@ class BrandResource extends JsonResource
             'short_review' => truncate($this->description, 25),
             'category' => $this->category,
             'status' => $this->status,
-            'special' => $this->is_special,
+            'special' => $this->is_special ? true : false,
             'media' => [
                 'main' => $this->getFirstMediaUrl(),
                 'thumb' => $this->getFirstMediaUrl('default', 'thumb')

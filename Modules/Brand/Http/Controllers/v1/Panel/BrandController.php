@@ -105,7 +105,7 @@ class BrandController extends Controller
             'title_en' => ['required'],
             'description' => ['required'],
             'link' => ['nullable'],
-            'status' => ['nullable', Rule::in(Brand::$statuses)],
+            // 'status' => ['nullable', Rule::in(Brand::$statuses)],
             'category_id' => ['nullable', 'exists:categories,id'],
         ]);
         $data = [

@@ -9,6 +9,9 @@ use Illuminate\Routing\Controller;
 use Illuminate\Validation\Rule;
 use Modules\Product\Entities\Feature;
 use Modules\Product\Repository\FeatureRepositoryInterface;
+use Modules\Product\Transformers\FeatureResource;
+use Modules\Product\Transformers\FeatureResourceCollection;
+use Modules\Product\Transformers\FeatureValueResourceCollection;
 
 class FeatureController extends Controller
 {
@@ -30,7 +33,8 @@ class FeatureController extends Controller
     public function index()
     {
         $features = $this->featureRepo->all();
-        ApiService::_success($features);
+        return new FeatureResourceCollection($features);
+        // ApiService::_success($features);
     }
 
     /**
@@ -65,6 +69,21 @@ class FeatureController extends Controller
     public function show($id)
     {
         $feature =  $this->featureRepo->find($id);
+
+        return new FeatureResource($feature);
+        // ApiService::_success($feature);
+    }
+
+
+    /**
+     * Show the specified resource.
+     * @param int $id
+     * @return Response
+     */
+    public function select($id = null)
+    {
+        $feature =  $this->featureRepo->select($id);
+        // return new FeatureResource($feature);
         ApiService::_success($feature);
     }
 
@@ -76,7 +95,8 @@ class FeatureController extends Controller
     public function values($id)
     {
         $values =  $this->featureRepo->values($id);
-        ApiService::_success($values);
+        return new FeatureValueResourceCollection($values);
+        // ApiService::_success($values);
     }
 
     /**

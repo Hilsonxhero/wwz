@@ -25,4 +25,9 @@ class VariantGroup extends Model
     // {
     //     return \Modules\Product\Database\factories\VariantGroupFactory::new();
     // }
+
+    public function variants()
+    {
+        return $this->hasMany(Variant::class);
+    }
 }

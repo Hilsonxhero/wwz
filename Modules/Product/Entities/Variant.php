@@ -17,4 +17,9 @@ class Variant extends Model
     {
         return \Modules\Product\Database\factories\VariantFactory::new();
     }
+
+    public function group()
+    {
+        return $this->belongsTo(VariantGroup::class, 'variant_group_id');
+    }
 }

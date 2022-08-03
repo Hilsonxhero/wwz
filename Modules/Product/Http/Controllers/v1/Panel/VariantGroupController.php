@@ -1,0 +1,96 @@
+<?php
+
+namespace Modules\Product\Http\Controllers\v1\Panel;
+
+use App\Services\ApiService;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Routing\Controller;
+use Illuminate\Validation\Rule;
+use Modules\Product\Entities\VariantGroup;
+use Modules\Product\Repository\VariantGroupRepositoryInterface;
+
+class VariantGroupController extends Controller
+{
+    private $groupRepo;
+    public function __construct(VariantGroupRepositoryInterface $groupRepo)
+    {
+        $this->groupRepo = $groupRepo;
+    }
+    /**
+     * Display a listing of the resource.
+     * @return Response
+     */
+    public function index()
+    {
+        $groups = $this->groupRepo->all();
+        ApiService::_success($groups);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     * @param Request $request
+     * @return Response
+     */
+    public function store(Request $request)
+    {
+        ApiService::Validator($request->all(), [
+            'name' => ['required'],
+            'type' => ['required', Rule::in(VariantGroup::$types)],
+            'order' => ['nullable', 'boolean']
+        ]);
+        $data = [
+            'name' => $request->name,
+            'type' => $request->type,
+        ];
+
+        $this->groupRepo->create($data);
+
+        ApiService::_success(trans('response.responses.200'));
+    }
+
+    /**
+     * Show the specified resource.
+     * @param int $id
+     * @return Response
+     */
+    public function show($id)
+    {
+        $group = $this->groupRepo->find($id);
+        ApiService::_success($group);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     * @param Request $request
+     * @param int $id
+     * @return Response
+     */
+    public function update(Request $request, $id)
+    {
+        ApiService::Validator($request->all(), [
+            'name' => ['required'],
+            'type' => ['required', Rule::in(VariantGroup::$types)],
+            'order' => ['nullable', 'boolean']
+        ]);
+        $data = [
+            'name' => $request->name,
+            'type' => $request->type,
+        ];
+
+        $this->groupRepo->update($id, $data);
+
+        ApiService::_success(trans('response.responses.200'));
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     * @param int $id
+     * @return Response
+     */
+    public function destroy($id)
+    {
+        $this->groupRepo->delete($id);
+        ApiService::_success(trans('response.responses.200'));
+    }
+}
