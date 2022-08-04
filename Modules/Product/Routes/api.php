@@ -12,6 +12,7 @@ Route::prefix('v1/panel')->group(function () {
     Route::resource("/products", ProductController::class);
     Route::resource("/variants", VariantController::class);
     Route::resource("/variant/groups", VariantGroupController::class);
+    Route::get("/variant/groups/{id}/values", [VariantGroupController::class, 'values']);
     Route::get("/features/{id}/values", [FeatureController::class, 'values']);
     Route::get("/features/select/{id?}", [FeatureController::class, 'select']);
     Route::resource("/feature/values", FeatureValueController::class);

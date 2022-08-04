@@ -9,6 +9,9 @@ use Illuminate\Routing\Controller;
 use Illuminate\Validation\Rule;
 use Modules\Product\Entities\VariantGroup;
 use Modules\Product\Repository\VariantGroupRepositoryInterface;
+use Modules\Product\Transformers\VariantGroupResource;
+use Modules\Product\Transformers\VariantGroupResourceCollection;
+use Modules\Product\Transformers\VariantResourceCollection;
 
 class VariantGroupController extends Controller
 {
@@ -24,7 +27,8 @@ class VariantGroupController extends Controller
     public function index()
     {
         $groups = $this->groupRepo->all();
-        ApiService::_success($groups);
+        return new VariantGroupResourceCollection($groups);
+        // ApiService::_success($groups);
     }
 
     /**
@@ -57,7 +61,20 @@ class VariantGroupController extends Controller
     public function show($id)
     {
         $group = $this->groupRepo->find($id);
-        ApiService::_success($group);
+        return new VariantGroupResource($group);
+        // ApiService::_success($group);
+    }
+
+    /**
+     * Show the specified resource.
+     * @param int $id
+     * @return Response
+     */
+    public function values($id)
+    {
+        $values =  $this->groupRepo->values($id);
+        return new VariantResourceCollection($values);
+        // ApiService::_success($values);
     }
 
     /**

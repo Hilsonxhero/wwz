@@ -19,46 +19,46 @@ class VariantGroupRepository implements VariantGroupRepositoryInterface
 
     public function create($data)
     {
-        $feature =  VariantGroup::query()->create($data);
-        return $feature;
+        $variant =  VariantGroup::query()->create($data);
+        return $variant;
     }
     public function update($id, $data)
     {
-        $feature = $this->find($id);
-        $feature->update($data);
-        return $feature;
+        $variant = $this->find($id);
+        $variant->update($data);
+        return $variant;
     }
     public function show($id)
     {
-        $feature = $this->find($id);
-        return $feature;
+        $variant = $this->find($id);
+        return $variant;
     }
 
     public function select($id)
     {
-        return VariantGroup::select('id', 'title')->whereNot('id', $id)->orderBy('created_at', 'desc')
+        return VariantGroup::select('id', 'name')->whereNot('id', $id)->orderBy('created_at', 'desc')
             ->get();
     }
 
     public function values($id)
     {
-        $feature = $this->find($id);
-        return $feature->values()->orderByDesc('created_at')->with('feature')->paginate();
+        $variant = $this->find($id);
+        return $variant->variants()->orderByDesc('created_at')->with('group')->paginate();
     }
 
 
     public function find($id)
     {
         try {
-            $feature = VariantGroup::query()->where('id', $id)->firstOrFail();
-            return $feature;
+            $variant = VariantGroup::query()->where('id', $id)->firstOrFail();
+            return $variant;
         } catch (ModelNotFoundException $e) {
             return  ApiService::_response(trans('response.responses.404'), 404);
         }
     }
     public function delete($id)
     {
-        $feature = $this->find($id);
-        return $feature->delete();
+        $variant = $this->find($id);
+        return $variant->delete();
     }
 }
