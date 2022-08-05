@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Modules\Warranty\Repository\WarrantyRepositoryInterface;
+use Modules\Warranty\Transformers\WarrantyResource;
+use Modules\Warranty\Transformers\WarrantyResourceCollection;
 
 class WarrantyController extends Controller
 {
@@ -26,7 +28,8 @@ class WarrantyController extends Controller
     public function index()
     {
         $warranties = $this->warrantyRepo->all();
-        ApiService::_success($warranties);
+        return new WarrantyResourceCollection($warranties);
+        // ApiService::_success($warranties);
     }
 
     /**
@@ -43,11 +46,12 @@ class WarrantyController extends Controller
 
         $data = [
             'title' => $request->title,
+            'status' => $request->status,
             'description' => $request->description,
         ];
-        $shipment = $this->warrantyRepo->create($data);
+        $warranty = $this->warrantyRepo->create($data);
 
-        ApiService::_success($shipment);
+        ApiService::_success($warranty);
     }
 
     /**
@@ -57,8 +61,9 @@ class WarrantyController extends Controller
      */
     public function show($id)
     {
-        $shipment = $this->warrantyRepo->show($id);
-        ApiService::_success($shipment);
+        $warranty = $this->warrantyRepo->show($id);
+        return new WarrantyResource($warranty);
+        // ApiService::_success($warranty);
     }
 
     /**
@@ -76,10 +81,11 @@ class WarrantyController extends Controller
 
         $data = [
             'title' => $request->title,
+            'status' => $request->status,
             'description' => $request->description,
         ];
 
-        $shipment =  $this->warrantyRepo->update($id, $data);
+        $warranty =  $this->warrantyRepo->update($id, $data);
 
         ApiService::_success(trans('response.responses.200'));
     }

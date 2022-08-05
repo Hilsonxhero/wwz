@@ -26,34 +26,33 @@ class WarrantyRepository implements WarrantyRepositoryInterface
 
     public function create($data)
     {
-        $category =  Warranty::query()->create($data);
-        return $category;
+        $warranty =  Warranty::query()->create($data);
+        return $warranty;
     }
     public function update($id, $data)
     {
-        $category = $this->find($id);
-        $category->update($data);
-        return $category;
+        $warranty = $this->find($id);
+        $warranty->update($data);
+        return $warranty;
     }
     public function show($id)
     {
-        $category = $this->find($id);
-        return $category;
+        $warranty = $this->find($id);
+        return $warranty;
     }
 
     public function find($id)
     {
         try {
-            $category = Warranty::query()->where('id', $id)->firstOrFail();
-            return $category;
+            $warranty = Warranty::query()->where('id', $id)->firstOrFail();
+            return $warranty;
         } catch (ModelNotFoundException $e) {
             return  ApiService::_response(trans('response.responses.404'), 404);
         }
     }
     public function delete($id)
     {
-        $category = $this->find($id);
-        $category->clearMediaCollectionExcept();
-        $category->delete();
+        $warranty = $this->find($id);
+        $warranty->delete();
     }
 }
