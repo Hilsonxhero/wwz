@@ -9,6 +9,7 @@ use Illuminate\Routing\Controller;
 use Modules\Brand\Transformers\BrandResource;
 use Modules\Shipment\Repository\ShipmentRepositoryInterface;
 use Modules\Shipment\Transformers\ShipmentCollectionResource;
+use Modules\Shipment\Transformers\ShipmentResource;
 
 class ShipmentController extends Controller
 {
@@ -25,9 +26,9 @@ class ShipmentController extends Controller
 
     public function index()
     {
-        $categories = $this->brandRepo->all();
-        // ApiService::_success($categories);
-        return new ShipmentCollectionResource($categories);
+        $shipments = $this->brandRepo->all();
+        // ApiService::_success($shipments);
+        return new ShipmentCollectionResource($shipments);
     }
 
     /**
@@ -59,7 +60,7 @@ class ShipmentController extends Controller
     public function show($id)
     {
         $shipment = $this->brandRepo->show($id);
-        return new BrandResource($shipment);
+        return new ShipmentResource($shipment);
     }
 
     /**

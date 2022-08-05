@@ -26,34 +26,33 @@ class ShipmentRepository implements ShipmentRepositoryInterface
 
     public function create($data)
     {
-        $category =  Shipment::query()->create($data);
-        return $category;
+        $shipment =  Shipment::query()->create($data);
+        return $shipment;
     }
     public function update($id, $data)
     {
-        $category = $this->find($id);
-        $category->update($data);
-        return $category;
+        $shipment = $this->find($id);
+        $shipment->update($data);
+        return $shipment;
     }
     public function show($id)
     {
-        $category = $this->find($id);
-        return $category;
+        $shipment = $this->find($id);
+        return $shipment;
     }
 
     public function find($id)
     {
         try {
-            $category = Shipment::query()->where('id', $id)->firstOrFail();
-            return $category;
+            $shipment = Shipment::query()->where('id', $id)->firstOrFail();
+            return $shipment;
         } catch (ModelNotFoundException $e) {
             return  ApiService::_response(trans('response.responses.404'), 404);
         }
     }
     public function delete($id)
     {
-        $category = $this->find($id);
-        $category->clearMediaCollectionExcept();
-        $category->delete();
+        $shipment = $this->find($id);
+        $shipment->delete();
     }
 }
