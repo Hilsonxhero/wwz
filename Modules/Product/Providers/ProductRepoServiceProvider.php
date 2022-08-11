@@ -7,6 +7,8 @@ use Modules\Product\Repository\FeatureRepository;
 use Modules\Product\Repository\FeatureRepositoryInterface;
 use Modules\Product\Repository\FeatureValueRepository;
 use Modules\Product\Repository\FeatureValueRepositoryInterface;
+use Modules\Product\Repository\ProductFeatureRepository;
+use Modules\Product\Repository\ProductFeatureRepositoryInterface;
 use Modules\Product\Repository\ProductRepository;
 use Modules\Product\Repository\ProductRepositoryInterface;
 use Modules\Product\Repository\VariantGroupRepository;
@@ -38,5 +40,6 @@ class ProductRepoServiceProvider extends ServiceProvider
         $this->app->bind(ProductRepositoryInterface::class, ProductRepository::class);
         $this->app->bind(VariantGroupRepositoryInterface::class, VariantGroupRepository::class);
         $this->app->bind(VariantRepositoryInterface::class, VariantRepository::class);
+        $this->app->bind(ProductFeatureRepositoryInterface::class, ProductFeatureRepository::class);
     }
 }

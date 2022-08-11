@@ -49,7 +49,7 @@ class Category extends Model implements HasMedia
     {
         return [
             'slug' => [
-                'source' => 'title'
+                'source' => 'title_en'
             ]
         ];
     }

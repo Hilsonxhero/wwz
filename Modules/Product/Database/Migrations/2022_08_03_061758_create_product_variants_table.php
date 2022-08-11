@@ -17,13 +17,14 @@ return new class extends Migration
             $table->id();
             $table->foreignId("product_id")->constrained('products')->onDelete('cascade');
             $table->foreignId("warranty_id")->constrained('warranties')->onDelete('cascade');
-            $table->decimal('price');
+            $table->foreignId("shipment_id")->constrained('shipments');
+            $table->decimal('price', $precision = 64, $scale = 8);
             $table->integer('discount');
             $table->bigInteger('discount_price');
             $table->integer('stock');
             $table->decimal('weight');
             $table->integer('order_limit');
-            $table->boolean('default_on');
+            $table->boolean('default_on')->default(0);
             $table->timestamps();
         });
     }

@@ -15,5 +15,5 @@ use Modules\Brand\Http\Controllers\v1\Panel\BrandController;
 */
 
 Route::prefix('v1/panel')->group(function () {
-    Route::resource("/brands", BrandController::class);
+    Route::apiResource("/brands", BrandController::class);
 });

@@ -12,7 +12,7 @@ class ProductVariant extends Model
 
     protected $fillable = [
         'product_id', 'warranty_id', 'price', 'discount', 'discount_price', 'stock',
-        'weight', 'order_limit', 'default_on',
+        'weight', 'order_limit', 'default_on', 'shipment_id',
     ];
 
     public function product()
@@ -22,5 +22,10 @@ class ProductVariant extends Model
     public function warranty()
     {
         return $this->belongsTo(Warranty::class);
+    }
+
+    public function combinations()
+    {
+        return $this->hasMany(ProductVariantCombination::class);
     }
 }

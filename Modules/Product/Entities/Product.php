@@ -20,6 +20,8 @@ class Product extends Model implements HasMedia
         'title_fa', 'title_en', 'slug', 'review', 'category_id', 'brand_id', 'status',
     ];
 
+
+
     const DISABLE_STATUS = 'disable';
     const ENABLE_STATUS = 'enable';
     const PENDING_STATUS = 'pending';
@@ -28,10 +30,10 @@ class Product extends Model implements HasMedia
     static $statuses = [self::DISABLE_STATUS, self::ENABLE_STATUS, self::PENDING_STATUS, self::REJECTED_STATUS];
 
 
-    protected static function newFactory()
-    {
-        return \Modules\Product\Database\factories\ProductFactory::new();
-    }
+    // protected static function newFactory()
+    // {
+    //     return \Modules\Product\Database\factories\ProductFactory::new();
+    // }
 
 
     public function features()
@@ -39,12 +41,17 @@ class Product extends Model implements HasMedia
         return $this->belongsToMany(Feature::class, 'product_features');
     }
 
+    public function featureValues()
+    {
+        // return $this->belongsToMany(FeatureValue::class, 'product_features')->withPivot('value');
+
+        return $this->hasMany(ProductFeature::class);
+    }
 
     public function variants()
     {
-        return $this->belongsTo(ProductVariant::class, 'product_variant_combination');
+        return $this->hasMany(ProductVariant::class);
     }
-
 
     public function category()
     {
@@ -55,7 +62,6 @@ class Product extends Model implements HasMedia
     {
         return $this->belongsTo(Brand::class);
     }
-
 
 
     public static function last()

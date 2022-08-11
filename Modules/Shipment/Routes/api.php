@@ -15,5 +15,5 @@ use Modules\Shipment\Http\Controllers\v1\Panel\ShipmentController;
 */
 
 Route::prefix('v1/panel')->group(function () {
-    Route::resource("/shipments", ShipmentController::class);
+    Route::apiResource("/shipments", ShipmentController::class);
 });

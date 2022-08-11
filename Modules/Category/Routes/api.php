@@ -22,5 +22,5 @@ use Modules\Category\Http\Controllers\v1\Panel\CategoryController;
 
 
 Route::prefix('v1/panel')->group(function () {
-    Route::resource("/categories", CategoryController::class);
+    Route::apiResource("/categories", CategoryController::class);
 });

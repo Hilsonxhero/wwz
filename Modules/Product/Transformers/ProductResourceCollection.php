@@ -21,13 +21,15 @@ class ProductResourceCollection extends ResourceCollection
                     'title_fa' => $data->title_fa,
                     'title_en' => $data->title_en,
                     'slug' => $data->slug,
-                    'description' => $data->description,
-                    'short_review' => truncate($data->description, 25),
-                    'parent' => $data->parent,
+                    'category' => $data->category,
+                    'brand' => $data->category,
+                    'review' => $data->review,
+                    'short_review' => truncate($data->review, 25),
                     'status' => $data->status,
                     'media' => [
-                        'main' => $data->getFirstMediaUrl(),
-                        'thumb' => $data->getFirstMediaUrl('default', 'thumb')
+                        'main' => $data->getFirstMediaUrl('main'),
+                        'thumb' => $data->getFirstMediaUrl('main', 'thumb'),
+                        'thumbs' => $data->getMedia('thumbs'),
                     ],
                 ];
             })

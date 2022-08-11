@@ -15,5 +15,5 @@ use Modules\Warranty\Http\Controllers\v1\Panel\WarrantyController;
 */
 
 Route::prefix('v1/panel')->group(function () {
-    Route::resource("/warranties", WarrantyController::class);
+    Route::apiResource("/warranties", WarrantyController::class);
 });

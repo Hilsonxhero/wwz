@@ -32,6 +32,17 @@ class VariantGroupController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     * @return Response
+     */
+    public function list()
+    {
+        $groups = $this->groupRepo->active();
+        return new VariantGroupResourceCollection($groups);
+        // ApiService::_success($groups);
+    }
+
+    /**
      * Store a newly created resource in storage.
      * @param Request $request
      * @return Response

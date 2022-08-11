@@ -10,7 +10,3 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::prefix('slide')->group(function() {
-    Route::get('/', 'SlideController@index');
-});

@@ -13,8 +13,15 @@ class VariantGroupRepository implements VariantGroupRepositoryInterface
     public function all()
     {
         return VariantGroup::orderBy('created_at', 'desc')
-            ->with('variants')
+            ->with(['variants', 'variants'])
             ->paginate();
+    }
+
+    public function active()
+    {
+        return VariantGroup::orderBy('created_at', 'desc')
+            ->with(['variants', 'variants'])
+            ->get();
     }
 
     public function create($data)

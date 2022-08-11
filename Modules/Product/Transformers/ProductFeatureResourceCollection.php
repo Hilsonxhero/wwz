@@ -4,7 +4,7 @@ namespace Modules\Product\Transformers;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class VariantGroupResourceCollection extends ResourceCollection
+class ProductFeatureResourceCollection extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.
@@ -18,9 +18,8 @@ class VariantGroupResourceCollection extends ResourceCollection
             'data' => $this->collection->map(function ($data) {
                 return [
                     'id' => $data->id,
-                    'name' => $data->name,
-                    'type' => $data->type,
-                    'values' => $data->variants,
+                    'value' => $data->quantity->title ?? $data->value,
+                    'feature' => $data->feature->title,
                 ];
             })
         ];
