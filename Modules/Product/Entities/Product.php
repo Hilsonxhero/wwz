@@ -52,6 +52,10 @@ class Product extends Model implements HasMedia
     {
         return $this->hasMany(ProductVariant::class);
     }
+    public function combinations()
+    {
+        return $this->hasManyThrough(ProductVariantCombination::class, ProductVariant::class);
+    }
 
     public function category()
     {

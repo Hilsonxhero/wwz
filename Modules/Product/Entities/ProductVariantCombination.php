@@ -14,10 +14,17 @@ class ProductVariantCombination  extends Pivot
 
     public $timestamps = false;
 
+    public $with = ['variant'];
+
     protected $fillable = ['variant_id', 'product_variant_id'];
 
     // protected static function newFactory()
     // {
     //     return \Modules\Product\Database\factories\ProductVariantCombinationFactory::new();
     // }
+
+    public function variant()
+    {
+        return $this->belongsTo(Variant::class);
+    }
 }

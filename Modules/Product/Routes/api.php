@@ -5,13 +5,17 @@ use Modules\Product\Http\Controllers\v1\Panel\FeatureController;
 use Modules\Product\Http\Controllers\v1\Panel\FeatureValueController;
 use Modules\Product\Http\Controllers\v1\Panel\ProductController;
 use Modules\Product\Http\Controllers\v1\Panel\ProductFeatureController;
+use Modules\Product\Http\Controllers\v1\Panel\ProductVariantController;
 use Modules\Product\Http\Controllers\v1\Panel\VariantController;
 use Modules\Product\Http\Controllers\v1\Panel\VariantGroupController;
 
 Route::prefix('v1/panel')->group(function () {
     //products
     Route::apiResource("/products", ProductController::class);
+    // product features
     Route::apiResource("/products/{id}/features", ProductFeatureController::class);
+    // product variants
+    Route::apiResource("/products/{id}/variants", ProductVariantController::class);
     //variants
     Route::apiResource("/variants", VariantController::class);
     Route::apiResource("/variant/groups", VariantGroupController::class);

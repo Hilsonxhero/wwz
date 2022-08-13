@@ -11,6 +11,8 @@ use Modules\Product\Repository\ProductFeatureRepository;
 use Modules\Product\Repository\ProductFeatureRepositoryInterface;
 use Modules\Product\Repository\ProductRepository;
 use Modules\Product\Repository\ProductRepositoryInterface;
+use Modules\Product\Repository\ProductVariantRepository;
+use Modules\Product\Repository\ProductVariantRepositoryInterface;
 use Modules\Product\Repository\VariantGroupRepository;
 use Modules\Product\Repository\VariantGroupRepositoryInterface;
 use Modules\Product\Repository\VariantRepository;
@@ -41,5 +43,6 @@ class ProductRepoServiceProvider extends ServiceProvider
         $this->app->bind(VariantGroupRepositoryInterface::class, VariantGroupRepository::class);
         $this->app->bind(VariantRepositoryInterface::class, VariantRepository::class);
         $this->app->bind(ProductFeatureRepositoryInterface::class, ProductFeatureRepository::class);
+        $this->app->bind(ProductVariantRepositoryInterface::class, ProductVariantRepository::class);
     }
 }

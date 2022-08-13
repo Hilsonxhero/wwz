@@ -41,21 +41,14 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        // ApiService::_response($request->filled('shipment_id'), 403);
-
         ApiService::Validator($request->all(), [
             'title_fa' => ['required', 'min:4'],
             'title_en' => ['required', 'min:4'],
             'review' => ['required', 'min:4'],
-            'images' => ['required'],
+            'image' => ['required'],
             'category_id' => ['required', 'exists:categories,id'],
             'brand_id' => ['required', 'exists:brands,id'],
-            'warranty_id' => ['required', 'exists:warranties,id'],
-            'shipment_id' => ['required', 'exists:shipments,id'],
             'status' => ['required', Rule::in(Product::$statuses)],
-            // "features" => ['required'],
-            // "features.*.name" => ['required', 'exists:features,id'],
-            // "features.*.value" => ['required', 'exists:feature_values,id']
         ]);
 
         $data = [
@@ -68,48 +61,12 @@ class ProductController extends Controller
         ];
 
         $product = $this->productRepo->create($data);
-        $variants = collect(json_decode($request->input('variants')));
-        $images = collect(json_decode($request->input('images')));
-        // ApiService::_response($variants, 403);
 
-        $variants->each(function ($variant) use ($product, $request) {
+        $this->productRepo->updateVariants($product->id, $request->input('variants'));
 
-            $producy_variant = $product->variants()->create([
-                'warranty_id' => $request->warranty_id,
-                'shipment_id' => $request->shipment_id,
-                'price' => $variant->price,
-                'discount' => $variant->discount,
-                'discount_price' => $variant->discount_price,
-                'stock' => $variant->stock,
-                'weight' => $request->weight,
-                'order_limit' => $variant->order_limit,
-                'default_on' => 1,
-            ]);
 
-            foreach ($variant->variants as $combination) {
-                $producy_variant->combinations()->create([
-                    'variant_id' => $combination->id,
-                ]);
-            }
-        });
-
-        // $features = collect(json_decode($request->input('features')));
-
-        // $features->each(function ($attr) use ($product) {
-        //     foreach ($attr->values as $value) {
-        //         $product->features()->attach($attr->feature, ['feature_value_id' => $value]);
-        //     }
-        // });
-
-        $main_image = $images->first();
-
-        base64($main_image->file) ? $product->addMediaFromBase64($main_image->file)->toMediaCollection('main')
-            : $product->addMedia($main_image->file)->toMediaCollection('main');
-
-        $images->each(function ($image) use ($product) {
-            base64($image->file) ? $product->addMediaFromBase64($image->file)->toMediaCollection('thumbs')
-                : $product->addMedia($image->file)->toMediaCollection('thumbs');
-        });
+        base64(json_decode($request->image)) ? $product->addMediaFromBase64(json_decode($request->image))->toMediaCollection('main')
+            : $product->addMedia($request->image)->toMediaCollection('main');
 
         ApiService::_success($product);
     }
@@ -133,7 +90,36 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        ApiService::Validator($request->all(), [
+            'title_fa' => ['required', 'min:4'],
+            'title_en' => ['required', 'min:4'],
+            'review' => ['required', 'min:4'],
+            'image' => ['nullable'],
+            'category_id' => ['required', 'exists:categories,id'],
+            'brand_id' => ['required', 'exists:brands,id'],
+            'status' => ['required', Rule::in(Product::$statuses)],
+        ]);
+
+        $data = [
+            'title_fa' => $request->title_fa,
+            'title_en' => $request->title_en,
+            'review' => $request->review,
+            'category_id' => $request->category_id,
+            'brand_id' => $request->brand_id,
+            'status' => $request->status,
+        ];
+
+        $product = $this->productRepo->update($id, $data);
+
+        $this->productRepo->updateVariants($product->id, $request->input('variants'));
+
+        if ($request->image) {
+            $product->clearMediaCollectionExcept('main');
+            base64(json_decode($request->image)) ? $product->addMediaFromBase64(json_decode($request->image))->toMediaCollection('main')
+                : $product->addMedia($request->image)->toMediaCollection('main');
+        }
+
+        ApiService::_success($product);
     }
 
     /**

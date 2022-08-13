@@ -15,6 +15,12 @@ class ProductRepository implements ProductRepositoryInterface
             ->paginate();
     }
 
+    public function variants($id)
+    {
+        $product = $this->find($id);
+        return $product->variants()->paginate();
+    }
+
     public function allActive()
     {
         return Product::orderBy('created_at', 'desc')
@@ -26,40 +32,96 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function create($data)
     {
-        $feature =  Product::query()->create($data);
-        return $feature;
+        $product =  Product::query()->create($data);
+        return $product;
     }
+
+    public function createVariants($id, $variants)
+    {
+        $product = $this->find($id);
+        $variants = collect(json_decode($variants));
+
+        foreach ($variants as $key => $variant) {
+            $producy_variant = $product->variants()->create([
+                'warranty_id' => $variant->warranty,
+                'shipment_id' => $variant->shipment,
+                'price' => $variant->price,
+                'discount' => $variant->discount,
+                'discount_price' => $variant->discount_price,
+                'stock' => $variant->stock,
+                'weight' => $variant->weight,
+                'order_limit' => $variant->order_limit,
+                'default_on' => 1,
+            ]);
+
+            foreach ($variant->combinations as $combination) {
+                $producy_variant->combinations()->firstOrCreate([
+                    'variant_id' => $combination->id,
+                ]);
+            }
+        }
+    }
+
+    public function updateVariants($id, $variants)
+    {
+        $product = $this->find($id);
+        $product->variants()->delete();
+        $product->combinations()->delete();
+        $variants = collect(json_decode($variants));
+
+        foreach ($variants as $key => $variant) {
+            $producy_variant = $product->variants()->create([
+                'warranty_id' => $variant->warranty,
+                'shipment_id' => $variant->shipment,
+                'price' => $variant->price,
+                'discount' => $variant->discount,
+                'discount_price' => $variant->discount_price,
+                'stock' => $variant->stock,
+                'weight' => $variant->weight,
+                'order_limit' => $variant->order_limit,
+                'default_on' => 1,
+            ]);
+
+            foreach ($variant->combinations as $combination) {
+                $producy_variant->combinations()->firstOrCreate([
+                    'variant_id' => $combination->id,
+                ]);
+            }
+        }
+    }
+
+
     public function update($id, $data)
     {
-        $feature = $this->find($id);
-        $feature->update($data);
-        return $feature;
+        $product = $this->find($id);
+        $product->update($data);
+        return $product;
     }
     public function show($id)
     {
-        $feature = $this->find($id);
-        return $feature;
+        $product = $this->find($id);
+        return $product;
     }
 
     public function values($id)
     {
-        $feature = $this->find($id);
-        return $feature->values;
+        $product = $this->find($id);
+        return $product->values;
     }
 
 
     public function find($id)
     {
         try {
-            $feature = Product::query()->where('id', $id)->firstOrFail();
-            return $feature;
+            $product = Product::query()->where('id', $id)->firstOrFail();
+            return $product;
         } catch (ModelNotFoundException $e) {
             return  ApiService::_response(trans('response.responses.404'), 404);
         }
     }
     public function delete($id)
     {
-        $feature = $this->find($id);
-        return $feature->delete();
+        $product = $this->find($id);
+        return $product->delete();
     }
 }

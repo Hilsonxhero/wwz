@@ -4,6 +4,7 @@ namespace Modules\Product\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Shipment\Entities\Shipment;
 use Modules\Warranty\Entities\Warranty;
 
 class ProductVariant extends Model
@@ -22,6 +23,11 @@ class ProductVariant extends Model
     public function warranty()
     {
         return $this->belongsTo(Warranty::class);
+    }
+
+    public function shipment()
+    {
+        return $this->belongsTo(Shipment::class);
     }
 
     public function combinations()

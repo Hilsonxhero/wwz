@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Modules\Media\Http\Controllers\v1\Panel\MediaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +14,6 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/media', function (Request $request) {
-    return $request->user();
+Route::prefix('v1/panel')->group(function () {
+    Route::delete("media/delete/{id}", [MediaController::class, 'destroy']);
 });
