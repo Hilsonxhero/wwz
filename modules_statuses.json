@@ -6,5 +6,7 @@
     "Warranty": true,
     "Slide": true,
     "Comment": true,
-    "Media": true
+    "Media": true,
+    "User": true,
+    "RolePermissions": true
 }
