@@ -8,5 +8,6 @@
     "Comment": true,
     "Media": true,
     "User": true,
-    "RolePermissions": true
+    "RolePermissions": true,
+    "State": true
 }
