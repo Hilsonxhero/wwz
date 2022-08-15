@@ -1,21 +1,21 @@
 <?php
 
-namespace Modules\RolePermissions\Providers;
+namespace Modules\Payment\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
 
-class RolePermissionsServiceProvider extends ServiceProvider
+class PaymentServiceProvider extends ServiceProvider
 {
     /**
      * @var string $moduleName
      */
-    protected $moduleName = 'RolePermissions';
+    protected $moduleName = 'Payment';
 
     /**
      * @var string $moduleNameLower
      */
-    protected $moduleNameLower = 'rolepermissions';
+    protected $moduleNameLower = 'payment';
 
     /**
      * Boot the application events.
@@ -38,7 +38,6 @@ class RolePermissionsServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->register(RouteServiceProvider::class);
-        $this->app->register(RolePermissionsRepoServiceProvider::class);
     }
 
     /**

@@ -1,18 +1,10 @@
 <?php
 
 use Illuminate\Http\Request;
+use Modules\RolePermissions\Http\Controllers\v1\Panel\PermissionController;
+use Modules\RolePermissions\Http\Controllers\v1\Panel\RoleController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-
-Route::middleware('auth:api')->get('/rolepermissions', function (Request $request) {
-    return $request->user();
+Route::prefix('v1/panel')->group(function () {
+    Route::apiResource("/permissions", PermissionController::class);
+    Route::apiResource("/roles", RoleController::class);
 });

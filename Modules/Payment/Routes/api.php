@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Http\Request;
-use Modules\User\Http\Controllers\v1\Panel\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +13,6 @@ use Modules\User\Http\Controllers\v1\Panel\UserController;
 |
 */
 
-Route::prefix('v1/panel')->group(function () {
-    Route::apiResource("/users", UserController::class);
+Route::middleware('auth:api')->get('/payment', function (Request $request) {
+    return $request->user();
 });

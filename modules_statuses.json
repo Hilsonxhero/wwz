@@ -9,5 +9,6 @@
     "Media": true,
     "User": true,
     "RolePermissions": true,
-    "State": true
+    "State": true,
+    "Payment": true
 }
