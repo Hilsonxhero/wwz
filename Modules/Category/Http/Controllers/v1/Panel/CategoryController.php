@@ -58,7 +58,10 @@ class CategoryController extends Controller
         ];
         $category = $this->categoryRepo->create($data);
 
-        $request->image ?  $category->addMediaFromBase64($request->image)->toMediaCollection() : '';
+
+        base64($request->image) ? $category->addMediaFromBase64($request->image)->toMediaCollection()
+            : $category->addMedia($request->image)->toMediaCollection();
+
         ApiService::_success($category);
     }
 
