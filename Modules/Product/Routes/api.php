@@ -13,9 +13,9 @@ Route::prefix('v1/panel')->group(function () {
     //products
     Route::apiResource("/products", ProductController::class);
     // product features
-    Route::apiResource("/products/{id}/features", ProductFeatureController::class);
+    // Route::apiResource("/products/{id}/features", ProductFeatureController::class);
     // product variants
-    Route::apiResource("/products/{id}/variants", ProductVariantController::class);
+    // Route::apiResource("/products/{id}/variants", ProductVariantController::class);
     //variants
     Route::apiResource("/variants", VariantController::class);
     Route::apiResource("/variant/groups", VariantGroupController::class);
