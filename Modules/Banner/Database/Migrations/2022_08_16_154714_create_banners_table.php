@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-use Modules\Slide\Entities\Slide;
+use Modules\Banner\Entities\Banner;
 
 return new class extends Migration
 {
@@ -14,15 +14,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('slides', function (Blueprint $table) {
+        Schema::create('banners', function (Blueprint $table) {
             $table->id();
             $table->string('title');
             $table->string('url');
             $table->string('type');
-            $table->integer('slideable_id');
-            $table->string('slideable_type');
+            $table->integer('bannerable_id');
+            $table->string('bannerable_type');
             $table->integer('position');
-            $table->enum('status', Slide::$statuses)->default(Slide::ENABLE_STATUS);
+            $table->enum('status', Banner::$statuses)->default(Banner::ENABLE_STATUS);
             $table->softDeletes();
             $table->timestamps();
         });
@@ -35,6 +35,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('slides');
+        Schema::dropIfExists('banners');
     }
 };

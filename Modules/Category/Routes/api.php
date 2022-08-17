@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Modules\Category\Http\Controllers\v1\Panel\CategoryController;
-
+use Modules\Category\Http\Controllers\v1\Panel\CategorySlideController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,8 +19,8 @@ use Modules\Category\Http\Controllers\v1\Panel\CategoryController;
 //     return $request->user();
 // });
 
-
-
 Route::prefix('v1/panel')->group(function () {
     Route::apiResource("/categories", CategoryController::class);
+    Route::apiResource("/category/slides", CategorySlideController::class);
+    Route::apiResource("/category/banners", \Modules\Category\Http\Controllers\v1\Panel\CategoryBannerController::class);
 });

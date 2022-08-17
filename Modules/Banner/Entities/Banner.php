@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Slide\Entities;
+namespace Modules\Banner\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -9,12 +9,13 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Slide extends Model implements HasMedia
+
+class Banner extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia, SoftDeletes;
 
     protected $fillable = [
-        'title', 'url', 'type', 'slideable_id', 'slideable_type', 'position', 'status',
+        'title', 'url', 'type', 'bannerable_id', 'bannerable_type', 'position', 'status',
     ];
 
     const DISABLE_STATUS = 'disable';
@@ -39,7 +40,7 @@ class Slide extends Model implements HasMedia
             ->sharpen(10);
     }
 
-    public function slideable()
+    public function bannerable()
     {
         return $this->morphTo();
     }

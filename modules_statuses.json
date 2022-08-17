@@ -10,5 +10,6 @@
     "User": true,
     "RolePermissions": true,
     "State": true,
-    "Payment": true
+    "Payment": true,
+    "Banner": true
 }

@@ -3,12 +3,14 @@
 namespace Modules\Category\Entities;
 
 use Illuminate\Support\Str;
+use Modules\Banner\Entities\Banner;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Slide\Entities\Slide;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Category extends Model implements HasMedia
@@ -75,5 +77,15 @@ class Category extends Model implements HasMedia
     public function parent()
     {
         return $this->belongsTo(Category::class, 'parent_id');
+    }
+
+    public function slides()
+    {
+        return $this->morphMany(Slide::class, 'slideable');
+    }
+
+    public function banners()
+    {
+        return $this->morphMany(Banner::class, 'bannerable');
     }
 }

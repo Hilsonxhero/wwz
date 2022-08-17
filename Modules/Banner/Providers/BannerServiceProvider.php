@@ -1,21 +1,21 @@
 <?php
 
-namespace Modules\Category\Providers;
+namespace Modules\Banner\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
 
-class CategoryServiceProvider extends ServiceProvider
+class BannerServiceProvider extends ServiceProvider
 {
     /**
      * @var string $moduleName
      */
-    protected $moduleName = 'Category';
+    protected $moduleName = 'Banner';
 
     /**
      * @var string $moduleNameLower
      */
-    protected $moduleNameLower = 'category';
+    protected $moduleNameLower = 'banner';
 
     /**
      * Boot the application events.
@@ -38,7 +38,6 @@ class CategoryServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->register(RouteServiceProvider::class);
-        $this->app->register(CategoryRepoServiceProvider::class);
     }
 
     /**
@@ -52,8 +51,7 @@ class CategoryServiceProvider extends ServiceProvider
             module_path($this->moduleName, 'Config/config.php') => config_path($this->moduleNameLower . '.php'),
         ], 'config');
         $this->mergeConfigFrom(
-            module_path($this->moduleName, 'Config/config.php'),
-            $this->moduleNameLower
+            module_path($this->moduleName, 'Config/config.php'), $this->moduleNameLower
         );
     }
 

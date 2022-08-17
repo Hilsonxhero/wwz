@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Modules\Slide\Http\Controllers\v1\Panel\SlideController;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,3 +13,8 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+
+Route::prefix('v1/panel')->group(function () {
+    Route::apiResource("/slides", SlideController::class);
+});
