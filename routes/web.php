@@ -3,6 +3,7 @@
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Route;
 use Modules\Category\Entities\Category;
+use Morilog\Jalali\Jalalian;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,7 +15,6 @@ use Modules\Category\Entities\Category;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
 
 
 Route::get('/', function () {

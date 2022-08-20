@@ -8,9 +8,11 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Validation\Rule;
 use Modules\Product\Entities\Product;
+use Modules\Product\Http\Requests\ProductRequest;
 use Modules\Product\Repository\ProductRepositoryInterface;
 use Modules\Product\Transformers\ProductResource;
 use Modules\Product\Transformers\ProductResourceCollection;
+use Modules\Product\Transformers\ProductVariantCombinationResource;
 
 class ProductController extends Controller
 {
@@ -24,14 +26,27 @@ class ProductController extends Controller
     {
         $this->productRepo = $productRepo;
     }
+
     /**
      * Display a listing of the resource.
-     * @return Response
+     * @return ProductResourceCollection
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = $this->productRepo->all();
+        $products = $this->productRepo->all($request->q);
         return new ProductResourceCollection($products);
+    }
+
+    /**
+     * Display a listing of the resource.
+     * @return ProductResourceCollection
+     */
+    public function combinations($id)
+    {
+//        ApiService::_response("www",403);
+        $combinations = $this->productRepo->combinations($id);
+        return  ProductVariantCombinationResource::collection($combinations);
+//        ApiService::_success($combinations);
     }
 
     /**
@@ -39,42 +54,16 @@ class ProductController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
-        ApiService::Validator($request->all(), [
-            'title_fa' => ['required', 'min:4'],
-            'title_en' => ['required', 'min:4'],
-            'review' => ['required', 'min:4'],
-            'image' => ['required'],
-            'category_id' => ['required', 'exists:categories,id'],
-            'brand_id' => ['required', 'exists:brands,id'],
-            'status' => ['required', Rule::in(Product::$statuses)],
-        ]);
-
-        $data = [
-            'title_fa' => $request->title_fa,
-            'title_en' => $request->title_en,
-            'review' => $request->review,
-            'category_id' => $request->category_id,
-            'brand_id' => $request->brand_id,
-            'status' => $request->status,
-        ];
-
-        $product = $this->productRepo->create($data);
-
-        $this->productRepo->updateVariants($product->id, $request->input('variants'));
-
-
-        base64(json_decode($request->image)) ? $product->addMediaFromBase64(json_decode($request->image))->toMediaCollection('main')
-            : $product->addMedia($request->image)->toMediaCollection('main');
-
+        $product = $this->productRepo->create($request);
         ApiService::_success($product);
     }
 
     /**
      * Show the specified resource.
      * @param int $id
-     * @return Response
+     * @return ProductResource
      */
     public function show($id)
     {
@@ -88,37 +77,9 @@ class ProductController extends Controller
      * @param int $id
      * @return Response
      */
-    public function update(Request $request, $id)
+    public function update(ProductRequest $request, $id)
     {
-        ApiService::Validator($request->all(), [
-            'title_fa' => ['required', 'min:4'],
-            'title_en' => ['required', 'min:4'],
-            'review' => ['required', 'min:4'],
-            'image' => ['nullable'],
-            'category_id' => ['required', 'exists:categories,id'],
-            'brand_id' => ['required', 'exists:brands,id'],
-            'status' => ['required', Rule::in(Product::$statuses)],
-        ]);
-
-        $data = [
-            'title_fa' => $request->title_fa,
-            'title_en' => $request->title_en,
-            'review' => $request->review,
-            'category_id' => $request->category_id,
-            'brand_id' => $request->brand_id,
-            'status' => $request->status,
-        ];
-
-        $product = $this->productRepo->update($id, $data);
-
-        $this->productRepo->updateVariants($product->id, $request->input('variants'));
-
-        if ($request->image) {
-            $product->clearMediaCollectionExcept('main');
-            base64(json_decode($request->image)) ? $product->addMediaFromBase64(json_decode($request->image))->toMediaCollection('main')
-                : $product->addMedia($request->image)->toMediaCollection('main');
-        }
-
+        $product = $this->productRepo->update($id, $request);
         ApiService::_success($product);
     }
 
@@ -130,7 +91,6 @@ class ProductController extends Controller
     public function destroy($id)
     {
         $product = $this->productRepo->delete($id);
-
         ApiService::_success(trans('response.responses.200'));
     }
 }

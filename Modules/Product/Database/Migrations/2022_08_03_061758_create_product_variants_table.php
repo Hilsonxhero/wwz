@@ -25,6 +25,8 @@ return new class extends Migration
             $table->decimal('weight');
             $table->integer('order_limit');
             $table->boolean('default_on')->default(0);
+            $table->timestamp('discount_expire_at')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

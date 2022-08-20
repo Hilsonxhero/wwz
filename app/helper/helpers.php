@@ -10,8 +10,6 @@ function truncate($text, $limit = 35): ?string
     return \Illuminate\Support\Str::limit($text, $limit, ' ...');
 }
 
-
-
 function base64($file)
 {
     if (!preg_match('/^(?:[data]{4}:(text|image|application)\/[a-z]*)/', $file)) {
@@ -20,3 +18,4 @@ function base64($file)
         return true;
     }
 }
+

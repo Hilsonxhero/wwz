@@ -22,6 +22,9 @@ class Product extends Model implements HasMedia
 
 
 
+
+
+
     const DISABLE_STATUS = 'disable';
     const ENABLE_STATUS = 'enable';
     const PENDING_STATUS = 'pending';

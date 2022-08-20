@@ -4,21 +4,35 @@ namespace Modules\Product\Repository;
 
 use App\Services\ApiService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\DB;
+use League\Glide\Api\Api;
 use Modules\Product\Entities\Product;
+use Modules\Product\Entities\ProductVariant;
 
 class ProductRepository implements ProductRepositoryInterface
 {
 
-    public function all()
+    public function all($q)
     {
-        return Product::orderBy('created_at', 'desc')
-            ->paginate();
+        $query = Product::query()->orderBy('created_at', 'desc');
+        if (request()->has('q')) {
+            $query->where('title_fa', 'LIKE', "%" . $q . "%");
+        }
+
+        return $query->paginate();
+
     }
 
     public function variants($id)
     {
         $product = $this->find($id);
         return $product->variants()->paginate();
+    }
+
+    public function combinations($id)
+    {
+        $product = $this->find($id);
+        return $product->combinations();
     }
 
     public function allActive()
@@ -32,13 +46,25 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function create($data)
     {
-        $product =  Product::query()->create($data);
+        $product = Product::query()->create([
+            'title_fa' => $data->title_fa,
+            'title_en' => $data->title_en,
+            'review' => $data->review,
+            'category_id' => $data->category_id,
+            'brand_id' => $data->brand_id,
+            'status' => $data->status,
+        ]);
+
+        $this->createVariants($product, $data->input('variants'));
+
+        base64(json_decode($data->image)) ? $product->addMediaFromBase64(json_decode($data->image))->toMediaCollection('main')
+            : $product->addMedia($data->image)->toMediaCollection('main');
+
         return $product;
     }
 
-    public function createVariants($id, $variants)
+    public function createVariants($product, $variants)
     {
-        $product = $this->find($id);
         $variants = collect(json_decode($variants));
 
         foreach ($variants as $key => $variant) {
@@ -47,11 +73,12 @@ class ProductRepository implements ProductRepositoryInterface
                 'shipment_id' => $variant->shipment,
                 'price' => $variant->price,
                 'discount' => $variant->discount,
-                'discount_price' => $variant->discount_price,
+                'discount_price' => $variant->price * $variant->discount / 100,
                 'stock' => $variant->stock,
                 'weight' => $variant->weight,
                 'order_limit' => $variant->order_limit,
                 'default_on' => 1,
+                'discount_expire_at' => \Morilog\Jalali\CalendarUtils::createDatetimeFromFormat('Y/m/d H:i', $variant->discount_expire_at)
             ]);
 
             foreach ($variant->combinations as $combination) {
@@ -62,41 +89,64 @@ class ProductRepository implements ProductRepositoryInterface
         }
     }
 
-    public function updateVariants($id, $variants)
+    public function updateVariants($product, $variants)
     {
-        $product = $this->find($id);
-        $product->variants()->delete();
-        $product->combinations()->delete();
         $variants = collect(json_decode($variants));
 
-        foreach ($variants as $key => $variant) {
-            $producy_variant = $product->variants()->create([
-                'warranty_id' => $variant->warranty,
-                'shipment_id' => $variant->shipment,
-                'price' => $variant->price,
-                'discount' => $variant->discount,
-                'discount_price' => $variant->discount_price,
-                'stock' => $variant->stock,
-                'weight' => $variant->weight,
-                'order_limit' => $variant->order_limit,
-                'default_on' => 1,
-            ]);
+        DB::transaction(function () use ($variants, $product) {
+            foreach ($variants as $key => $variant) {
+                $producy_variant = $product->variants()->updateOrCreate(
+                    ['product_id' => $variant->product, 'id' => $variant->id],
+                    [
+                        'warranty_id' => $variant->warranty,
+                        'shipment_id' => $variant->shipment,
+                        'price' => $variant->price,
+                        'discount' => $variant->discount,
+                        'discount_price' => $variant->price * $variant->discount / 100,
+                        'stock' => $variant->stock,
+                        'weight' => $variant->weight,
+                        'order_limit' => $variant->order_limit,
+                        'default_on' => 1,
+                        'discount_expire_at' => \Morilog\Jalali\CalendarUtils::createDatetimeFromFormat('Y/m/d H:i', $variant->discount_expire_at)
+                    ],
+                );
 
-            foreach ($variant->combinations as $combination) {
-                $producy_variant->combinations()->firstOrCreate([
-                    'variant_id' => $combination->id,
-                ]);
+                foreach ($variant->combinations as $combination) {
+                    $producy_variant->combinations()->updateOrCreate(
+                        ['product_variant_id' => $producy_variant->id, 'variant_id' => $combination->id]
+                        , [
+                        'variant_id' => $combination->id,
+                    ]);
+                }
             }
-        }
+        });
     }
 
 
     public function update($id, $data)
     {
         $product = $this->find($id);
-        $product->update($data);
+
+        $product->update([
+            'title_fa' => $data->title_fa,
+            'title_en' => $data->title_en,
+            'review' => $data->review,
+            'category_id' => $data->category_id,
+            'brand_id' => $data->brand_id,
+            'status' => $data->status,
+        ]);
+
+        $this->updateVariants($product, $data->input('variants'));
+
+        if ($data->image) {
+            $product->clearMediaCollectionExcept('main');
+            base64(json_decode($data->image)) ? $product->addMediaFromBase64(json_decode($data->image))->toMediaCollection('main')
+                : $product->addMedia($data->image)->toMediaCollection('main');
+        }
+
         return $product;
     }
+
     public function show($id)
     {
         $product = $this->find($id);
@@ -116,9 +166,10 @@ class ProductRepository implements ProductRepositoryInterface
             $product = Product::query()->where('id', $id)->firstOrFail();
             return $product;
         } catch (ModelNotFoundException $e) {
-            return  ApiService::_response(trans('response.responses.404'), 404);
+            return ApiService::_response(trans('response.responses.404'), 404);
         }
     }
+
     public function delete($id)
     {
         $product = $this->find($id);

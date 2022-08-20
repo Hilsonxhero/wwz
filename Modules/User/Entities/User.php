@@ -16,7 +16,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Model implements HasMedia
+class User extends Authenticatable implements HasMedia
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes, InteractsWithMedia, HasRoles;
 
@@ -34,7 +34,7 @@ class User extends Model implements HasMedia
     ];
 
 
-    protected $guard_name = 'web';
+//    protected $guard_name = 'web';
 
     /**
      * The attributes that should be hidden for serialization.

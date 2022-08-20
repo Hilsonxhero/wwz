@@ -12,10 +12,14 @@ use Modules\Product\Http\Controllers\v1\Panel\VariantGroupController;
 Route::prefix('v1/panel')->group(function () {
     //products
     Route::apiResource("/products", ProductController::class);
+    //products
+    Route::apiResource("/product/incredibles", \Modules\Product\Http\Controllers\v1\Panel\IncredibleProductController::class);
     // product features
     Route::apiResource("/products/{id}/features", ProductFeatureController::class);
     // product variants
     Route::apiResource("/products/{id}/variants", ProductVariantController::class);
+    // product combinations
+    Route::get("/product/{id}/combinations", [ProductController::class, 'combinations']);
     //variants
     Route::apiResource("/variants", VariantController::class);
     Route::apiResource("/variant/groups", VariantGroupController::class);

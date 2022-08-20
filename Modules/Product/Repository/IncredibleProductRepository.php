@@ -4,22 +4,22 @@ namespace Modules\Product\Repository;
 
 use App\Services\ApiService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Modules\Product\Entities\Product;
+use Modules\Product\Entities\Feature;
+use Modules\Product\Entities\IncredibleProduct;
 
-use Modules\Product\Entities\ProductVariant;
-
-class ProductVariantRepository implements ProductVariantRepositoryInterface
+class IncredibleProductRepository implements IncredibleProductRepositoryInterface
 {
 
     public function all()
     {
-        return ProductVariant::orderBy('created_at', 'desc')
+        return IncredibleProduct::orderBy('created_at', 'desc')
             ->paginate();
     }
 
+
     public function create($data)
     {
-        $feature =  ProductVariant::query()->create($data);
+        $feature =  IncredibleProduct::query()->create($data);
         return $feature;
     }
     public function update($id, $data)
@@ -34,17 +34,23 @@ class ProductVariantRepository implements ProductVariantRepositoryInterface
         return $feature;
     }
 
+    public function select($id)
+    {
+        return IncredibleProduct::select('id', 'title')->whereNot('id', $id)->orderBy('created_at', 'desc')
+            ->get();
+    }
+
     public function values($id)
     {
         $feature = $this->find($id);
-        return $feature->values;
+        return $feature->values()->orderByDesc('created_at')->with('feature')->paginate();
     }
 
 
     public function find($id)
     {
         try {
-            $feature = ProductVariant::query()->where('id', $id)->firstOrFail();
+            $feature = IncredibleProduct::query()->where('id', $id)->firstOrFail();
             return $feature;
         } catch (ModelNotFoundException $e) {
             return  ApiService::_response(trans('response.responses.404'), 404);

@@ -2,14 +2,11 @@
 
 namespace Modules\Product\Repository;
 
-interface ProductRepositoryInterface
+interface IncredibleProductRepositoryInterface
 {
     public function find($id);
-    public function all($query);
-    public function variants($id);
-    public function createVariants($id, $variants);
-    public function updateVariants($id, $variants);
-    public function allActive();
+    public function select($id);
+    public function all();
     public function create($data);
     public function update($id, $data);
     public function show($id);
