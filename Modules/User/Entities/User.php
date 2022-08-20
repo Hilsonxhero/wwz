@@ -4,7 +4,7 @@ namespace Modules\User\Entities;
 
 use Spatie\Image\Manipulations;
 use Modules\State\Entities\City;
-use Laravel\Sanctum\HasApiTokens;
+use Laravel\Passport\HasApiTokens;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
@@ -54,6 +54,23 @@ class User extends Model implements HasMedia
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+    public function findForPassport($username)
+    {
+        return self::where('phone', $username)->first();
+    }
+
+    /**
+     * Validate the password of the user for the Passport password grant.
+     *
+     * @param  string  $password
+     * @return bool
+     */
+    public function validateForPassportPasswordGrant($password)
+    {
+        return true;
+    }
 
 
     public function city()
