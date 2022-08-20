@@ -26,7 +26,6 @@ class UserController extends Controller
     {
         $users = $this->userRepo->all();
         return  UserResource::collection($users);
-
     }
 
     /**
