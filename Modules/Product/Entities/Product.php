@@ -43,6 +43,10 @@ class Product extends Model implements HasMedia
     {
         return $this->belongsToMany(Feature::class, 'product_features');
     }
+    public function incredibles()
+    {
+        return $this->hasMany(IncredibleProduct::class);
+    }
 
     public function featureValues()
     {
@@ -80,9 +84,8 @@ class Product extends Model implements HasMedia
     public function registerMediaConversions(Media $media = null): void
     {
         $this->addMediaConversion('thumb')
-            ->width(368)
-            ->height(232)
-            ->sharpen(10);
+            ->width(300)
+            ->height(300);
     }
 
     /**

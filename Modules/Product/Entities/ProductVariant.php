@@ -7,14 +7,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Shipment\Entities\Shipment;
 use Modules\Warranty\Entities\Warranty;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class ProductVariant extends Model
 {
-    use HasFactory,SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'product_id', 'warranty_id', 'price', 'discount', 'discount_price', 'stock',
-        'weight', 'order_limit', 'default_on', 'shipment_id','discount_expire_at'
+        'weight', 'order_limit', 'default_on', 'shipment_id', 'discount_expire_at'
     ];
 
     /**
@@ -31,6 +32,7 @@ class ProductVariant extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
     public function warranty()
     {
         return $this->belongsTo(Warranty::class);
@@ -41,36 +43,78 @@ class ProductVariant extends Model
         return $this->belongsTo(Shipment::class);
     }
 
+    public function incredible()
+    {
+        return $this->hasOne(IncredibleProduct::class, 'variant_id')->ofMany([
+            'discount_expire_at' => 'max',
+            'id' => 'max',
+        ], function ($query) {
+            $query->where('discount_expire_at', '>', now());
+        });
+    }
+
     public function combinations()
     {
         return $this->hasMany(ProductVariantCombination::class);
     }
 
-
-    function insertOrUpdate(array $rows){
-        $table = \DB::getTablePrefix().with(new self)->getTable();
-
-
-        $first = reset($rows);
-
-        $columns = implode( ',',
-            array_map( function( $value ) { return "$value"; } , array_keys($first) )
+    /**
+     * Calculate discount percent.
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    protected function calculateDiscount(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $this->incredible ?  $this->incredible->discount : $this->discount,
         );
-
-        $values = implode( ',', array_map( function( $row ) {
-                return '('.implode( ',',
-                        array_map( function( $value ) { return '"'.str_replace('"', '""', $value).'"'; } , $row )
-                    ).')';
-            } , $rows )
-        );
-
-        $updates = implode( ',',
-            array_map( function( $value ) { return "$value = VALUES($value)"; } , array_keys($first) )
-        );
-
-        $sql = "INSERT INTO {$table}({$columns}) VALUES {$values} ON DUPLICATE KEY UPDATE {$updates}";
-
-        return \DB::statement( $sql );
     }
 
+    /**
+     * Calculate discount percent.
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    protected function DiscountExpireDate(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $this->incredible ?  $this->incredible->discount_expire_at : $this->discount_expire_at,
+        );
+    }
+
+    /**
+     * Calculate discount price .
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    protected function calculateDiscountPrice(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $this->incredible ?  $this->price - $this->price * $this->incredible->discount / 100 : $this->price - $this->price * $this->discount / 100,
+        );
+    }
+
+    /**
+     * Calculate discount diff seconds .
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    protected function calculateDiscountDiffSeconds(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $this->incredible ?  $this->incredible->discount_expire_at->diffInSeconds(now()) : $this->discount_expire_at->diffInSeconds(now()),
+        );
+    }
+
+    /**
+     * Calculate discount diff seconds .
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    protected function isPromotion(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $this->incredible || $this->discount_expire_at > now()
+        );
+    }
 }

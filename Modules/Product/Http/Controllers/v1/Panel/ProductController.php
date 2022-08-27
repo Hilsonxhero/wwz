@@ -41,12 +41,23 @@ class ProductController extends Controller
      * Display a listing of the resource.
      * @return ProductResourceCollection
      */
+    public function select(Request $request)
+    {
+        $products = $this->productRepo->select($request->q);
+        // return new ProductResourceCollection($products);
+        ApiService::_success($products);
+    }
+
+    /**
+     * Display a listing of the resource.
+     * @return ProductResourceCollection
+     */
     public function combinations($id)
     {
-//        ApiService::_response("www",403);
+        //        ApiService::_response("www",403);
         $combinations = $this->productRepo->combinations($id);
         return  ProductVariantCombinationResource::collection($combinations);
-//        ApiService::_success($combinations);
+        //        ApiService::_success($combinations);
     }
 
     /**

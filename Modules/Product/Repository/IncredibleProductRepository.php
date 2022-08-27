@@ -3,9 +3,10 @@
 namespace Modules\Product\Repository;
 
 use App\Services\ApiService;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\DB;
 use Modules\Product\Entities\Feature;
 use Modules\Product\Entities\IncredibleProduct;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class IncredibleProductRepository implements IncredibleProductRepositoryInterface
 {
@@ -17,21 +18,37 @@ class IncredibleProductRepository implements IncredibleProductRepositoryInterfac
     }
 
 
+    public function take()
+    {
+        return IncredibleProduct::with('variant')
+            ->orderBy('created_at', 'desc')
+            ->groupBy('product_id')
+            ->take(15)
+            ->get();
+    }
+
+
+
     public function create($data)
     {
-        $feature =  IncredibleProduct::query()->create($data);
-        return $feature;
+        $product =  IncredibleProduct::query()->create([
+            'product_id' => $data->product,
+            'variant_id' => $data->variant,
+            'discount' => $data->discount,
+            'discount_expire_at' => createDatetimeFromFormat($data->expire_at),
+        ]);
+        return $product;
     }
     public function update($id, $data)
     {
-        $feature = $this->find($id);
-        $feature->update($data);
-        return $feature;
+        $product = $this->find($id);
+        $product->update($data);
+        return $product;
     }
     public function show($id)
     {
-        $feature = $this->find($id);
-        return $feature;
+        $product = $this->find($id);
+        return $product;
     }
 
     public function select($id)
@@ -42,23 +59,23 @@ class IncredibleProductRepository implements IncredibleProductRepositoryInterfac
 
     public function values($id)
     {
-        $feature = $this->find($id);
-        return $feature->values()->orderByDesc('created_at')->with('feature')->paginate();
+        $product = $this->find($id);
+        return $product->values()->orderByDesc('created_at')->with('feature')->paginate();
     }
 
 
     public function find($id)
     {
         try {
-            $feature = IncredibleProduct::query()->where('id', $id)->firstOrFail();
-            return $feature;
+            $product = IncredibleProduct::query()->where('id', $id)->firstOrFail();
+            return $product;
         } catch (ModelNotFoundException $e) {
             return  ApiService::_response(trans('response.responses.404'), 404);
         }
     }
     public function delete($id)
     {
-        $feature = $this->find($id);
-        return $feature->delete();
+        $product = $this->find($id);
+        return $product->delete();
     }
 }

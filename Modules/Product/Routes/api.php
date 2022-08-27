@@ -9,6 +9,8 @@ use Modules\Product\Http\Controllers\v1\Panel\ProductVariantController;
 use Modules\Product\Http\Controllers\v1\Panel\VariantController;
 use Modules\Product\Http\Controllers\v1\Panel\VariantGroupController;
 
+
+
 Route::prefix('v1/panel')->group(function () {
     //products
     Route::apiResource("/products", ProductController::class);
@@ -18,6 +20,8 @@ Route::prefix('v1/panel')->group(function () {
     Route::apiResource("/products/{id}/features", ProductFeatureController::class);
     // product variants
     Route::apiResource("/products/{id}/variants", ProductVariantController::class);
+    // product select
+    Route::get("/product/select", [ProductController::class, 'select']);
     // product combinations
     Route::get("/product/{id}/combinations", [ProductController::class, 'combinations']);
     //variants

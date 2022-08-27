@@ -20,7 +20,33 @@ class ProductRepository implements ProductRepositoryInterface
         }
 
         return $query->paginate();
+    }
+    public function incredibles()
+    {
+        $query = Product::query()->orderBy('created_at', 'desc');
 
+        return $query->paginate();
+    }
+
+
+    public function select($q)
+    {
+        $query =  Product::select('id', 'title_fa')->orderBy('created_at', 'desc');
+
+        $query->when(request()->has('q'), function ($query) use ($q) {
+            $query->where('title_fa', 'LIKE', "%" . $q . "%");
+        });
+
+        $query->when(request()->input('doesnt_have_incredble'), function ($query) use ($q) {
+            $query->whereDoesntHave('incredibles');
+        });
+
+        $query->when(request()->input('doesnt_have_discount'), function ($query) use ($q) {
+            $query->whereHas('variants', function ($query) {
+                $query->where('discount', 0)->whereDate('discount_expire_at', '<', now());
+            });
+        });
+        return $query->paginate();
     }
 
     public function variants($id)
@@ -78,7 +104,7 @@ class ProductRepository implements ProductRepositoryInterface
                 'weight' => $variant->weight,
                 'order_limit' => $variant->order_limit,
                 'default_on' => 1,
-                'discount_expire_at' => \Morilog\Jalali\CalendarUtils::createDatetimeFromFormat('Y/m/d H:i', $variant->discount_expire_at)
+                'discount_expire_at' => createDatetimeFromFormat($variant->discount_expire_at)
             ]);
 
             foreach ($variant->combinations as $combination) {
@@ -91,32 +117,41 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function updateVariants($product, $variants)
     {
-        $variants = collect(json_decode($variants));
+        $variants = collect(json_decode($variants), true);
+
+
+
 
         DB::transaction(function () use ($variants, $product) {
             foreach ($variants as $key => $variant) {
+                // ApiService::_response($variants, 403);
                 $producy_variant = $product->variants()->updateOrCreate(
                     ['product_id' => $variant->product, 'id' => $variant->id],
                     [
                         'warranty_id' => $variant->warranty,
                         'shipment_id' => $variant->shipment,
-                        'price' => $variant->price,
+                        'price' => $variant->rrp_price,
                         'discount' => $variant->discount,
-                        'discount_price' => $variant->price * $variant->discount / 100,
+                        'discount_price' => $variant->rrp_price * $variant->discount / 100,
                         'stock' => $variant->stock,
                         'weight' => $variant->weight,
                         'order_limit' => $variant->order_limit,
                         'default_on' => 1,
-                        'discount_expire_at' => \Morilog\Jalali\CalendarUtils::createDatetimeFromFormat('Y/m/d H:i', $variant->discount_expire_at)
+                        'discount_expire_at' => createDatetimeFromFormat($variant->discount_expire_at)
                     ],
                 );
 
+
+
+
+
                 foreach ($variant->combinations as $combination) {
                     $producy_variant->combinations()->updateOrCreate(
-                        ['product_variant_id' => $producy_variant->id, 'variant_id' => $combination->id]
-                        , [
-                        'variant_id' => $combination->id,
-                    ]);
+                        ['product_variant_id' => $producy_variant->id, 'variant_id' => $combination->id],
+                        [
+                            'variant_id' => $combination->id,
+                        ]
+                    );
                 }
             }
         });

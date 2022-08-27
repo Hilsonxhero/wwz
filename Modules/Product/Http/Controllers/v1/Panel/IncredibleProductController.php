@@ -2,11 +2,13 @@
 
 namespace Modules\Product\Http\Controllers\v1\Panel;
 
+use App\Services\ApiService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
-use Modules\Product\Repository\IncredibleProductRepositoryInterface;
+use Modules\Product\Http\Requests\IncredibleProductRequest;
 use Modules\Product\Transformers\IncredibleProductResource;
+use Modules\Product\Repository\IncredibleProductRepositoryInterface;
 
 class IncredibleProductController extends Controller
 {
@@ -32,9 +34,10 @@ class IncredibleProductController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function store(Request $request)
+    public function store(IncredibleProductRequest $request)
     {
-        //
+        $this->productRepo->create($request);
+        ApiService::_success(trans('response.responses.200'));
     }
 
     /**
