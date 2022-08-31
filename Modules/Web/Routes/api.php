@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Modules\Web\Http\Controllers\App\LandingController;
+use Modules\Web\Http\Controllers\v1\Panel\InitController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,5 +16,6 @@ use Modules\Web\Http\Controllers\App\LandingController;
 */
 
 Route::prefix('v1')->group(function () {
+    Route::get('/init', InitController::class);
     Route::get('/landing', [LandingController::class, 'index']);
 });

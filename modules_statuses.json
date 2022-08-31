@@ -12,5 +12,7 @@
     "State": true,
     "Payment": true,
     "Banner": true,
-    "Web": true
+    "Web": true,
+    "Setting": true,
+    "Page": true
 }

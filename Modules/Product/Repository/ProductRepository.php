@@ -97,9 +97,9 @@ class ProductRepository implements ProductRepositoryInterface
             $producy_variant = $product->variants()->create([
                 'warranty_id' => $variant->warranty,
                 'shipment_id' => $variant->shipment,
-                'price' => $variant->price,
+                'price' => $variant->rrp_price,
                 'discount' => $variant->discount,
-                'discount_price' => $variant->price * $variant->discount / 100,
+                'discount_price' => $variant->rrp_price * $variant->discount / 100,
                 'stock' => $variant->stock,
                 'weight' => $variant->weight,
                 'order_limit' => $variant->order_limit,
