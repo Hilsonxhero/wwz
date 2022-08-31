@@ -16,6 +16,11 @@ class SettingBannerRepository implements SettingBannerRepositoryInterface
         return Banner::query()->where('bannerable_type', Page::class)->orderByDesc('created_at')->paginate();
     }
 
+    public function allAd()
+    {
+        return Banner::query()->where('bannerable_type', Page::class)->orderByDesc('created_at')->paginate();
+    }
+
     public function allActive()
     {
         return Banner::query()->where('bannerable_type', Page::class)->with('status', Banner::ENABLE_STATUS)
@@ -32,8 +37,8 @@ class SettingBannerRepository implements SettingBannerRepositoryInterface
             'type' => $data->type,
             'status' => $data->status,
         ]);
-        base64($data->banner) ? $banner->addMediaFromBase64($data->banner)->toMediaCollection('main')
-            : $banner->addMedia($data->banner)->toMediaCollection('main');
+        base64($data->image) ? $banner->addMediaFromBase64($data->image)->toMediaCollection('main')
+            : $banner->addMedia($data->image)->toMediaCollection('main');
         return $banner;
     }
     public function update($id, $data)
@@ -48,10 +53,10 @@ class SettingBannerRepository implements SettingBannerRepositoryInterface
             'bannerable_type' => Page::class,
         ]);
 
-        if ($data->filled('banner')) {
+        if ($data->filled('image')) {
             $banner->clearMediaCollectionExcept();
-            base64($data->banner) ? $banner->addMediaFromBase64($data->banner)->toMediaCollection('main')
-                : $banner->addMedia($data->banner)->toMediaCollection('main');
+            base64($data->image) ? $banner->addMediaFromBase64($data->image)->toMediaCollection('main')
+                : $banner->addMedia($data->image)->toMediaCollection('main');
         }
         return $banner;
     }

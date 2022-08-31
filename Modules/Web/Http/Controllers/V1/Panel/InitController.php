@@ -4,17 +4,23 @@ namespace Modules\Web\Http\Controllers\v1\Panel;
 
 use App\Services\ApiService;
 use Illuminate\Http\Request;
+use Modules\Page\Entities\Page;
 use Illuminate\Routing\Controller;
 use Illuminate\Contracts\Support\Renderable;
+use Modules\Web\Transformers\InitConfigResource;
 use Modules\Setting\Transformers\SettingResource;
+use Modules\Setting\Transformers\SettingBannerResource;
 use Modules\Setting\Repository\SettingRepositoryInterface;
+use Modules\Setting\Repository\SettingBannerRepositoryInterface;
 
 class InitController extends Controller
 {
     private $settingrRepo;
-    public function __construct(SettingRepositoryInterface $settingrRepo)
+    private $bannerRepo;
+    public function __construct(SettingRepositoryInterface $settingrRepo, SettingBannerRepositoryInterface $bannerRepo)
     {
         $this->settingrRepo = $settingrRepo;
+        $this->bannerRepo = $bannerRepo;
     }
 
     /**
@@ -25,6 +31,17 @@ class InitController extends Controller
     public function __invoke()
     {
         $settings = $this->settingrRepo->all();
-        return SettingResource::collection($settings);
+        $ad_pages = Page::query()->where('title_en', 'all')->first();
+        $top_header_banner = $ad_pages->banners()->where('type', 'header')->where('status', 'enable')->first();
+
+        $data = [
+            'config' => SettingResource::collection($settings),
+            'banners' => [],
+        ];
+
+        if ($top_header_banner)  $data['banners']['top_header_banner'] = new  SettingBannerResource($top_header_banner);
+
+        ApiService::_success($data);
+        // return SettingResource::collection($settings);
     }
 }

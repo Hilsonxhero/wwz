@@ -17,7 +17,7 @@ class SettingBannerRequest extends FormRequest
         if (request()->getMethod() == "PUT") {
             return [
                 'title' => ['required'],
-                'banner' => ['nullable'],
+                'image' => ['nullable'],
                 'url' => ['required', 'url'],
                 'type' => ['required'],
                 'status' => ['required'],
@@ -26,7 +26,7 @@ class SettingBannerRequest extends FormRequest
 
         return [
             'title' => ['required'],
-            'banner' => ['required'],
+            'image' => ['required'],
             'url' => ['required', 'url'],
             'type' => ['required'],
             'status' => ['required'],

@@ -38,7 +38,6 @@ class LandingController extends Controller
             'header_banners' =>  SettingBannerResource::collection($header_banners),
             'top_banners' =>  SettingBannerResource::collection($top_banners),
             'middle_banners' =>  SettingBannerResource::collection($middle_banners),
-
         ];
 
         ApiService::_success($data);
