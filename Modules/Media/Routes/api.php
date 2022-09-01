@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Modules\Media\Http\Controllers\v1\Panel\EditorUploadeController;
 use Modules\Media\Http\Controllers\v1\Panel\MediaController;
 
 /*
@@ -16,4 +17,5 @@ use Modules\Media\Http\Controllers\v1\Panel\MediaController;
 
 Route::prefix('v1/panel')->group(function () {
     Route::delete("media/delete/{id}", [MediaController::class, 'destroy']);
+    Route::post('upload/editor', EditorUploadeController::class);
 });

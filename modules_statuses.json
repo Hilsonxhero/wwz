@@ -14,5 +14,6 @@
     "Banner": true,
     "Web": true,
     "Setting": true,
-    "Page": true
+    "Page": true,
+    "Article": true
 }
