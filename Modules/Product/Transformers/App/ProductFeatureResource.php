@@ -1,12 +1,11 @@
 <?php
 
-namespace Modules\Product\Transformers;
+namespace Modules\Product\Transformers\App;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProductFeatureResource extends JsonResource
 {
-
     /**
      * Transform the resource into an array.
      *
@@ -15,12 +14,10 @@ class ProductFeatureResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
-            'id' => $this->id,
-            'feature' => $this->feature,
-            'quantity' => $this->value,
-            'value' => $this->feature_value_id,
-            'has_feature_value' => !!$this->quantity
-        ];
+        return parent::toArray($request);
+
+        // return [
+        //     'feature' => $this->feature
+        // ];
     }
 }

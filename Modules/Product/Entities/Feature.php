@@ -15,7 +15,6 @@ class Feature extends Model
         'title', 'category_id', 'parent_id', 'position', 'status',
     ];
 
-
     const DISABLE_STATUS = 'disable';
     const ENABLE_STATUS = 'enable';
     const PENDING_STATUS = 'pending';
@@ -24,15 +23,21 @@ class Feature extends Model
     static $statuses = [self::DISABLE_STATUS, self::ENABLE_STATUS, self::PENDING_STATUS, self::REJECTED_STATUS];
 
 
-    protected static function newFactory()
-    {
-        return \Modules\Product\Database\factories\FeatureFactory::new();
-    }
+    // protected static function newFactory()
+    // {
+    //     return \Modules\Product\Database\factories\FeatureFactory::new();
+    // }
+
 
 
     public function values()
     {
         return $this->hasMany(FeatureValue::class);
+    }
+
+    public function childs()
+    {
+        return $this->hasMany(Feature::class, 'parent_id');
     }
 
     public function category()

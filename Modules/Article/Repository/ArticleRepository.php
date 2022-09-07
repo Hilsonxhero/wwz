@@ -16,6 +16,14 @@ class ArticleRepository implements ArticleRepositoryInterface
             ->paginate();
     }
 
+    public function take()
+    {
+        return Article::with('category')
+            ->orderBy('created_at', 'desc')
+            ->take(4)
+            ->get();
+    }
+
     public function allActive()
     {
         return Article::orderBy('created_at', 'desc')

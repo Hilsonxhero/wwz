@@ -17,9 +17,10 @@ class FeatureResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'category' => $this->category,
             'parent' => $this->parent,
+            'category' => $this->category,
             'status' => $this->status,
+            'position' => $this->position,
         ];
     }
 }

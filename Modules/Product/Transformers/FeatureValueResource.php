@@ -4,7 +4,7 @@ namespace Modules\Product\Transformers;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ProductVariantCombinationResource extends JsonResource
+class FeatureValueResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,12 +16,9 @@ class ProductVariantCombinationResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'variant_id' => $this->variant_id,
-            'label' => $this->variant->name,
-            'value' => $this->variant->value,
-            'type' => $this->variant->group->type,
-            'group' => $this->variant->group,
-            // 'variant' => $this->variant,
+            'title' => $this->title,
+            'feature' => $this->feature,
+            'status' => $this->status,
         ];
     }
 }

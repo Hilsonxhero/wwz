@@ -34,12 +34,13 @@ class ProductVariantResource extends JsonResource
             'rrp_price' => round($this->price),
             'stock' => $this->stock,
             'order_limit' => $this->order_limit,
+            'default_on' => $this->default_on,
             'discount' => $this->calculate_discount,
             'selling_price' => round($this->calculate_discount_price),
             'discount_expire_at' => formatGregorian($this->discount_expire_date),
             'weight' => $this->weight,
             'shipment_price' => 0,
-            'combinations' => new ProductVariantCombinationResourceCollection($this->combinations),
+            'combinations' =>  ProductVariantCombinationResource::collection($this->combinations),
         ];
     }
 }

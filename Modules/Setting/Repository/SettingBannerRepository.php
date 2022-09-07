@@ -53,10 +53,10 @@ class SettingBannerRepository implements SettingBannerRepositoryInterface
             'bannerable_type' => Page::class,
         ]);
 
-        if ($data->filled('image')) {
-            $banner->clearMediaCollectionExcept();
-            base64($data->image) ? $banner->addMediaFromBase64($data->image)->toMediaCollection('main')
-                : $banner->addMedia($data->image)->toMediaCollection('main');
+        if ($data->banner) {
+            $banner->clearMediaCollectionExcept('main');
+            base64($data->banner) ? $banner->addMediaFromBase64($data->banner)->toMediaCollection('main')
+                : $banner->addMedia($data->banner)->toMediaCollection('main');
         }
         return $banner;
     }

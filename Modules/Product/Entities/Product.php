@@ -2,14 +2,15 @@
 
 namespace Modules\Product\Entities;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Spatie\MediaLibrary\HasMedia;
-use Cviebrock\EloquentSluggable\Sluggable;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Brand\Entities\Brand;
+use Spatie\MediaLibrary\HasMedia;
+use Illuminate\Database\Eloquent\Model;
 use Modules\Category\Entities\Category;
+use Cviebrock\EloquentSluggable\Sluggable;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Product extends Model implements HasMedia
@@ -19,11 +20,6 @@ class Product extends Model implements HasMedia
     protected $fillable = [
         'title_fa', 'title_en', 'slug', 'review', 'category_id', 'brand_id', 'status',
     ];
-
-
-
-
-
 
     const DISABLE_STATUS = 'disable';
     const ENABLE_STATUS = 'enable';
@@ -43,6 +39,12 @@ class Product extends Model implements HasMedia
     {
         return $this->belongsToMany(Feature::class, 'product_features');
     }
+
+    public function productFeatures()
+    {
+        return $this->hasMany(ProductFeature::class);
+    }
+
     public function incredibles()
     {
         return $this->hasMany(IncredibleProduct::class);
@@ -65,6 +67,9 @@ class Product extends Model implements HasMedia
         return $this->hasManyThrough(ProductVariantCombination::class, ProductVariant::class);
     }
 
+
+
+
     public function category()
     {
         return $this->belongsTo(Category::class);
@@ -86,6 +91,18 @@ class Product extends Model implements HasMedia
         $this->addMediaConversion('thumb')
             ->width(300)
             ->height(300);
+    }
+
+    /**
+     * Calculate discount percent.
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    protected function defaultVariant(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $this->variants()->where('default_on', 1)->first(),
+        );
     }
 
     /**

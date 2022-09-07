@@ -9,6 +9,10 @@ use Modules\Product\Http\Controllers\v1\Panel\ProductVariantController;
 use Modules\Product\Http\Controllers\v1\Panel\VariantController;
 use Modules\Product\Http\Controllers\v1\Panel\VariantGroupController;
 
+Route::prefix('v1/application')->group(function () {
+    // product page
+    Route::get("/product/{id}", [Modules\Product\Http\Controllers\v1\App\ProductController::class, 'show']);
+});
 
 
 Route::prefix('v1/panel')->group(function () {
@@ -32,6 +36,6 @@ Route::prefix('v1/panel')->group(function () {
     //features
     Route::apiResource("/features", FeatureController::class);
     Route::get("/features/{id}/values", [FeatureController::class, 'values']);
-    Route::get("/features/select/{id?}", [FeatureController::class, 'select']);
+    Route::get("/feature/select/{id?}", [FeatureController::class, 'select']);
     Route::apiResource("/feature/values", FeatureValueController::class);
 });

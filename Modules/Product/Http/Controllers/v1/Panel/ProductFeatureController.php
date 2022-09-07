@@ -9,7 +9,7 @@ use Illuminate\Routing\Controller;
 use Modules\Product\Repository\ProductRepositoryInterface;
 use Modules\Product\Repository\ProductFeatureRepositoryInterface;
 use Modules\Product\Transformers\ProductFeatureResource;
-use Modules\Product\Transformers\ProductFeatureResourceCollection;
+
 
 class ProductFeatureController extends Controller
 {
@@ -33,8 +33,8 @@ class ProductFeatureController extends Controller
     public function index($id)
     {
         // $features = $this->featureRepo->show($id);
-        $features = $this->productRepo->find($id)->featureValues()->with(['feature', 'quantity'])->paginate();
-        return new ProductFeatureResourceCollection($features);
+        $features = $this->productRepo->find($id)->productFeatures()->paginate();
+        return  ProductFeatureResource::collection($features);
         ApiService::_success($features);
     }
 

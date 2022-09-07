@@ -9,7 +9,6 @@ use Illuminate\Routing\Controller;
 use Modules\Product\Repository\ProductRepositoryInterface;
 use Modules\Product\Repository\ProductVariantRepositoryInterface;
 use Modules\Product\Transformers\ProductVariantResource;
-use Modules\Product\Transformers\ProductVariantResourceCollection;
 
 class ProductVariantController extends Controller
 {

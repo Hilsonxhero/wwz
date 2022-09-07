@@ -101,8 +101,15 @@ class ProductVariant extends Model
      */
     protected function calculateDiscountDiffSeconds(): Attribute
     {
+        // return Attribute::make(
+        //     get: fn ($value) => $this->incredible ?  $this->incredible->discount_expire_at->diffInSeconds(now()) :  $this->discount_expire_at->diffInSeconds(now()),
+        // );
+
         return Attribute::make(
-            get: fn ($value) => $this->incredible ?  $this->incredible->discount_expire_at->diffInSeconds(now()) : $this->discount_expire_at->diffInSeconds(now()),
+            get: function ($value) {
+                if ($this->incredible) $this->incredible->discount_expire_at->diffInSeconds(now());
+                $this->discount_expire_at ? $this->discount_expire_at->diffInSeconds(now()) : null;
+            }
         );
     }
 

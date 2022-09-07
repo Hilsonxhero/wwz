@@ -4,18 +4,7 @@ use Illuminate\Http\Request;
 use Modules\Web\Http\Controllers\App\LandingController;
 use Modules\Web\Http\Controllers\v1\Panel\InitController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-
-Route::prefix('v1')->group(function () {
-    Route::get('/init', InitController::class);
-    Route::get('/landing', [LandingController::class, 'index']);
+Route::prefix('v1/application')->group(function () {
+    Route::get('init', InitController::class);
+    Route::get('landing', [LandingController::class, 'index']);
 });

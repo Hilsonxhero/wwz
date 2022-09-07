@@ -6,12 +6,9 @@ use App\Services\ApiService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
-use Illuminate\Validation\Rule;
-use Modules\Product\Entities\Product;
 use Modules\Product\Http\Requests\ProductRequest;
 use Modules\Product\Repository\ProductRepositoryInterface;
 use Modules\Product\Transformers\ProductResource;
-use Modules\Product\Transformers\ProductResourceCollection;
 use Modules\Product\Transformers\ProductVariantCombinationResource;
 
 class ProductController extends Controller
@@ -27,31 +24,21 @@ class ProductController extends Controller
         $this->productRepo = $productRepo;
     }
 
-    /**
-     * Display a listing of the resource.
-     * @return ProductResourceCollection
-     */
+
     public function index(Request $request)
     {
         $products = $this->productRepo->all($request->q);
-        return new ProductResourceCollection($products);
+        return  ProductResource::collection($products);
     }
 
-    /**
-     * Display a listing of the resource.
-     * @return ProductResourceCollection
-     */
+
     public function select(Request $request)
     {
         $products = $this->productRepo->select($request->q);
-        // return new ProductResourceCollection($products);
         ApiService::_success($products);
     }
 
-    /**
-     * Display a listing of the resource.
-     * @return ProductResourceCollection
-     */
+
     public function combinations($id)
     {
         //        ApiService::_response("www",403);

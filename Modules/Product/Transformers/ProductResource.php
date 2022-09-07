@@ -20,9 +20,23 @@ class ProductResource extends JsonResource
             'title_fa' => $this->title_fa,
             'title_en' => $this->title_en,
             'slug' => $this->slug,
-            'category' => $this->category->id,
+            'category' => $this->category,
             'brand' => $this->brand->id,
-            'variants' => new ProductVariantResourceCollection($this->variants),
+            'combinations' =>  collect($this->combinations)->unique('variant_id')->groupBy('variant.group')->transform(function ($item, $key) {
+                return ['group' => json_decode($key), 'values' => $item->transform(function ($combination, $key) {
+                    $combination->variant->combination_id = $combination->id;
+                    return $combination->variant;
+                })];
+            })->values(),
+            'features' => $this->productFeatures ? collect($this->productFeatures)->groupBy('feature.parent.title')->transform(function ($item, $key) {
+                return ['feature' => $key, 'values' => $item->mapToGroups(function ($item) {
+                    return [$item['feature']['title'] => $item['value']];
+                })->transform(function ($xx, $uu) {
+                    return ['title' => $uu, 'values' => $xx];
+                })];
+            })->all() : null,
+            'default_variant' => new ProductVariantResource($this->default_variant),
+            'variants' =>  ProductVariantResource::collection($this->variants),
             'review' => $this->review,
             'short_review' => truncate($this->review, 25),
             'status' => $this->status,

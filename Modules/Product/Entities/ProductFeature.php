@@ -4,6 +4,7 @@ namespace Modules\Product\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 
 class ProductFeature extends Model
@@ -25,6 +26,7 @@ class ProductFeature extends Model
     {
         return $this->belongsTo(Feature::class);
     }
+
     public function product()
     {
         return $this->belongsTo(Product::class);
@@ -33,5 +35,17 @@ class ProductFeature extends Model
     public function quantity()
     {
         return $this->belongsTo(FeatureValue::class, 'feature_value_id');
+    }
+
+    /**
+     * Calculate discount percent.
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    protected function value(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $this->quantity ?  $this->quantity->title : $this->attributes['value'],
+        );
     }
 }

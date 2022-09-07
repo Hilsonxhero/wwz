@@ -5,13 +5,14 @@ namespace Modules\Product\Http\Controllers\v1\Panel;
 use App\Services\ApiService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Routing\Controller;
 use Illuminate\Validation\Rule;
+use Illuminate\Routing\Controller;
 use Modules\Product\Entities\Feature;
-use Modules\Product\Repository\FeatureRepositoryInterface;
 use Modules\Product\Transformers\FeatureResource;
-use Modules\Product\Transformers\FeatureResourceCollection;
-use Modules\Product\Transformers\FeatureValueResourceCollection;
+use Modules\Product\Transformers\FeatureValueResource;
+use Modules\Product\Repository\FeatureRepositoryInterface;
+
+
 
 class FeatureController extends Controller
 {
@@ -33,7 +34,7 @@ class FeatureController extends Controller
     public function index()
     {
         $features = $this->featureRepo->all();
-        return new FeatureResourceCollection($features);
+        return  FeatureResource::collection($features);
         // ApiService::_success($features);
     }
 
@@ -69,7 +70,6 @@ class FeatureController extends Controller
     public function show($id)
     {
         $feature =  $this->featureRepo->find($id);
-
         return new FeatureResource($feature);
         // ApiService::_success($feature);
     }
@@ -80,11 +80,12 @@ class FeatureController extends Controller
      * @param int $id
      * @return Response
      */
-    public function select($id = null)
+    public function select(Request $request, $id = null)
     {
-        $feature =  $this->featureRepo->select($id);
-        // return new FeatureResource($feature);
-        ApiService::_success($feature);
+        $features =  $this->featureRepo->select($id, $request->q);
+        // return $features;
+        return  FeatureResource::collection($features);
+        // ApiService::_success($feature);
     }
 
     /**
@@ -95,7 +96,7 @@ class FeatureController extends Controller
     public function values($id)
     {
         $values =  $this->featureRepo->values($id);
-        return new FeatureValueResourceCollection($values);
+        return  FeatureValueResource::collection($values);
         // ApiService::_success($values);
     }
 

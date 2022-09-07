@@ -20,9 +20,6 @@ class IncredibleProductResource extends JsonResource
             'title_fa' => $this->product->title_fa,
             'title_en' => $this->product->title_en,
             'slug' => $this->product->slug,
-            // 'discount' => $this->discount,
-            // 'discount_expire_at' =>  \Morilog\Jalali\CalendarUtils::strftime('Y/m/d H:i', strtotime($this->discount_expire_at)),
-            // 'time' => $this->discount_expire_at->diffInSeconds(now()),
             'default_variant' => new ProductVariantResource($this->variant),
             'media' => [
                 'main' =>  $this->product->getFirstMediaUrl('main', 'thumb')

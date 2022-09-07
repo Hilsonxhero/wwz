@@ -5,13 +5,12 @@ namespace Modules\Product\Http\Controllers\v1\Panel;
 use App\Services\ApiService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Routing\Controller;
 use Illuminate\Validation\Rule;
+use Illuminate\Routing\Controller;
 use Modules\Product\Entities\VariantGroup;
-use Modules\Product\Repository\VariantGroupRepositoryInterface;
+use Modules\Product\Transformers\VariantResource;
 use Modules\Product\Transformers\VariantGroupResource;
-use Modules\Product\Transformers\VariantGroupResourceCollection;
-use Modules\Product\Transformers\VariantResourceCollection;
+use Modules\Product\Repository\VariantGroupRepositoryInterface;
 
 class VariantGroupController extends Controller
 {
@@ -27,7 +26,7 @@ class VariantGroupController extends Controller
     public function index()
     {
         $groups = $this->groupRepo->all();
-        return new VariantGroupResourceCollection($groups);
+        return  VariantGroupResource::collection($groups);
         // ApiService::_success($groups);
     }
 
@@ -38,7 +37,7 @@ class VariantGroupController extends Controller
     public function list()
     {
         $groups = $this->groupRepo->active();
-        return new VariantGroupResourceCollection($groups);
+        return  VariantGroupResource::collection($groups);
         // ApiService::_success($groups);
     }
 
@@ -84,7 +83,7 @@ class VariantGroupController extends Controller
     public function values($id)
     {
         $values =  $this->groupRepo->values($id);
-        return new VariantResourceCollection($values);
+        return  VariantResource::collection($values);
         // ApiService::_success($values);
     }
 

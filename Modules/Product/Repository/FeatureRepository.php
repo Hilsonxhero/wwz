@@ -42,10 +42,25 @@ class FeatureRepository implements FeatureRepositoryInterface
         return $feature;
     }
 
-    public function select($id)
+    public function select($id, $q = '')
     {
-        return Feature::select('id', 'title')->whereNot('id', $id)->orderBy('created_at', 'desc')
-            ->get();
+        // return Feature::select('id', 'title')->whereNot('id', $id)->orderBy('created_at', 'desc')
+        //     ->get();
+
+
+
+        $query =  Feature::select('id', 'title', 'parent_id')->orderBy('created_at', 'desc');
+
+
+        $query->when(request()->has('q'), function ($query) use ($q) {
+            $query->where('title', 'LIKE', "%" . $q . "%");
+        });
+
+        $query->when(request()->input('doesnt_have_parent'), function ($query) use ($q) {
+            $query->whereNotNull('parent_id');
+        });
+
+        return $query->paginate();
     }
 
     public function values($id)

@@ -33,6 +33,7 @@ class ProductRepository implements ProductRepositoryInterface
     {
         $query =  Product::select('id', 'title_fa')->orderBy('created_at', 'desc');
 
+
         $query->when(request()->has('q'), function ($query) use ($q) {
             $query->where('title_fa', 'LIKE', "%" . $q . "%");
         });
@@ -42,8 +43,9 @@ class ProductRepository implements ProductRepositoryInterface
         });
 
         $query->when(request()->input('doesnt_have_discount'), function ($query) use ($q) {
+
             $query->whereHas('variants', function ($query) {
-                $query->where('discount', 0)->whereDate('discount_expire_at', '<', now());
+                $query->where('discount', 0)->whereNull('discount_expire_at')->orWhereDate('discount_expire_at', '<', now());
             });
         });
         return $query->paginate();
@@ -103,8 +105,8 @@ class ProductRepository implements ProductRepositoryInterface
                 'stock' => $variant->stock,
                 'weight' => $variant->weight,
                 'order_limit' => $variant->order_limit,
-                'default_on' => 1,
-                'discount_expire_at' => createDatetimeFromFormat($variant->discount_expire_at)
+                'default_on' => $variant->default_on,
+                'discount_expire_at' => $variant->discount_expire_at ? createDatetimeFromFormat($variant->discount_expire_at) : null
             ]);
 
             foreach ($variant->combinations as $combination) {
@@ -118,9 +120,6 @@ class ProductRepository implements ProductRepositoryInterface
     public function updateVariants($product, $variants)
     {
         $variants = collect(json_decode($variants), true);
-
-
-
 
         DB::transaction(function () use ($variants, $product) {
             foreach ($variants as $key => $variant) {
@@ -136,20 +135,17 @@ class ProductRepository implements ProductRepositoryInterface
                         'stock' => $variant->stock,
                         'weight' => $variant->weight,
                         'order_limit' => $variant->order_limit,
-                        'default_on' => 1,
-                        'discount_expire_at' => createDatetimeFromFormat($variant->discount_expire_at)
+                        'default_on' => $variant->default_on,
+                        'discount_expire_at' => $variant->discount_expire_at ? createDatetimeFromFormat($variant->discount_expire_at) : null
                     ],
                 );
 
-
-
-
-
+                // ApiService::_response($variant->combinations, 403);
                 foreach ($variant->combinations as $combination) {
                     $producy_variant->combinations()->updateOrCreate(
-                        ['product_variant_id' => $producy_variant->id, 'variant_id' => $combination->id],
+                        ['product_variant_id' => $producy_variant->id, 'variant_id' => $combination->variant_id],
                         [
-                            'variant_id' => $combination->id,
+                            'variant_id' => $combination->variant_id,
                         ]
                     );
                 }
@@ -184,7 +180,7 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function show($id)
     {
-        $product = $this->find($id);
+        $product = $this->find($id)->load(['features.childs']);
         return $product;
     }
 
@@ -198,7 +194,20 @@ class ProductRepository implements ProductRepositoryInterface
     public function find($id)
     {
         try {
-            $product = Product::query()->where('id', $id)->firstOrFail();
+            $product = Product::query()->where('id', $id)->with(
+                [
+                    'productFeatures' => [
+                        'feature:id,title,parent_id' => [
+                            'parent:id,title'
+                        ]
+                    ],
+                    'combinations' => [
+                        'variant:id,name,value,variant_group_id' => [
+                            'group:id,name,type'
+                        ]
+                    ],
+                ]
+            )->firstOrFail();
             return $product;
         } catch (ModelNotFoundException $e) {
             return ApiService::_response(trans('response.responses.404'), 404);
