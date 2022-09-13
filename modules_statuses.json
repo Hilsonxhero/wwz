@@ -15,5 +15,6 @@
     "Web": true,
     "Setting": true,
     "Page": true,
-    "Article": true
+    "Article": true,
+    "Cart": true
 }

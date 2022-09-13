@@ -2,16 +2,16 @@
 
 namespace Modules\Web\Http\Controllers\App;
 
+use Cart;
 use App\Services\ApiService;
-use Illuminate\Http\Request;
 use Modules\Page\Entities\Page;
+
 use Illuminate\Routing\Controller;
-use Modules\Banner\Entities\Banner;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Contracts\Support\Renderable;
-use Modules\Article\Repository\ArticleRepositoryInterface;
+use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Cookie;
 use Modules\Article\Transformers\ArticleResource;
 use Modules\Setting\Transformers\SettingBannerResource;
+use Modules\Article\Repository\ArticleRepositoryInterface;
 use Modules\Product\Repository\ProductRepositoryInterface;
 use Modules\Product\Transformers\IncredibleProductResource;
 use Modules\Product\Repository\IncredibleProductRepositoryInterface;
@@ -35,6 +35,31 @@ class LandingController extends Controller
 
     public function index()
     {
+
+        // $redis = Redis::connection();
+        // try {
+        //     return   $redis->ping();
+        // } catch (Exception $e) {
+        //     return  $e->getMessage();
+        // }
+
+        // $storage = Redis::connection();
+        // $views = $storage->incr('article:1111:views');
+        // return $views;
+
+        Cookie::queue(
+            'private_key',
+            'www3434343434',
+            45000,
+            null,
+            null,
+            false,
+            false,
+            false,
+            'Strict'
+        );
+
+
         $incredible_products = $this->IncredibleProductRepo->take();
         $landing_page = Page::query()->where('title_en', 'landing')->first();
         $header_banners = $landing_page->banners()->where('type', 'hero')->get();

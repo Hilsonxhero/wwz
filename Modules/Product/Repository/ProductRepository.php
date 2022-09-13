@@ -123,7 +123,6 @@ class ProductRepository implements ProductRepositoryInterface
 
         DB::transaction(function () use ($variants, $product) {
             foreach ($variants as $key => $variant) {
-                // ApiService::_response($variants, 403);
                 $producy_variant = $product->variants()->updateOrCreate(
                     ['product_id' => $variant->product, 'id' => $variant->id],
                     [
@@ -139,8 +138,6 @@ class ProductRepository implements ProductRepositoryInterface
                         'discount_expire_at' => $variant->discount_expire_at ? createDatetimeFromFormat($variant->discount_expire_at) : null
                     ],
                 );
-
-                // ApiService::_response($variant->combinations, 403);
                 foreach ($variant->combinations as $combination) {
                     $producy_variant->combinations()->updateOrCreate(
                         ['product_variant_id' => $producy_variant->id, 'variant_id' => $combination->variant_id],

@@ -15,16 +15,16 @@ class LoginController extends Controller
 
     public function otp(Request $request)
     {
-//      ApiService::_success(config('services.passport.client_secret'));
+        //      ApiService::_success(config('services.passport.client_secret'));
         $phone = $request->input('username');
 
         $code = $request->input('code');
 
-//        $status = VerifyCodeService::check($phone, $code);
-//
-//        if (!$status) {
-//            ApiService::_throw("invalid credentials", 200);
-//        }
+        //        $status = VerifyCodeService::check($phone, $code);
+        //
+        //        if (!$status) {
+        //            ApiService::_throw("invalid credentials", 200);
+        //        }
 
         $user = User::where('phone', $phone)->first();
 
@@ -33,8 +33,6 @@ class LoginController extends Controller
                 'phone' => $phone,
             ]);
         }
-
-        $http = new \GuzzleHttp\Client;
 
         try {
             $response = Http::asForm()->post(config('services.passport.login_endpoint'), [
@@ -45,11 +43,7 @@ class LoginController extends Controller
                 'password' => "09224729521",
             ]);
 
-            // return $response->json();
-
             $data = json_decode($response->getBody());
-
-            return $data;
 
             return   response()->json([
                 // 'user' => auth()->user(),
@@ -59,7 +53,6 @@ class LoginController extends Controller
                 'token_type' => $data->token_type,
                 "success" => true
             ], 200);
-
         } catch (\GuzzleHttp\Exception\BadResponseException $e) {
             if ($e->getCode() === 400) {
                 ApiService::_response("Invalid Request. Please enter a username or a password.", $e->getCode());
@@ -68,10 +61,7 @@ class LoginController extends Controller
 
                 ApiService::_response("Your credentials are incorrect. Please try again", $e->getCode());
             }
-
             ApiService::_response("Something went wrong on the server.", $e->getCode());
         }
     }
-
-
 }

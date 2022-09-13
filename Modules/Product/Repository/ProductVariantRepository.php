@@ -44,7 +44,7 @@ class ProductVariantRepository implements ProductVariantRepositoryInterface
     public function find($id)
     {
         try {
-            $feature = ProductVariant::query()->where('id', $id)->firstOrFail();
+            $feature = ProductVariant::query()->where('id', $id)->with(['product'])->firstOrFail();
             return $feature;
         } catch (ModelNotFoundException $e) {
             return  ApiService::_response(trans('response.responses.404'), 404);
