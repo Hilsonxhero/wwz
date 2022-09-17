@@ -3,11 +3,14 @@
 namespace Modules\User\Http\Controllers\v1\Application;
 
 use App\Services\ApiService;
-use Illuminate\Contracts\Support\Renderable;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
 use Modules\User\Entities\User;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Contracts\Support\Renderable;
 use Modules\User\Services\VerifyCodeService;
+use Modules\User\Transformers\App\ShowUserResource;
 
 class AuthController extends Controller
 {
@@ -22,19 +25,41 @@ class AuthController extends Controller
 
         $user = User::query()->wherePhone($phone)->first();
 
-        $code = VerifyCodeService::has($phone);
+        $has_exists = VerifyCodeService::has($phone);
 
-        if (!$code) {
+        if (!$has_exists) {
             $code = VerifyCodeService::generate();
             VerifyCodeService::destroy($phone);
-            VerifyCodeService::store($phone, $code);
+            $ttl = VerifyCodeService::store($phone, $code);
         } else {
-            $code = $code->code;
+            $ttl = $has_exists;
+            $code = $has_exists->code;
         }
 
-//        Notification::send(null, new VerifyPhoneNotification($phone, $code));
-
-        ApiService::_success(['phone' => $phone, 'has_account' =>  !!$user, 'login_method' => 'otp']);
+        // return now()->toDateTimeString();
+        //        Notification::send(null, new VerifyPhoneNotification($phone, $code));
+        ApiService::_success([
+            'phone' => $phone, 'has_account' =>  !!$user,
+            'login_method' => 'otp', 'ttl' => Carbon::parse($ttl->ttl)->DiffInSeconds(now())
+        ]);
     }
 
+    public function init(Request $request)
+    {
+        // return ApiService::_success(auth()->user());
+        return new ShowUserResource(auth()->user());
+
+        // if ($user) return ApiService::_success($user);
+        // return ApiService::_success(['is_logged_in' => false]);
+    }
+
+    public function logout(Request $request)
+    {
+        auth()->user()->token()->revoke();
+        $cookie = cookie()->forget('access_token');
+        Cookie::queue(
+            $cookie
+        );
+        ApiService::_success(trans('response.responses.200'));
+    }
 }

@@ -6,15 +6,26 @@ use App\Services\ApiService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Redis;
 use Modules\Cart\Services\Cart\Facades\Cart;
+use Modules\Cart\Transformers\App\CartResource;
+use Modules\Product\Transformers\ProductResource;
+use Modules\Cart\Transformers\App\CartItemsResource;
+use Modules\Product\Repository\ProductRepositoryInterface;
 use Modules\Product\Repository\ProductVariantRepositoryInterface;
+use Modules\Product\Transformers\ProductVariantResource;
+use Modules\Product\Transformers\VariantResource;
 
 class CartController extends Controller
 {
     private $variantRepo;
-    public function __construct(ProductVariantRepositoryInterface $variantRepo)
-    {
+    private $productRepo;
+    public function __construct(
+        ProductVariantRepositoryInterface $variantRepo,
+        ProductRepositoryInterface $productRepo
+    ) {
         $this->variantRepo = $variantRepo;
+        $this->productRepo = $productRepo;
     }
 
     public function get()
@@ -24,13 +35,22 @@ class CartController extends Controller
 
     public function add(Request $request)
     {
-        $product = $this->variantRepo->find($request->variant_id)->product;
+        $variant = $this->variantRepo->find($request->variant_id);
+        $product = $this->productRepo->find($variant->product_id);
 
-        if (!Cart::has($product)) {
+        if (Cart::has($variant->id)) {
+            Cart::update($variant->id, 1);
+        } else {
             Cart::put([
+                'variant' => new ProductVariantResource($variant),
+                'product' => new ProductResource($product),
                 'quantity' => 1,
-                'price' => 43223,
-            ], $product);
+            ], []);
         };
+        $cart =  Cart::all();
+
+        // ApiService::_success($cart);
+        return new CartResource($cart);
+        // return  CartItemsResource::collection($cart);
     }
 }

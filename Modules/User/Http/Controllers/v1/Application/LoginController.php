@@ -3,28 +3,29 @@
 namespace Modules\User\Http\Controllers\v1\Application;
 
 use App\Services\ApiService;
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
 use Modules\User\Entities\User;
-use Modules\User\Services\VerifyCodeService;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Contracts\Support\Renderable;
+use Modules\User\Services\VerifyCodeService;
 
 class LoginController extends Controller
 {
 
     public function otp(Request $request)
     {
-        //      ApiService::_success(config('services.passport.client_secret'));
+
         $phone = $request->input('username');
 
         $code = $request->input('code');
 
-        //        $status = VerifyCodeService::check($phone, $code);
-        //
-        //        if (!$status) {
-        //            ApiService::_throw("invalid credentials", 200);
-        //        }
+        $status = VerifyCodeService::check($phone, $code);
+
+        if (!$status) {
+            ApiService::_throw(trans('response.auth.invalid_code'), 200);
+        }
 
         $user = User::where('phone', $phone)->first();
 
@@ -45,7 +46,21 @@ class LoginController extends Controller
 
             $data = json_decode($response->getBody());
 
-            return   response()->json([
+
+
+            Cookie::queue(
+                'access_token',
+                $data->access_token,
+                45000,
+                null,
+                null,
+                false,
+                true,
+                false,
+                'Strict'
+            );
+
+            return  response()->json([
                 // 'user' => auth()->user(),
                 'access_token' => $data->access_token,
                 'expires_in' => $data->expires_in,

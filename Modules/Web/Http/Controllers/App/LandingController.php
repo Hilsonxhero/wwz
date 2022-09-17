@@ -35,31 +35,6 @@ class LandingController extends Controller
 
     public function index()
     {
-
-        // $redis = Redis::connection();
-        // try {
-        //     return   $redis->ping();
-        // } catch (Exception $e) {
-        //     return  $e->getMessage();
-        // }
-
-        // $storage = Redis::connection();
-        // $views = $storage->incr('article:1111:views');
-        // return $views;
-
-        Cookie::queue(
-            'private_key',
-            'www3434343434',
-            45000,
-            null,
-            null,
-            false,
-            false,
-            false,
-            'Strict'
-        );
-
-
         $incredible_products = $this->IncredibleProductRepo->take();
         $landing_page = Page::query()->where('title_en', 'landing')->first();
         $header_banners = $landing_page->banners()->where('type', 'hero')->get();

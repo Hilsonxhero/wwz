@@ -2,13 +2,13 @@
 
 namespace Modules\User\Services;
 
-
+use Carbon\Carbon;
 use Modules\User\Entities\SmsCode;
 
 class VerifyCodeService
 {
-    private static $min = 100000;
-    private static $max = 999999;
+    private static $min = 10000;
+    private static $max = 99999;
 
     public static function generate()
     {
@@ -17,16 +17,17 @@ class VerifyCodeService
 
     public static function store($phone, $code)
     {
-        SmsCode::query()->create([
+
+        return SmsCode::query()->create([
             'phone' => $phone,
             'code' => $code,
+            'ttl' => now()->addMinutes(2),
             'expired_at' => now()->addMinutes(2)
         ]);
     }
 
     public static function get($phone, $code)
     {
-//        return cache()->get(self::$prefix . $id);
         return SmsCode::where('phone', $phone)->first()->code;
     }
 
@@ -40,16 +41,14 @@ class VerifyCodeService
         return SmsCode::where('phone', $phone)->delete();
     }
 
-    public static function getRule()
-    {
-        return 'required|numeric|between:' . self::$min . ',' . self::$max;
-    }
-
     public static function check($phone, $code)
     {
-        if (self::get($phone, $code) != $code) return false;
-        self::destroy($phone);
-        return true;
+        $exists = self::has($phone);
+        if ($exists && $exists->code == $code) {
+            self::destroy($phone);
+            return true;
+        }
+
+        return false;
     }
 }
-

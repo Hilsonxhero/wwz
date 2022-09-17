@@ -9,12 +9,7 @@ class SmsCode extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['code', 'phone', 'expired_at'];
+    protected $fillable = ['code', 'phone', 'expired_at', 'ttl'];
 
     public $timestamps = false;
-
-//    protected static function newFactory()
-//    {
-//        return \Modules\User\Database\factories\SmsCodeFactory::new();
-//    }
 }

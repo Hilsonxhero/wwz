@@ -4,6 +4,7 @@ namespace App\Http;
 
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use Modules\User\Http\Middleware\AddAuthTokenHeader;
 
 class Kernel extends HttpKernel
 {
@@ -40,11 +41,14 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
+            AddAuthTokenHeader::class,
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+
         ],
+
     ];
 
     /**
@@ -55,6 +59,7 @@ class Kernel extends HttpKernel
      * @var array<string, class-string|string>
      */
     protected $routeMiddleware = [
+        // 'token' => AddAuthTokenHeader::class,
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,

@@ -4,17 +4,20 @@ namespace Modules\User\Entities;
 
 use Spatie\Image\Manipulations;
 use Modules\State\Entities\City;
-use Laravel\Passport\HasApiTokens;
 use Spatie\MediaLibrary\HasMedia;
+use Laravel\Passport\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Modules\Cart\Services\Cart\Facades\Cart;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Modules\Cart\Transformers\App\CartResource;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements HasMedia
 {
@@ -34,7 +37,7 @@ class User extends Authenticatable implements HasMedia
     ];
 
 
-//    protected $guard_name = 'web';
+    //    protected $guard_name = 'web';
 
     /**
      * The attributes that should be hidden for serialization.
@@ -78,6 +81,11 @@ class User extends Authenticatable implements HasMedia
         return $this->belongsTo(City::class)->with('state');
     }
 
+    public function cart()
+    {
+        return Cart::all();
+    }
+
     public static function last()
     {
         return static::all()->last();
@@ -90,6 +98,19 @@ class User extends Authenticatable implements HasMedia
         $this->addMediaConversion('thumb')
             ->width(250)
             ->height(250);
+    }
+
+
+    /**
+     * Check user is login .
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    protected function isLoggedIn(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => !!auth()->user()
+        );
     }
 
 
