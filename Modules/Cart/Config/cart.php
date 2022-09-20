@@ -1,7 +1,5 @@
 <?php
 
-use Modules\Cart\Calculation\DefaultCalculator;
-
 return [
 
     /*
@@ -14,7 +12,7 @@ return [
     |
     */
 
-    'calculator' => DefaultCalculator::class,
+    'calculator' => \Gloudemans\Shoppingcart\Calculation\DefaultCalculator::class,
 
     /*
     |--------------------------------------------------------------------------

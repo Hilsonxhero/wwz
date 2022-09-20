@@ -8,7 +8,7 @@
         "Modules\\Cart\\Providers\\CartServiceProvider"
     ],
     "aliases": {
-        "Cart": "Modules\\Cart\\Services\\Cart\\Facades\\Cart"
+        "Cart": "Modules\\Cart\\Facades\\Cart"
     },
     "files": [],
     "requires": []

@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Cart\Services\Cart\Facades;
+namespace Modules\Cart\Facades;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;

@@ -5,16 +5,16 @@ namespace Modules\Cart\Http\Controllers\v1\App;
 use App\Services\ApiService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Modules\Cart\Facades\Cart;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Redis;
-use Modules\Cart\Services\Cart\Facades\Cart;
 use Modules\Cart\Transformers\App\CartResource;
 use Modules\Product\Transformers\ProductResource;
+use Modules\Product\Transformers\VariantResource;
 use Modules\Cart\Transformers\App\CartItemsResource;
+use Modules\Product\Transformers\ProductVariantResource;
 use Modules\Product\Repository\ProductRepositoryInterface;
 use Modules\Product\Repository\ProductVariantRepositoryInterface;
-use Modules\Product\Transformers\ProductVariantResource;
-use Modules\Product\Transformers\VariantResource;
 
 class CartController extends Controller
 {
@@ -30,7 +30,15 @@ class CartController extends Controller
 
     public function get()
     {
-        ApiService::_success("hello cart");
+        $cart = Cart::content();
+        $content = (object) [
+            'items' => $cart,
+            'items_count' => $cart->count(),
+            'payable_price' => Cart::subtotal(),
+            'rrp_price' => Cart::total(),
+        ];
+        // ApiService::_success($cart);
+        return new CartResource($content);
     }
 
     public function add(Request $request)
@@ -38,19 +46,23 @@ class CartController extends Controller
         $variant = $this->variantRepo->find($request->variant_id);
         $product = $this->productRepo->find($variant->product_id);
 
-        if (Cart::has($variant->id)) {
-            Cart::update($variant->id, 1);
-        } else {
-            Cart::put([
-                'variant' => new ProductVariantResource($variant),
-                'product' => new ProductResource($product),
-                'quantity' => 1,
-            ], []);
-        };
-        $cart =  Cart::all();
-
+        Cart::add(
+            $variant->id,
+            new ProductResource($product),
+            new ProductVariantResource($variant),
+            $variant->discount,
+            $variant->price,
+            $variant->weight,
+            1
+        );
+        $cart = Cart::content();
+        $content = (object) [
+            'items' => $cart,
+            'items_count' => $cart->count(),
+            'payable_price' => Cart::subtotal(),
+            'rrp_price' => Cart::total(),
+        ];
         // ApiService::_success($cart);
-        return new CartResource($cart);
-        // return  CartItemsResource::collection($cart);
+        return new CartResource($content);
     }
 }
