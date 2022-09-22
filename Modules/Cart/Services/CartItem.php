@@ -314,7 +314,7 @@ class CartItem implements Arrayable, Jsonable
     /**
      * Update the cart item from a Buyable.
      *
-     * @param \Gloudemans\Shoppingcart\Contracts\Buyable $item
+     * @param \Modules\Cart\Contracts\Buyable $item
      *
      * @return void
      */
@@ -339,8 +339,8 @@ class CartItem implements Arrayable, Jsonable
         $this->name = Arr::get($attributes, 'name', $this->name);
         $this->price = Arr::get($attributes, 'price', $this->price);
         $this->weight = Arr::get($attributes, 'weight', $this->weight);
+        $this->discountRate = Arr::get($attributes, 'discount', $this->discount);
         $this->options = new CartItemOptions(Arr::get($attributes, 'options', $this->options));
-
         $this->rowId = $this->generateRowId($this->id, $this->options->all());
     }
 
@@ -354,7 +354,6 @@ class CartItem implements Arrayable, Jsonable
     public function associate($model)
     {
         $this->associatedModel = is_string($model) ? $model : get_class($model);
-
         return $this;
     }
 
@@ -440,7 +439,7 @@ class CartItem implements Arrayable, Jsonable
     /**
      * Create a new instance from a Buyable.
      *
-     * @param \Gloudemans\Shoppingcart\Contracts\Buyable $item
+     * @param \Modules\Cart\Contracts\Buyable $item
      * @param array                                      $options
      *
      * @return \Modules\Cart\Services\CartItem

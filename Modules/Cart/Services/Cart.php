@@ -209,8 +209,8 @@ class Cart
             $this->events->dispatch('cart.adding', $item);
         }
 
-        // $this->storage->set($this->instance, json_encode($content));
-        $this->storage->set($this->instance, json_encode($content));
+        // $this->storage->set($this->instance, serialize($content));
+        $this->storage->set($this->instance, serialize($content));
 
         if ($dispatchEvent) {
             $this->events->dispatch('cart.added', $item);
@@ -229,16 +229,17 @@ class Cart
      */
     public function update($rowId, $qty)
     {
-        $cartItem = $this->get($rowId);
+        $cartItem =  $this->get($rowId);
 
-        if ($qty instanceof Buyable) {
-            $cartItem->updateFromBuyable($qty);
-        } elseif (is_array($qty)) {
-            $cartItem->updateFromArray($qty);
-        } else {
-            $cartItem->qty = $qty;
-        }
+        // if ($qty instanceof Buyable) {
+        //     $cartItem->updateFromBuyable($qty);
+        // } elseif (is_array($qty)) {
+        //     $cartItem->updateFromArray($qty);
+        // } else {
+        //     $cartItem->discount = 50;
+        // }
 
+        $cartItem->updateFromArray($qty);
         $content = $this->getContent();
 
         if ($rowId !== $cartItem->rowId) {
@@ -268,11 +269,13 @@ class Cart
 
         $this->events->dispatch('cart.updating', $cartItem);
 
-        $this->storage->set($this->instance, json_encode($content));
+        // return $content;
+
+        $this->storage->set($this->instance, serialize($content));
 
         $this->events->dispatch('cart.updated', $cartItem);
 
-        return $cartItem;
+        return $content;
     }
 
     /**
@@ -292,7 +295,7 @@ class Cart
 
         $this->events->dispatch('cart.removing', $cartItem);
 
-        $this->storage->set($this->instance, json_encode($content));
+        $this->storage->set($this->instance, serialize($content));
 
         $this->events->dispatch('cart.removed', $cartItem);
     }
@@ -312,7 +315,7 @@ class Cart
             throw new InvalidRowIDException("The cart does not contain rowId {$rowId}.");
         }
 
-        return $content->get($rowId);
+        return  $content->get($rowId);
     }
 
     /**
@@ -335,8 +338,8 @@ class Cart
         if (is_null($this->storage->get($this->instance))) {
             return new Collection([]);
         }
-
-        return collect(json_decode($this->storage->get($this->instance)));
+        // return $this->storage->get($this->instance);
+        return collect(unserialize($this->storage->get($this->instance)));
     }
 
     /**
@@ -581,7 +584,7 @@ class Cart
 
         $content->put($cartItem->rowId, $cartItem);
 
-        $this->storage->set($this->instance, json_encode($content));
+        $this->storage->set($this->instance, serialize($content));
     }
 
     /**
@@ -602,7 +605,7 @@ class Cart
 
         $content->put($cartItem->rowId, $cartItem);
 
-        $this->storage->set($this->instance, json_encode($content));
+        $this->storage->set($this->instance, serialize($content));
     }
 
     /**
@@ -641,7 +644,7 @@ class Cart
 
         $content->put($cartItem->rowId, $cartItem);
 
-        $this->storage->set($this->instance, json_encode($content));
+        $this->storage->set($this->instance, serialize($content));
     }
 
     /**
@@ -740,7 +743,7 @@ class Cart
 
         $this->events->dispatch('cart.restored');
 
-        $this->storage->set($this->instance, json_encode($content));
+        $this->storage->set($this->instance, serialize($content));
 
         $this->instance($currentInstance);
 
@@ -837,7 +840,7 @@ class Cart
     protected function getContent()
     {
         if ($this->storage->exists($this->instance)) {
-            return collect(json_decode($this->storage->get($this->instance)));
+            return collect(unserialize($this->storage->get($this->instance)));
         }
 
         return new Collection();
