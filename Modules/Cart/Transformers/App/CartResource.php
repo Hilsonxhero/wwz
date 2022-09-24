@@ -15,8 +15,6 @@ class CartResource extends JsonResource
     public function toArray($request)
     {
         return [
-            // 'payable_price' => 0,
-            // 'rrp_price' => 0,
             'items_count' => $this->items_count,
             'payable_price' => $this->payable_price,
             'rrp_price' => $this->rrp_price,

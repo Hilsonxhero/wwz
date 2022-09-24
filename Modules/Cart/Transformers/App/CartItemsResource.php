@@ -4,6 +4,7 @@ namespace Modules\Cart\Transformers\App;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use Modules\Product\Transformers\ProductResource;
+use Modules\Product\Repository\ProductRepositoryInterface;
 
 class CartItemsResource extends JsonResource
 {

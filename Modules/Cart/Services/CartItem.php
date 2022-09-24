@@ -2,14 +2,18 @@
 
 namespace Modules\Cart\Services;
 
-use Modules\Cart\Calculation\DefaultCalculator;
-use Modules\Cart\Contracts\Buyable;
-use Modules\Cart\Contracts\Calculator;
-use Modules\Cart\Exceptions\InvalidCalculatorException;
-use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Contracts\Support\Jsonable;
-use Illuminate\Support\Arr;
 use ReflectionClass;
+use Illuminate\Support\Arr;
+use Modules\Cart\Contracts\Buyable;
+use Modules\Product\Entities\Variant;
+use Modules\Cart\Contracts\Calculator;
+use Illuminate\Contracts\Support\Jsonable;
+use Illuminate\Contracts\Support\Arrayable;
+use Modules\Product\Entities\ProductVariant;
+use Modules\Cart\Calculation\DefaultCalculator;
+use Modules\Cart\Exceptions\InvalidCalculatorException;
+use Modules\Product\Repository\ProductRepositoryInterface;
+use Modules\Product\Repository\ProductVariantRepositoryInterface;
 
 /**
  * @property-read mixed discount
@@ -105,6 +109,8 @@ class CartItem implements Arrayable, Jsonable
      */
     public $instance = null;
 
+
+
     /**
      * CartItem constructor.
      *
@@ -114,8 +120,17 @@ class CartItem implements Arrayable, Jsonable
      * @param float      $weight
      * @param array      $options
      */
-    public function __construct($id, $product, $variant, $discount, $price, $weight = 0, array $options = [])
-    {
+    public function __construct(
+        $id,
+        $product,
+        $variant,
+        $discount,
+        $price,
+        $weight = 0,
+        array $options = [],
+
+    ) {
+
         if (empty($id)) {
             throw new \InvalidArgumentException('Please supply a valid identifier.');
         }
@@ -338,6 +353,7 @@ class CartItem implements Arrayable, Jsonable
         $this->qty = Arr::get($attributes, 'qty', $this->qty);
         $this->name = Arr::get($attributes, 'name', $this->name);
         $this->price = Arr::get($attributes, 'price', $this->price);
+        $this->variant = Arr::get($attributes, 'variant', $this->variant);
         $this->weight = Arr::get($attributes, 'weight', $this->weight);
         $this->discountRate = Arr::get($attributes, 'discount', $this->discount);
         $this->options = new CartItemOptions(Arr::get($attributes, 'options', $this->options));

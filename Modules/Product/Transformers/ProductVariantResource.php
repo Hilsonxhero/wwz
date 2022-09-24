@@ -18,8 +18,6 @@ class ProductVariantResource extends JsonResource
         return [
             'id' => $this->id,
             'product' => $this->product->id,
-            // 'warranty' => $this->warranty->id,
-            // 'shipment' => $this->shipment->id,
             'warranty' => [
                 'id' => $this->warranty->id ?? null,
                 'title' => $this->warranty->title ?? null,
@@ -28,6 +26,7 @@ class ProductVariantResource extends JsonResource
                 'id' => $this->shipment->id ?? null,
                 'title' => $this->shipment->title ?? null,
             ],
+            'price' => $this->price,
             'is_incredible' => !!$this->incredible,
             'is_promotion' => !!$this->is_promotion,
             'time' => $this->calculate_discount_diff_seconds,

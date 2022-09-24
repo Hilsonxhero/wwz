@@ -17,6 +17,7 @@ use Modules\Cart\Contracts\InstanceIdentifier;
 use Modules\Cart\Exceptions\InvalidRowIDException;
 use Modules\Cart\Exceptions\UnknownModelException;
 use Modules\Cart\Exceptions\CartAlreadyStoredException;
+use Modules\Product\Repository\ProductVariantRepositoryInterface;
 
 class Cart
 {
@@ -79,15 +80,18 @@ class Cart
      */
     private $taxRate = 0;
 
+
+    private $variantRepo;
+
     /**
      * Cart constructor.
      *
      * @param \Illuminate\Redis\RedisManager $storage
      * @param \Illuminate\Contracts\Events\Dispatcher $events
      */
-    public function __construct(RedisManager $storage, Dispatcher $events)
+    public function __construct(RedisManager $storage, Dispatcher $events, ProductVariantRepositoryInterface $variantRepo,)
     {
-        // $this->session = $session;
+        $this->variantRepo = $variantRepo;
         $this->cart_token  = request()->cookie('cart_token');
         $this->storage = $storage;
         $this->events = $events;
@@ -171,8 +175,6 @@ class Cart
 
         $cartItem = $this->createCartItem($id, $product, $variant, $discount, $price, $weight, $qty, $options);
 
-        // return $cartItem;
-
         return $this->addCartItem($cartItem, $discount);
     }
 
@@ -209,7 +211,6 @@ class Cart
             $this->events->dispatch('cart.adding', $item);
         }
 
-        // $this->storage->set($this->instance, serialize($content));
         $this->storage->set($this->instance, serialize($content));
 
         if ($dispatchEvent) {
@@ -230,15 +231,6 @@ class Cart
     public function update($rowId, $qty)
     {
         $cartItem =  $this->get($rowId);
-
-        // if ($qty instanceof Buyable) {
-        //     $cartItem->updateFromBuyable($qty);
-        // } elseif (is_array($qty)) {
-        //     $cartItem->updateFromArray($qty);
-        // } else {
-        //     $cartItem->discount = 50;
-        // }
-
         $cartItem->updateFromArray($qty);
         $content = $this->getContent();
 
@@ -269,13 +261,11 @@ class Cart
 
         $this->events->dispatch('cart.updating', $cartItem);
 
-        // return $content;
-
         $this->storage->set($this->instance, serialize($content));
 
         $this->events->dispatch('cart.updated', $cartItem);
 
-        return $content;
+        return $cartItem;
     }
 
     /**
@@ -338,8 +328,17 @@ class Cart
         if (is_null($this->storage->get($this->instance))) {
             return new Collection([]);
         }
-        // return $this->storage->get($this->instance);
-        return collect(unserialize($this->storage->get($this->instance)));
+        $cart = collect(unserialize($this->storage->get($this->instance)));
+
+
+        $content = (object) [
+            'items' => $cart,
+            'items_count' => $cart->count(),
+            'payable_price' => Cart::subtotal(),
+            'rrp_price' => Cart::total(),
+        ];
+
+        return $content;
     }
 
     /**
@@ -841,6 +840,10 @@ class Cart
     {
         if ($this->storage->exists($this->instance)) {
             return collect(unserialize($this->storage->get($this->instance)));
+            // $content = (object) [
+            //     'items' => $cart,
+            // ];
+            // return $content;
         }
 
         return new Collection();

@@ -8,7 +8,6 @@ use Modules\User\Entities\User;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cookie;
-use Illuminate\Contracts\Support\Renderable;
 use Modules\User\Services\VerifyCodeService;
 
 class LoginController extends Controller
@@ -46,8 +45,6 @@ class LoginController extends Controller
 
             $data = json_decode($response->getBody());
 
-
-
             Cookie::queue(
                 'access_token',
                 $data->access_token,
@@ -61,7 +58,6 @@ class LoginController extends Controller
             );
 
             return  response()->json([
-                // 'user' => auth()->user(),
                 'access_token' => $data->access_token,
                 'expires_in' => $data->expires_in,
                 'refresh_token' => $data->refresh_token,
