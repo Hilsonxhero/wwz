@@ -39,6 +39,7 @@ class UserServiceProvider extends ServiceProvider
     {
         $this->app->register(RouteServiceProvider::class);
         $this->app->register(UserRepoServiceProvider::class);
+        $this->app->register(UserEventServiceProvider::class);
     }
 
     /**

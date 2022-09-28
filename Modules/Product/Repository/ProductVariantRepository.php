@@ -19,40 +19,40 @@ class ProductVariantRepository implements ProductVariantRepositoryInterface
 
     public function create($data)
     {
-        $feature =  ProductVariant::query()->create($data);
-        return $feature;
+        $variant =  ProductVariant::query()->create($data);
+        return $variant;
     }
     public function update($id, $data)
     {
-        $feature = $this->find($id);
-        $feature->update($data);
-        return $feature;
+        $variant = $this->find($id);
+        $variant->update($data);
+        return $variant;
     }
     public function show($id)
     {
-        $feature = $this->find($id);
-        return $feature;
+        $variant = $this->find($id);
+        return $variant;
     }
 
     public function values($id)
     {
-        $feature = $this->find($id);
-        return $feature->values;
+        $variant = $this->find($id);
+        return $variant->values;
     }
 
 
-    public function find($id)
+    public function find($id, $relationships = [])
     {
         try {
-            $feature = ProductVariant::query()->where('id', $id)->firstOrFail();
-            return $feature;
+            $variant = ProductVariant::query()->where('id', $id)->with([...$relationships, 'warranty', 'shipment', 'combinations'])->firstOrFail();
+            return $variant;
         } catch (ModelNotFoundException $e) {
             return  ApiService::_response(trans('response.responses.404'), 404);
         }
     }
     public function delete($id)
     {
-        $feature = $this->find($id);
-        return $feature->delete();
+        $variant = $this->find($id);
+        return $variant->delete();
     }
 }

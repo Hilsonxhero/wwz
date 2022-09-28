@@ -16,8 +16,10 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Modules\Cart\Transformers\App\CartResource;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Modules\Cart\Entities\Cart as EntitiesCart;
 
 class User extends Authenticatable implements HasMedia
 {
@@ -83,7 +85,7 @@ class User extends Authenticatable implements HasMedia
 
     public function cart()
     {
-        return Cart::all();
+        return $this->hasOne(EntitiesCart::class);
     }
 
     public static function last()
@@ -112,6 +114,7 @@ class User extends Authenticatable implements HasMedia
             get: fn ($value) => !!auth()->user()
         );
     }
+
 
 
 

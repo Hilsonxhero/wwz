@@ -21,13 +21,13 @@ class GrossPrice implements Calculator
             case 'priceTax':
                 return round($cartItem->priceTarget + $cartItem->tax, $decimals);
             case 'discountTotal':
-                return round($cartItem->discount * $cartItem->qty, $decimals);
+                return round($cartItem->discount * $cartItem->quantity, $decimals);
             case 'priceTotal':
-                return round($cartItem->priceNet * $cartItem->qty, $decimals);
+                return round($cartItem->priceNet * $cartItem->quantity, $decimals);
             case 'subtotal':
                 return max(round($cartItem->priceTotal - $cartItem->discountTotal, $decimals), 0);
             case 'priceTarget':
-                return round(($cartItem->priceTotal - $cartItem->discountTotal) / $cartItem->qty, $decimals);
+                return round(($cartItem->priceTotal - $cartItem->discountTotal) / $cartItem->quantity, $decimals);
             case 'taxTotal':
                 return round($cartItem->subtotal * ($cartItem->taxRate / 100), $decimals);
             case 'total':

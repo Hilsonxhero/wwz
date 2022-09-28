@@ -8,7 +8,9 @@ use Modules\User\Entities\User;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cookie;
+use Modules\User\Events\App\UserAuthenticatied;
 use Modules\User\Services\VerifyCodeService;
+use Modules\User\Transformers\App\TokenResource;
 
 class LoginController extends Controller
 {
@@ -20,11 +22,11 @@ class LoginController extends Controller
 
         $code = $request->input('code');
 
-        $status = VerifyCodeService::check($phone, $code);
+        // $status = VerifyCodeService::check($phone, $code);
 
-        if (!$status) {
-            ApiService::_throw(trans('response.auth.invalid_code'), 200);
-        }
+        // if (!$status) {
+        //     ApiService::_throw(trans('response.auth.invalid_code'), 200);
+        // }
 
         $user = User::where('phone', $phone)->first();
 
@@ -57,13 +59,12 @@ class LoginController extends Controller
                 'Strict'
             );
 
-            return  response()->json([
-                'access_token' => $data->access_token,
-                'expires_in' => $data->expires_in,
-                'refresh_token' => $data->refresh_token,
-                'token_type' => $data->token_type,
-                "success" => true
-            ], 200);
+            $request->headers->add([
+                'Authorization' => 'Bearer ' . $data->access_token
+            ]);
+
+            event(new UserAuthenticatied($user));
+            return new TokenResource($data);
         } catch (\GuzzleHttp\Exception\BadResponseException $e) {
             if ($e->getCode() === 400) {
                 ApiService::_response("Invalid Request. Please enter a username or a password.", $e->getCode());

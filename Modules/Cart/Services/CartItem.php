@@ -4,6 +4,7 @@ namespace Modules\Cart\Services;
 
 use ReflectionClass;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Modules\Cart\Contracts\Buyable;
 use Modules\Product\Entities\Variant;
 use Modules\Cart\Contracts\Calculator;
@@ -12,8 +13,7 @@ use Illuminate\Contracts\Support\Arrayable;
 use Modules\Product\Entities\ProductVariant;
 use Modules\Cart\Calculation\DefaultCalculator;
 use Modules\Cart\Exceptions\InvalidCalculatorException;
-use Modules\Product\Repository\ProductRepositoryInterface;
-use Modules\Product\Repository\ProductVariantRepositoryInterface;
+
 
 /**
  * @property-read mixed discount
@@ -51,7 +51,7 @@ class CartItem implements Arrayable, Jsonable
      *
      * @var int|float
      */
-    public $qty;
+    public $quantity;
 
     /**
      * The name of the cart item.
@@ -169,6 +169,9 @@ class CartItem implements Arrayable, Jsonable
     {
         return $this->numberFormat($this->weight, $decimals, $decimalPoint, $thousandSeperator);
     }
+
+
+
 
     /**
      * Returns the formatted price without TAX.
@@ -315,15 +318,15 @@ class CartItem implements Arrayable, Jsonable
     /**
      * Set the quantity for this cart item.
      *
-     * @param int|float $qty
+     * @param int|float $quantity
      */
-    public function setQuantity($qty)
+    public function setQuantity($quantity)
     {
-        if (empty($qty) || !is_numeric($qty)) {
+        if (empty($quantity) || !is_numeric($quantity)) {
             throw new \InvalidArgumentException('Please supply a valid quantity.');
         }
 
-        $this->qty = $qty;
+        $this->quantity = $quantity;
     }
 
     /**
@@ -350,7 +353,7 @@ class CartItem implements Arrayable, Jsonable
     public function updateFromArray(array $attributes)
     {
         $this->id = Arr::get($attributes, 'id', $this->id);
-        $this->qty = Arr::get($attributes, 'qty', $this->qty);
+        $this->quantity = Arr::get($attributes, 'quantity', $this->quantity);
         $this->name = Arr::get($attributes, 'name', $this->name);
         $this->price = Arr::get($attributes, 'price', $this->price);
         $this->variant = Arr::get($attributes, 'variant', $this->variant);
@@ -441,7 +444,7 @@ class CartItem implements Arrayable, Jsonable
                 }
                 // no break
             case 'weightTotal':
-                return round($this->weight * $this->qty, $decimals);
+                return round($this->weight * $this->quantity, $decimals);
         }
 
         $class = new ReflectionClass(config('cart.calculator', DefaultCalculator::class));
@@ -489,7 +492,7 @@ class CartItem implements Arrayable, Jsonable
      *
      * @return \Modules\Cart\Services\CartItem
      */
-    public static function fromAttributes($id, $product, $variant, $discount, $price, $weight, $qty, array $options = [])
+    public static function fromAttributes($id, $product, $variant, $discount, $price, $weight, $quantity, array $options = [])
     {
         return new self($id, $product, $variant, $discount, $price, $weight, $options);
     }
@@ -506,7 +509,8 @@ class CartItem implements Arrayable, Jsonable
     {
         ksort($options);
 
-        return md5($id . serialize($options));
+        return md5($id);
+        // return Str::random(16);
     }
 
     /**
@@ -519,10 +523,9 @@ class CartItem implements Arrayable, Jsonable
         return [
             'rowId'    => $this->rowId,
             'id'       => $this->id,
-            // 'name'     => $this->name,
             'product'     => $this->product,
             'variant'     => $this->variant,
-            'qty'      => $this->qty,
+            'quantity'      => $this->quantity,
             'price'    => $this->price,
             'weight'   => $this->weight,
             'options'  => is_object($this->options)
@@ -532,6 +535,7 @@ class CartItem implements Arrayable, Jsonable
             // 'tax'      => $this->tax,
             'subtotal' => $this->subtotal,
             'total' => $this->total,
+
         ];
     }
 

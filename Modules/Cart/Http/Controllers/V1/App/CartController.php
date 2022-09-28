@@ -37,15 +37,6 @@ class CartController extends Controller
     public function index(Request $request)
     {
         $cart = Cart::content();
-
-        foreach ($cart->items as $key => $value) {
-            $variant = new ProductVariantResource($this->variantRepo->find($value->variant->id));
-            $product = new ProductResource($this->productRepo->find($value->product->id));
-            Cart::update($value->rowId, ['discount' => $variant->calculate_discount, 'price' => $variant->price, 'variant' => $variant, 'product' => $product]);
-        }
-
-        $cart = Cart::content();
-
         return new CartResource($cart);
     }
 
@@ -62,15 +53,18 @@ class CartController extends Controller
 
         Cart::add(
             $variant->id,
-            new ProductResource($product),
-            new ProductVariantResource($variant),
+            $product->id,
+            $variant->id,
             $variant->calculate_discount,
             $variant->price,
             $variant->weight,
             1
         );
 
+
+
         $cart = Cart::content();
+
 
         return new CartResource($cart);
     }
@@ -94,7 +88,7 @@ class CartController extends Controller
 
     public function update(CartRequest $request, $id)
     {
-        Cart::update($id, ['qty' => $request->quantity]);
+        Cart::update($id, ['quantity' => $request->quantity]);
         $cart = Cart::content();
         return new CartResource($cart);
     }
@@ -106,5 +100,8 @@ class CartController extends Controller
      */
     public function destroy($id)
     {
+        Cart::remove($id);
+        $cart = Cart::content();
+        return new CartResource($cart);
     }
 }

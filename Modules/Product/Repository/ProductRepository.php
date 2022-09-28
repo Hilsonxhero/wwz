@@ -188,23 +188,22 @@ class ProductRepository implements ProductRepositoryInterface
     }
 
 
-    public function find($id)
+    public function find($id, $relationships = [])
     {
+        // [
+        //     'productFeatures' => [
+        //         'feature:id,title,parent_id' => [
+        //             'parent:id,title'
+        //         ]
+        //     ],
+        //     'combinations' => [
+        //         'variant:id,name,value,variant_group_id' => [
+        //             'group:id,name,type'
+        //         ]
+        //     ],
+        // ]
         try {
-            $product = Product::query()->where('id', $id)->with(
-                [
-                    'productFeatures' => [
-                        'feature:id,title,parent_id' => [
-                            'parent:id,title'
-                        ]
-                    ],
-                    'combinations' => [
-                        'variant:id,name,value,variant_group_id' => [
-                            'group:id,name,type'
-                        ]
-                    ],
-                ]
-            )->firstOrFail();
+            $product = Product::query()->where('id', $id)->with($relationships)->firstOrFail();
             return $product;
         } catch (ModelNotFoundException $e) {
             return ApiService::_response(trans('response.responses.404'), 404);

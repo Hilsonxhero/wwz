@@ -18,10 +18,6 @@ class ProductVariantCombination  extends Pivot
 
     protected $fillable = ['variant_id', 'product_variant_id'];
 
-    // protected static function newFactory()
-    // {
-    //     return \Modules\Product\Database\factories\ProductVariantCombinationFactory::new();
-    // }
 
     public function variant()
     {

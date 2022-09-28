@@ -1,23 +1,22 @@
 <?php
 
-namespace Modules\Product\Transformers;
+namespace Modules\Product\Transformers\Cart;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Modules\Product\Transformers\ProductVariantCombinationResource;
 
 class ProductVariantResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
      *
-     * @param \Illuminate\Http\Request
+     * @param  \Illuminate\Http\Request
      * @return array
      */
-
     public function toArray($request)
     {
         return [
             'id' => $this->id,
-            'product' => $this->product->id,
             'warranty' => [
                 'id' => $this->warranty->id,
                 'title' => $this->warranty->title,

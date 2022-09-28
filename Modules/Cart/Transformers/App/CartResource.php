@@ -18,6 +18,8 @@ class CartResource extends JsonResource
             'items_count' => $this->items_count,
             'payable_price' => $this->payable_price,
             'rrp_price' => $this->rrp_price,
+            'items_discount' => $this->items_discount,
+            'total_discount' => $this->items_discount,
             'cart_items' =>  CartItemsResource::collection($this->items)
         ];
     }

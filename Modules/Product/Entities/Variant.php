@@ -13,10 +13,9 @@ class Variant extends Model
         'variant_group_id', 'name', 'value',
     ];
 
-    protected static function newFactory()
-    {
-        return \Modules\Product\Database\factories\VariantFactory::new();
-    }
+    public $with = ['group'];
+
+
 
     public function group()
     {

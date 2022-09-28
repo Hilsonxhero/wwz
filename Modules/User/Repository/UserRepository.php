@@ -19,6 +19,12 @@ class UserRepository implements UserRepositoryInterface
             ->paginate();
     }
 
+    public function cart()
+    {
+        return auth()->user()->cart->items()->with('variant')->get();
+    }
+
+
     public function allActive()
     {
         return User::orderBy('created_at', 'desc')

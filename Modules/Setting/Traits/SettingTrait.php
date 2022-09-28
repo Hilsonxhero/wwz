@@ -24,11 +24,6 @@ trait SettingTrait
 
     public function scopeSet($query, $items)
     {
-        // return $query->updateOrCreate(
-        //     ['name' => $name],
-        //     ['value' => $value]
-        // );
-
         return $query->upsert($items, ['name'], ['value']);
     }
 

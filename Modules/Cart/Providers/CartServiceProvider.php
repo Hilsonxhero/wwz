@@ -40,10 +40,7 @@ class CartServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->register(RouteServiceProvider::class);
-
-        // $this->app->singleton('cart', function () {
-        //     return new Cart();
-        // });
+        $this->app->register(CartRepoServiceProvider::class);
         $this->app->bind('cart', Cart::class);
     }
 

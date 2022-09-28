@@ -21,7 +21,6 @@ class ProductVariantCombinationResource extends JsonResource
             'value' => $this->variant->value,
             'type' => $this->variant->group->type,
             'group' => $this->variant->group,
-            // 'variant' => $this->variant,
         ];
     }
 }

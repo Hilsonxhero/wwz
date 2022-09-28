@@ -8,7 +8,6 @@ use Illuminate\Support\Str;
 use Illuminate\Redis\RedisManager;
 use Illuminate\Support\Collection;
 use Modules\Cart\Contracts\Buyable;
-use Modules\Cart\Services\CartItem;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Support\Traits\Macroable;
@@ -16,8 +15,10 @@ use Illuminate\Contracts\Events\Dispatcher;
 use Modules\Cart\Contracts\InstanceIdentifier;
 use Modules\Cart\Exceptions\InvalidRowIDException;
 use Modules\Cart\Exceptions\UnknownModelException;
-use Modules\Cart\Exceptions\CartAlreadyStoredException;
+use Modules\Cart\Repository\CartItemRepositoryInterface;
+use Modules\Cart\Repository\CartRepositoryInterface;
 use Modules\Product\Repository\ProductVariantRepositoryInterface;
+use Modules\User\Repository\UserRepositoryInterface;
 
 class Cart
 {
@@ -25,18 +26,36 @@ class Cart
 
     const DEFAULT_INSTANCE = 'default';
 
+    /**
+     * Instance of the session manager.
+     *
+     * @var \Illuminate\Redis\RedisManager
+     */
 
     private $storage;
 
+    /**
+     * provide cart token cookie.
+     */
 
     private $cart_token;
 
     /**
-     * Instance of the session manager.
+     * return user .
      *
-     * @var \Illuminate\Session\SessionManager
+     *  @var object
      */
-    private $session;
+
+    private $user;
+
+    /**
+     * check user authenticated .
+     *
+     *  @var boolean
+     */
+
+    private $authenticated;
+
 
     /**
      * Instance of the event dispatcher.
@@ -81,7 +100,6 @@ class Cart
     private $taxRate = 0;
 
 
-    private $variantRepo;
 
     /**
      * Cart constructor.
@@ -89,11 +107,12 @@ class Cart
      * @param \Illuminate\Redis\RedisManager $storage
      * @param \Illuminate\Contracts\Events\Dispatcher $events
      */
-    public function __construct(RedisManager $storage, Dispatcher $events, ProductVariantRepositoryInterface $variantRepo,)
+    public function __construct(RedisManager $storage, Dispatcher $events)
     {
-        $this->variantRepo = $variantRepo;
         $this->cart_token  = request()->cookie('cart_token');
         $this->storage = $storage;
+        $this->authenticated = auth()->check();
+        $this->user = auth()->user();
         $this->events = $events;
         $this->taxRate = config('cart.tax');
         $this->instance(self::DEFAULT_INSTANCE);
@@ -157,14 +176,14 @@ class Cart
      *
      * @param mixed     $id
      * @param mixed     $name
-     * @param int|float $qty
+     * @param int|float $quantity
      * @param float     $price
      * @param float     $weight
      * @param array     $options
      *
      * @return \Modules\Cart\Services\CartItem
      */
-    public function add($id, $product = null, $variant = null, $discount = 0, $price = null, $weight = 0, $qty = null, array $options = [])
+    public function add($id, $product = null, $variant = null, $discount = 0, $price = null, $weight = 0, $quantity = null, array $options = [])
     {
 
         if ($this->isMulti($id)) {
@@ -173,7 +192,7 @@ class Cart
             }, $id);
         }
 
-        $cartItem = $this->createCartItem($id, $product, $variant, $discount, $price, $weight, $qty, $options);
+        $cartItem = $this->createCartItem($id, $product, $variant, $discount, $price, $weight, $quantity, $options);
 
         return $this->addCartItem($cartItem, $discount);
     }
@@ -198,20 +217,32 @@ class Cart
             $item->setTaxRate($this->taxRate);
         }
 
-        $content = $this->getContent();
-
-
-        if ($content->has($item->rowId)) {
-            $item->qty += $content->get($item->rowId)->qty;
+        if (!auth()->check()) {
+            $content = $this->getContent();
+            if ($content->has($item->rowId)) {
+                $item->quantity += $content->get($item->rowId)->quantity;
+            }
+            $content->put($item->rowId, $item);
+            $this->storage->set($this->instance, serialize($content));
+        } else {
+            $user = auth()->user();
+            $content  = $user->cart;
+            $res = resolve(CartItemRepositoryInterface::class)->findByVariant($content, $item->variant);
+            if ($res) {
+                $data = ['quantity' => $res->quantity + 1];
+                resolve(CartItemRepositoryInterface::class)->update($res->id, $data);
+            } else {
+                $data = [
+                    'uuid' => $item->rowId,
+                    'cart_id' => $user->cart->id,
+                    'product_id' => $item->product,
+                    'variant_id' => $item->variant,
+                    'quantity' => $item->quantity,
+                    'price' => $item->price,
+                ];
+                resolve(CartItemRepositoryInterface::class)->create($data);
+            }
         }
-
-        $content->put($item->rowId, $item);
-
-        if ($dispatchEvent) {
-            $this->events->dispatch('cart.adding', $item);
-        }
-
-        $this->storage->set($this->instance, serialize($content));
 
         if ($dispatchEvent) {
             $this->events->dispatch('cart.added', $item);
@@ -224,47 +255,48 @@ class Cart
      * Update the cart item with the given rowId.
      *
      * @param string $rowId
-     * @param mixed  $qty
+     * @param mixed  $quantity
      *
      * @return \Modules\Cart\Services\CartItem
      */
-    public function update($rowId, $qty)
+    public function update($rowId, $quantity)
     {
-        $cartItem =  $this->get($rowId);
-        $cartItem->updateFromArray($qty);
-        $content = $this->getContent();
+        if (!$this->authenticated) {
+            $cartItem =  $this->get($rowId);
+            $cartItem->updateFromArray($quantity);
+            $content = $this->getContent();
 
-        if ($rowId !== $cartItem->rowId) {
-            $itemOldIndex = $content->keys()->search($rowId);
+            if ($rowId !== $cartItem->rowId) {
+                $itemOldIndex = $content->keys()->search($rowId);
 
-            $content->pull($rowId);
+                $content->pull($rowId);
 
-            if ($content->has($cartItem->rowId)) {
-                $existingCartItem = $this->get($cartItem->rowId);
-                $cartItem->setQuantity($existingCartItem->qty + $cartItem->qty);
+                if ($content->has($cartItem->rowId)) {
+                    $existingCartItem = $this->get($cartItem->rowId);
+                    $cartItem->setQuantity($existingCartItem->quantity + $cartItem->quantity);
+                }
             }
-        }
-
-        if ($cartItem->qty <= 0) {
-            $this->remove($cartItem->rowId);
-
-            return;
-        } else {
-            if (isset($itemOldIndex)) {
-                $content = $content->slice(0, $itemOldIndex)
-                    ->merge([$cartItem->rowId => $cartItem])
-                    ->merge($content->slice($itemOldIndex));
+            if ($cartItem->quantity <= 0) {
+                $this->remove($cartItem->rowId);
+                return;
             } else {
-                $content->put($cartItem->rowId, $cartItem);
+                if (isset($itemOldIndex)) {
+                    $content = $content->slice(0, $itemOldIndex)
+                        ->merge([$cartItem->rowId => $cartItem])
+                        ->merge($content->slice($itemOldIndex));
+                } else {
+                    $content->put($cartItem->rowId, $cartItem);
+                }
+            }
+
+            $this->storage->set($this->instance, serialize($content));
+        } else {
+            $cartItem = resolve(CartItemRepositoryInterface::class)->update($rowId, $quantity);
+            if ($cartItem->quantity <= 0) {
+                resolve(CartItemRepositoryInterface::class)->delete($rowId);
             }
         }
-
-        $this->events->dispatch('cart.updating', $cartItem);
-
-        $this->storage->set($this->instance, serialize($content));
-
         $this->events->dispatch('cart.updated', $cartItem);
-
         return $cartItem;
     }
 
@@ -277,17 +309,20 @@ class Cart
      */
     public function remove($rowId)
     {
-        $cartItem = $this->get($rowId);
+        if (!$this->authenticated) {
 
-        $content = $this->getContent();
+            $cartItem = $this->get($rowId);
 
-        $content->pull($cartItem->rowId);
+            $content = $this->getContent();
 
-        $this->events->dispatch('cart.removing', $cartItem);
+            $content->pull($cartItem->rowId);
 
-        $this->storage->set($this->instance, serialize($content));
+            $this->storage->set($this->instance, serialize($content));
+        } else {
+            resolve(CartItemRepositoryInterface::class)->delete($rowId);
+        }
 
-        $this->events->dispatch('cart.removed', $cartItem);
+        $this->events->dispatch('cart.removed');
     }
 
     /**
@@ -315,7 +350,7 @@ class Cart
      */
     public function destroy()
     {
-        $this->session->remove($this->instance);
+        $this->storage->del($this->instance);
     }
 
     /**
@@ -325,17 +360,54 @@ class Cart
      */
     public function content()
     {
-        if (is_null($this->storage->get($this->instance))) {
-            return new Collection([]);
-        }
-        $cart = collect(unserialize($this->storage->get($this->instance)));
 
+        if (auth()->check()) {
+            $data = resolve(UserRepositoryInterface::class)->cart();
+            $data = $data->map(function ($item) {
+                return $this->createCartItem(
+                    $item->id,
+                    $item->product_id,
+                    $item->variant_id,
+                    $item->variant->calculate_discount,
+                    $item->variant->price,
+                    $item->variant->weight,
+                    $item->quantity,
+                    []
+                )->setDiscountRate($item->variant->calculate_discount);
+            });
+            $cart = $data;
+        } else {
+
+            $data = $this->storage->get($this->instance);
+
+            if (is_null($data)) {
+                return (object)  collect([
+                    'items' => [],
+                    'items_count' => 0,
+                    'payable_price' => 0,
+                    'rrp_price' => 0,
+                    'items_discount' => 0
+                ])->toArray();
+            }
+
+            $cart = collect(unserialize($this->storage->get($this->instance)));
+
+
+            $cart->map(function ($item) {
+                $variant = resolve(ProductVariantRepositoryInterface::class)->find($item->variant);
+                $this->update($item->rowId, ['discount' => $variant->calculate_discount, 'price' => $variant->price]);
+            });
+
+
+            $cart = collect(unserialize($this->storage->get($this->instance)));
+        }
 
         $content = (object) [
             'items' => $cart,
-            'items_count' => $cart->count(),
-            'payable_price' => Cart::subtotal(),
-            'rrp_price' => Cart::total(),
+            'items_count' => $this->count($cart),
+            'payable_price' => $this->subtotal($cart),
+            'rrp_price' => $this->total($cart),
+            'items_discount' => $this->discount($cart)
         ];
 
         return $content;
@@ -346,9 +418,9 @@ class Cart
      *
      * @return int|float
      */
-    public function count()
+    public function count($cart)
     {
-        return $this->getContent()->sum('qty');
+        return $cart->sum('quantity');
     }
 
     /**
@@ -367,11 +439,10 @@ class Cart
      *
      * @return float
      */
-    public function totalFloat()
+    public function totalFloat($cart)
     {
 
-        return $this->getContent()->reduce(function ($total,  $cartItem) {
-            // return $cartItem;
+        return $cart->reduce(function ($total,  $cartItem) {
             return $total + $cartItem->total;
         }, 0);
     }
@@ -385,10 +456,9 @@ class Cart
      *
      * @return string
      */
-    public function total($decimals = null, $decimalPoint = null, $thousandSeperator = null)
+    public function total($cart)
     {
-        // return $this->numberFormat($this->totalFloat(), $decimals, $decimalPoint, $thousandSeperator);
-        return $this->totalFloat();
+        return $this->totalFloat($cart);
     }
 
     /**
@@ -422,9 +492,9 @@ class Cart
      *
      * @return float
      */
-    public function subtotalFloat()
+    public function subtotalFloat($cart)
     {
-        return $this->getContent()->reduce(function ($subTotal,  $cartItem) {
+        return $cart->reduce(function ($subTotal,  $cartItem) {
             return $subTotal + $cartItem->subtotal;
         }, 0);
     }
@@ -438,10 +508,9 @@ class Cart
      *
      * @return string
      */
-    public function subtotal($decimals = null, $decimalPoint = null, $thousandSeperator = null)
+    public function subtotal($cart)
     {
-        // return $this->numberFormat($this->subtotalFloat(), $decimals, $decimalPoint, $thousandSeperator);
-        return $this->subtotalFloat();
+        return $this->subtotalFloat($cart);
     }
 
     /**
@@ -449,10 +518,10 @@ class Cart
      *
      * @return float
      */
-    public function discountFloat()
+    public function discountFloat($cart)
     {
 
-        return $this->getContent()->reduce(function ($discount, CartItem $cartItem) {
+        return $cart->reduce(function ($discount, $cartItem) {
             return $discount + $cartItem->discountTotal;
         }, 0);
     }
@@ -466,9 +535,9 @@ class Cart
      *
      * @return string
      */
-    public function discount($decimals = null, $decimalPoint = null, $thousandSeperator = null)
+    public function discount($cart)
     {
-        return $this->numberFormat($this->discountFloat(), $decimals, $decimalPoint, $thousandSeperator);
+        return $this->discountFloat($cart);
     }
 
     /**
@@ -479,7 +548,7 @@ class Cart
     public function initialFloat()
     {
         return $this->getContent()->reduce(function ($initial, CartItem $cartItem) {
-            return $initial + ($cartItem->qty * $cartItem->price);
+            return $initial + ($cartItem->quantity * $cartItem->price);
         }, 0);
     }
 
@@ -531,7 +600,7 @@ class Cart
     public function weightFloat()
     {
         return $this->getContent()->reduce(function ($total, CartItem $cartItem) {
-            return $total + ($cartItem->qty * $cartItem->weight);
+            return $total + ($cartItem->quantity * $cartItem->weight);
         }, 0);
     }
 
@@ -666,6 +735,8 @@ class Cart
         }
     }
 
+
+
     /**
      * Store an the current instance of the cart.
      *
@@ -673,35 +744,51 @@ class Cart
      *
      * @return void
      */
-    public function store($identifier)
+    public function store(string $identifier)
     {
         $content = $this->getContent();
 
-        if ($identifier instanceof InstanceIdentifier) {
-            $identifier = $identifier->getInstanceIdentifier();
-        }
-
         $instance = $this->currentInstance();
 
-        if ($this->storedCartInstanceWithIdentifierExists($instance, $identifier)) {
-            throw new CartAlreadyStoredException("A cart with identifier {$identifier} was already stored.");
-        }
+        $user = auth()->user();
 
-        if ($this->getConnection()->getDriverName() === 'pgsql') {
-            $serializedContent = base64_encode(serialize($content));
-        } else {
-            $serializedContent = serialize($content);
-        }
-
-        $this->getConnection()->table($this->getTableName())->insert([
+        $cart = resolve(CartRepositoryInterface::class)->firstOrCreate(['user_id' => $user->id], [
+            'user_id' => $user->id,
             'identifier' => $identifier,
             'instance'   => $instance,
-            'content'    => $serializedContent,
-            'created_at' => $this->createdAt ?: Carbon::now(),
-            'updated_at' => Carbon::now(),
         ]);
 
-        $this->events->dispatch('cart.stored');
+        if ($this->count($content) >= 1) {
+
+            $content->each(function ($item, $key) use ($cart) {
+
+                $variant = resolve(ProductVariantRepositoryInterface::class)->find($item->variant);
+                $order_limit = $variant->order_limit;
+                $exists = resolve(CartItemRepositoryInterface::class)->firstOrCreate(
+                    ['variant_id' => $item->variant],
+                    [
+                        'uuid' => $item->rowId,
+                        'cart_id' => $cart->id,
+                        'product_id' => $item->product,
+                        'variant_id' => $item->variant,
+                        'price' => $item->price,
+                        'subtotal' => $item->subtotal,
+                        'total' => $item->total,
+                        'discount' => $item->discount,
+                        'quantity' => $item->quantity,
+                    ]
+                );
+
+                // if (!is_null($exists)) {
+                //     $exists->update(['quantity' => $item->quantity]);
+                // }
+            });
+
+
+
+            $this->events->dispatch('cart.stored');
+            $this->destroy();
+        }
     }
 
     /**
@@ -840,10 +927,6 @@ class Cart
     {
         if ($this->storage->exists($this->instance)) {
             return collect(unserialize($this->storage->get($this->instance)));
-            // $content = (object) [
-            //     'items' => $cart,
-            // ];
-            // return $content;
         }
 
         return new Collection();
@@ -854,28 +937,28 @@ class Cart
      *
      * @param mixed     $id
      * @param mixed     $name
-     * @param int|float $qty
+     * @param int|float $quantity
      * @param float     $price
      * @param float     $weight
      * @param array     $options
      *
      * @return \Modules\Cart\Services\CartItem
      */
-    private function createCartItem($id, $product, $variant, $discount, $price, $weight, $qty, array $options)
+    private function createCartItem($id, $product, $variant, $discount, $price, $weight, $quantity, array $options)
     {
 
         if ($id instanceof Buyable) {
-            // $cartItem = CartItem::fromBuyable($id, $qty ?: []);
+            // $cartItem = CartItem::fromBuyable($id, $quantity ?: []);
             // $cartItem->setQuantity($name ?: 1);
             // $cartItem->associate($id);
         } elseif (is_array($id)) {
             // $cartItem = CartItem::fromArray($id);
-            // $cartItem->setQuantity($id['qty']);
+            // $cartItem->setQuantity($id['quantity']);
         } else {
 
-            $cartItem = CartItem::fromAttributes($id, $product, $variant, $discount, $price, $weight, $qty, $options);
+            $cartItem = CartItem::fromAttributes($id, $product, $variant, $discount, $price, $weight, $quantity, $options);
 
-            $cartItem->setQuantity($qty);
+            $cartItem->setQuantity($quantity);
         }
 
         $cartItem->setInstance($this->currentInstance());
@@ -926,7 +1009,7 @@ class Cart
      */
     private function getTableName()
     {
-        return config('cart.database.table', 'shoppingcart');
+        return config('cart.database.table', 'cart_items');
     }
 
     /**

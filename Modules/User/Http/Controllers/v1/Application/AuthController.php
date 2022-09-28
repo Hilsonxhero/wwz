@@ -35,8 +35,6 @@ class AuthController extends Controller
             $ttl = $has_exists;
             $code = $has_exists->code;
         }
-
-        // return now()->toDateTimeString();
         //        Notification::send(null, new VerifyPhoneNotification($phone, $code));
         ApiService::_success([
             'phone' => $phone, 'has_account' =>  !!$user,
@@ -46,11 +44,7 @@ class AuthController extends Controller
 
     public function init(Request $request)
     {
-        // return ApiService::_success(auth()->user());
         return new ShowUserResource(auth()->user());
-
-        // if ($user) return ApiService::_success($user);
-        // return ApiService::_success(['is_logged_in' => false]);
     }
 
     public function logout(Request $request)
