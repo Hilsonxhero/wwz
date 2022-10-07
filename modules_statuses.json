@@ -16,5 +16,6 @@
     "Setting": true,
     "Page": true,
     "Article": true,
-    "Cart": true
+    "Cart": true,
+    "Order": true
 }

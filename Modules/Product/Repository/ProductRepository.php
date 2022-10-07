@@ -98,6 +98,7 @@ class ProductRepository implements ProductRepositoryInterface
         foreach ($variants as $key => $variant) {
             $producy_variant = $product->variants()->create([
                 'warranty_id' => $variant->warranty,
+                'shipment_type_id' => $variant->shipment_type,
                 'shipment_id' => $variant->shipment,
                 'price' => $variant->rrp_price,
                 'discount' => $variant->discount,
@@ -128,6 +129,7 @@ class ProductRepository implements ProductRepositoryInterface
                     [
                         'warranty_id' => $variant->warranty,
                         'shipment_id' => $variant->shipment,
+                        'shipment_type_id' => $variant->shipment_type,
                         'price' => $variant->rrp_price,
                         'discount' => $variant->discount,
                         'discount_price' => $variant->rrp_price * $variant->discount / 100,

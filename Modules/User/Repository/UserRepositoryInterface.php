@@ -5,6 +5,7 @@ namespace Modules\User\Repository;
 interface UserRepositoryInterface
 {
     public function find($id);
+    public function findByPhone($phone);
     public function all();
     public function allActive();
     public function create($data);

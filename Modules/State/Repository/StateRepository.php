@@ -9,7 +9,11 @@ use Modules\State\Entities\State;
 
 class StateRepository implements StateRepositoryInterface
 {
-
+    public function get()
+    {
+        return State::orderBy('created_at', 'desc')
+            ->get();
+    }
     public function all()
     {
         return State::orderBy('created_at', 'desc')
@@ -45,7 +49,8 @@ class StateRepository implements StateRepositoryInterface
     public function cities($id)
     {
         $state = $this->find($id);
-        return $state->cities()->orderByDesc('created_at')->paginate();
+        // return $state->cities()->orderByDesc('created_at')->paginate();
+        return $state->cities()->orderByDesc('created_at')->get();
     }
 
     public function find($id)

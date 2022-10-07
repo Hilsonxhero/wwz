@@ -35,6 +35,7 @@ class AuthController extends Controller
             $ttl = $has_exists;
             $code = $has_exists->code;
         }
+        
         //        Notification::send(null, new VerifyPhoneNotification($phone, $code));
         ApiService::_success([
             'phone' => $phone, 'has_account' =>  !!$user,

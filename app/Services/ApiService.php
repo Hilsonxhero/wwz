@@ -22,6 +22,13 @@ class ApiService
     }
 
 
+    public static function _withError($field, $message)
+    {
+        self::_response([$field => $message], 422, true);
+    }
+
+
+
     public static function _success($data)
     {
         self::_response($data, 200, true);

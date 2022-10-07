@@ -5,6 +5,7 @@ namespace Modules\State\Repository;
 interface StateRepositoryInterface
 {
     public function find($id);
+    public function get();
     public function all();
     public function allActive();
     public function create($data);

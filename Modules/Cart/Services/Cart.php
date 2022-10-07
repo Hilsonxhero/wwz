@@ -219,10 +219,10 @@ class Cart
 
         if (!auth()->check()) {
             $content = $this->getContent();
-            if ($content->has($item->rowId)) {
-                $item->quantity += $content->get($item->rowId)->quantity;
+            if ($content->has($item->id)) {
+                $item->quantity += $content->get($item->id)->quantity;
             }
-            $content->put($item->rowId, $item);
+            $content->put($item->id, $item);
             $this->storage->set($this->instance, serialize($content));
         } else {
             $user = auth()->user();
@@ -263,29 +263,32 @@ class Cart
     {
         if (!$this->authenticated) {
             $cartItem =  $this->get($rowId);
+            // return  $cartItem;
             $cartItem->updateFromArray($quantity);
             $content = $this->getContent();
 
-            if ($rowId !== $cartItem->rowId) {
-                $itemOldIndex = $content->keys()->search($rowId);
 
-                $content->pull($rowId);
+            // if ($rowId !== $cartItem->id) {
+            //     $itemOldIndex = $content->keys()->search($rowId);
 
-                if ($content->has($cartItem->rowId)) {
-                    $existingCartItem = $this->get($cartItem->rowId);
-                    $cartItem->setQuantity($existingCartItem->quantity + $cartItem->quantity);
-                }
-            }
+            //     $content->pull($rowId);
+
+            //     if ($content->has($cartItem->id)) {
+            //         $existingCartItem = $this->get($cartItem->id);
+            //         $cartItem->setQuantity($existingCartItem->quantity + $cartItem->quantity);
+            //     }
+            // }
             if ($cartItem->quantity <= 0) {
-                $this->remove($cartItem->rowId);
+                $this->remove($cartItem->id);
                 return;
             } else {
                 if (isset($itemOldIndex)) {
                     $content = $content->slice(0, $itemOldIndex)
-                        ->merge([$cartItem->rowId => $cartItem])
+                        ->merge([$cartItem->id => $cartItem])
                         ->merge($content->slice($itemOldIndex));
                 } else {
-                    $content->put($cartItem->rowId, $cartItem);
+
+                    $content->put($cartItem->id, $cartItem);
                 }
             }
 
@@ -315,7 +318,7 @@ class Cart
 
             $content = $this->getContent();
 
-            $content->pull($cartItem->rowId);
+            $content->pull($cartItem->id);
 
             $this->storage->set($this->instance, serialize($content));
         } else {
@@ -336,9 +339,11 @@ class Cart
     {
         $content = $this->getContent();
 
-        if (!$content->has($rowId)) {
-            throw new InvalidRowIDException("The cart does not contain rowId {$rowId}.");
-        }
+        // if (!$content->has($rowId)) {
+        //     throw new InvalidRowIDException("The cart does not contain rowId {$rowId}.");
+        // }
+
+        // return  $content->where('id', $rowId)->first();
 
         return  $content->get($rowId);
     }
@@ -360,7 +365,6 @@ class Cart
      */
     public function content()
     {
-
         if (auth()->check()) {
             $data = resolve(UserRepositoryInterface::class)->cart();
             $data = $data->map(function ($item) {
@@ -395,7 +399,7 @@ class Cart
 
             $cart->map(function ($item) {
                 $variant = resolve(ProductVariantRepositoryInterface::class)->find($item->variant);
-                $this->update($item->rowId, ['discount' => $variant->calculate_discount, 'price' => $variant->price]);
+                $this->update($item->id, ['discount' => $variant->calculate_discount, 'price' => $variant->price]);
             });
 
 
@@ -650,7 +654,7 @@ class Cart
 
         $content = $this->getContent();
 
-        $content->put($cartItem->rowId, $cartItem);
+        $content->put($cartItem->id, $cartItem);
 
         $this->storage->set($this->instance, serialize($content));
     }
@@ -671,7 +675,7 @@ class Cart
 
         $content = $this->getContent();
 
-        $content->put($cartItem->rowId, $cartItem);
+        $content->put($cartItem->id, $cartItem);
 
         $this->storage->set($this->instance, serialize($content));
     }
@@ -710,7 +714,7 @@ class Cart
 
         $content = $this->getContent();
 
-        $content->put($cartItem->rowId, $cartItem);
+        $content->put($cartItem->id, $cartItem);
 
         $this->storage->set($this->instance, serialize($content));
     }
@@ -824,7 +828,7 @@ class Cart
         $content = $this->getContent();
 
         foreach ($storedContent as $cartItem) {
-            $content->put($cartItem->rowId, $cartItem);
+            $content->put($cartItem->id, $cartItem);
         }
 
         $this->events->dispatch('cart.restored');

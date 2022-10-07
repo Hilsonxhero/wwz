@@ -18,7 +18,7 @@ class ShowUserResource extends JsonResource
     {
 
         return [
-            'user' => auth()->user(),
+            'user' => new UserResource(auth()->user()),
             'is_logged_in' => !!auth()->user(),
             'cart' => new CartResource(Cart::content()),
         ];

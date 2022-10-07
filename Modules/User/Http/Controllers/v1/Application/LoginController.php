@@ -32,6 +32,7 @@ class LoginController extends Controller
 
         if (!$user) {
             $user = User::create([
+                'username' => $phone,
                 'phone' => $phone,
             ]);
         }
@@ -41,8 +42,8 @@ class LoginController extends Controller
                 'grant_type' => 'password',
                 'client_id' => config('services.passport.client_id'),
                 'client_secret' => config('services.passport.client_secret'),
-                'username' => "09224729521",
-                'password' => "09224729521",
+                'username' => $phone,
+                'password' => "09224729522",
             ]);
 
             $data = json_decode($response->getBody());

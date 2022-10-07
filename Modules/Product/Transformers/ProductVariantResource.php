@@ -26,6 +26,10 @@ class ProductVariantResource extends JsonResource
                 'id' => $this->shipment->id,
                 'title' => $this->shipment->title,
             ],
+            'shipment_type' => [
+                'id' => $this->shipment_type->id,
+                'title' => $this->shipment_type->title,
+            ],
             'price' => $this->price,
             'is_incredible' => !!$this->incredible,
             'is_promotion' => !!$this->is_promotion,

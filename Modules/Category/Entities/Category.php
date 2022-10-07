@@ -27,10 +27,6 @@ class Category extends Model implements HasMedia
         'status',
     ];
 
-    protected static function newFactory()
-    {
-        return \Modules\Category\Database\factories\CategoryFactory::new();
-    }
 
 
     const DISABLE_STATUS = 'disable';

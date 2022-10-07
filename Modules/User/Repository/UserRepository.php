@@ -21,7 +21,7 @@ class UserRepository implements UserRepositoryInterface
 
     public function cart()
     {
-        return auth()->user()->cart->items()->with('variant')->get();
+        return  auth()->user()->cart->items()->with('variant')->get();
     }
 
 
@@ -45,9 +45,10 @@ class UserRepository implements UserRepositoryInterface
         $user = $this->find($id);
         if (!request()->filled('password')) {
             unset($data['password']);
+        } elseif (request()->filled('role')) {
+            $user->syncRoles($data['role'])->update($data);
         }
-        $user->syncRoles($data['role'])->update($data);
-
+        $user->update($data);
         return $user;
     }
     public function show($id)
@@ -71,6 +72,11 @@ class UserRepository implements UserRepositoryInterface
             return  ApiService::_response(trans('response.responses.404'), 404);
         }
     }
+    public function findByPhone($phone)
+    {
+        return User::query()->where('phone', $phone)->first();
+    }
+
     public function delete($id)
     {
         $user = $this->find($id);

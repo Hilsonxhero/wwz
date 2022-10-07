@@ -62,7 +62,6 @@ class CartController extends Controller
         );
 
 
-
         $cart = Cart::content();
 
 

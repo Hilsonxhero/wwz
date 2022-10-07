@@ -88,6 +88,12 @@ class User extends Authenticatable implements HasMedia
         return $this->hasOne(EntitiesCart::class);
     }
 
+    public function addresses()
+    {
+        return $this->hasMany(Address::class);
+    }
+
+
     public static function last()
     {
         return static::all()->last();
@@ -112,6 +118,19 @@ class User extends Authenticatable implements HasMedia
     {
         return Attribute::make(
             get: fn ($value) => !!auth()->user()
+        );
+    }
+
+
+    /**
+     * Calculate discount percent.
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    protected function hasPassword(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => !!$this->password,
         );
     }
 
