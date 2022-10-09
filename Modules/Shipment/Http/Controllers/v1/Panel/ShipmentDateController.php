@@ -36,7 +36,6 @@ class ShipmentDateController extends Controller
      */
     public function index(Request $request, $id)
     {
-        // $shipment = $this->shipmentTypeRepo->find($id);
         $city = $this->cityRepo->find($id);
         $dates = $this->shipmentDateRepo->get($city);
         return  ShipmentDateResource::collection($dates);
@@ -66,9 +65,10 @@ class ShipmentDateController extends Controller
      * @param int $id
      * @return Response
      */
-    public function show($id)
+    public function show($city, $id)
     {
-        //
+        $type = $this->shipmentDateRepo->show($id);
+        return new ShipmentDateResource($type);
     }
 
     /**
@@ -77,9 +77,18 @@ class ShipmentDateController extends Controller
      * @param int $id
      * @return Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $city, $id)
     {
-        //
+        ApiService::Validator($request->all(), [
+            'shipment_type_id' => ['required', 'exists:shipment_types,id'],
+            'city_id' => ['required', 'exists:cities,id'],
+            'date' => ['required'],
+            'is_holiday' => ['nullable'],
+        ]);
+
+        $this->shipmentDateRepo->update($id, $request);
+
+        ApiService::_success(trans('response.responses.200'));
     }
 
     /**
@@ -87,8 +96,9 @@ class ShipmentDateController extends Controller
      * @param int $id
      * @return Response
      */
-    public function destroy($id)
+    public function destroy($city, $id)
     {
-        //
+        $type = $this->shipmentDateRepo->delete($id);
+        ApiService::_success(trans('response.responses.200'));
     }
 }

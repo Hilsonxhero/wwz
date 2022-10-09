@@ -6,8 +6,8 @@ use App\Services\ApiService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
-use Modules\Shipment\Transformers\Panel\DelieryTypeResource;
 use Modules\Shipment\Repository\DeliveryTypeRepositoryInterface;
+use Modules\Shipment\Transformers\Panel\DeliveryTypeResource;
 
 class DeliveryTypeController extends Controller
 {
@@ -26,7 +26,18 @@ class DeliveryTypeController extends Controller
     public function index()
     {
         $types = $this->deliveryRepo->all();
-        return DelieryTypeResource::collection($types);
+        return DeliveryTypeResource::collection($types);
+    }
+
+
+    /**
+     * Display a listing of the resource.
+     * @return Response
+     */
+    public function select()
+    {
+        $types = $this->deliveryRepo->get();
+        return DeliveryTypeResource::collection($types);
     }
 
     /**
@@ -53,7 +64,7 @@ class DeliveryTypeController extends Controller
     public function show($id)
     {
         $type = $this->deliveryRepo->show($id);
-        return new DelieryTypeResource($type);
+        return new DeliveryTypeResource($type);
     }
 
     /**

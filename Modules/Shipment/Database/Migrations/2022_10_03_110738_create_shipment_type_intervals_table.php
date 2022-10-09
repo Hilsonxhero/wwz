@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('shipment_type_intervals', function (Blueprint $table) {
             $table->id();
             $table->foreignId("shipment_type_date_id")->constrained("shipment_type_dates")->cascadeOnDelete();
-            $table->timestamp("start_at");
-            $table->timestamp("end_at");
+            $table->string("start_at");
+            $table->string("end_at");
             $table->bigInteger("order_capacity");
             $table->decimal("shipping_cost", $precision = 64, $scale = 8);
             $table->timestamps();

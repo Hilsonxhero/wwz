@@ -11,6 +11,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Shipment\Entities\DeliveryType;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Product extends Model implements HasMedia
@@ -18,7 +19,7 @@ class Product extends Model implements HasMedia
     use HasFactory, Sluggable, SoftDeletes, InteractsWithMedia;
 
     protected $fillable = [
-        'title_fa', 'title_en', 'slug', 'review', 'category_id', 'brand_id', 'status',
+        'title_fa', 'title_en', 'slug', 'review', 'category_id', 'brand_id', 'status', 'delivery_type_id',
     ];
 
     const DISABLE_STATUS = 'disable';
@@ -29,11 +30,10 @@ class Product extends Model implements HasMedia
     static $statuses = [self::DISABLE_STATUS, self::ENABLE_STATUS, self::PENDING_STATUS, self::REJECTED_STATUS];
 
 
-    // protected static function newFactory()
-    // {
-    //     return \Modules\Product\Database\factories\ProductFactory::new();
-    // }
-
+    public function delivery_type()
+    {
+        return $this->belongsTo(DeliveryType::class);
+    }
 
     public function features()
     {
@@ -52,8 +52,6 @@ class Product extends Model implements HasMedia
 
     public function featureValues()
     {
-        // return $this->belongsToMany(FeatureValue::class, 'product_features')->withPivot('value');
-
         return $this->hasMany(ProductFeature::class);
     }
 
@@ -66,8 +64,6 @@ class Product extends Model implements HasMedia
     {
         return $this->hasManyThrough(ProductVariantCombination::class, ProductVariant::class);
     }
-
-
 
 
     public function category()

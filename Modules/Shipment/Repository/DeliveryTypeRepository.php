@@ -17,9 +17,9 @@ class DeliveryTypeRepository implements DeliveryTypeRepositoryInterface
         return DeliveryType::query()->orderBy('created_at', 'desc')->paginate();
     }
 
-    public function get($city)
+    public function get()
     {
-        return $city->dates()->paginate();
+        return DeliveryType::query()->orderBy('created_at', 'desc')->get();
     }
 
     public function create($data)

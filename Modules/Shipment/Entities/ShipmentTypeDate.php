@@ -22,6 +22,11 @@ class ShipmentTypeDate extends Model
         return $this->belongsTo(ShipmentType::class);
     }
 
+    public function intervals()
+    {
+        return $this->hasMany(ShipmentTypeInterval::class);
+    }
+
     /**
      * The attributes that should be cast.
      *

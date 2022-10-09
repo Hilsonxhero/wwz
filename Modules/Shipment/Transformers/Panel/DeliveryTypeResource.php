@@ -4,7 +4,7 @@ namespace Modules\Shipment\Transformers\Panel;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class DelieryTypeResource extends JsonResource
+class DeliveryTypeResource extends JsonResource
 {
     /**
      * Transform the resource into an array.

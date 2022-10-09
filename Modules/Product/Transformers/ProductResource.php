@@ -4,6 +4,7 @@ namespace Modules\Product\Transformers;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use Modules\Category\Transformers\CategoryResource;
+use Modules\Shipment\Transformers\Panel\DeliveryTypeResource;
 
 class ProductResource extends JsonResource
 {
@@ -20,7 +21,8 @@ class ProductResource extends JsonResource
             'title_fa' => $this->title_fa,
             'title_en' => $this->title_en,
             'slug' => $this->slug,
-            'category' => $this->category,
+            'category' => new CategoryResource($this->category),
+            'delivery_type' => new DeliveryTypeResource($this->delivery_type),
             'brand' => $this->brand->id,
             'combinations' =>  collect($this->combinations)->unique('variant_id')->groupBy('variant.group')->transform(function ($item, $key) {
                 return ['group' => json_decode($key), 'values' => $item->transform(function ($combination, $key) {

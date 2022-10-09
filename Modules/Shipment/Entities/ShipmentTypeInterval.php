@@ -17,13 +17,10 @@ class ShipmentTypeInterval extends Model
         'shipment_type_date_id',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'start_at' => 'datetime',
-        'end_at' => 'datetime',
-    ];
+
+
+    public function shipment_date()
+    {
+        return $this->belongsTo(ShipmentTypeDate::class, 'shipment_type_date_id');
+    }
 }

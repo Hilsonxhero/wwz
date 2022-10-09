@@ -37,11 +37,13 @@ class ShipmentDateRepository implements ShipmentDateRepositoryInterface
 
     public function update($id, $data)
     {
+        $date = createDatetimeFromFormat($data->input('date'), 'Y/m/d');
         $shipment = $this->find($id);
         $shipment->update([
-            'title' => $data->input('title'),
-            'description' => $data->input('description'),
-            'shipping_cost' => $data->input('shipping_cost'),
+            'shipment_type_id' =>  $data->input('shipment_type_id'),
+            'city_id' =>  $data->input('city_id'),
+            'is_holiday' =>  $data->input('is_holiday'),
+            'date' => $date,
         ]);
         return $shipment;
     }
@@ -54,7 +56,7 @@ class ShipmentDateRepository implements ShipmentDateRepositoryInterface
     public function find($id)
     {
         try {
-            $shipment = ShipmentType::query()->where('id', $id)->firstOrFail();
+            $shipment = ShipmentTypeDate::query()->where('id', $id)->firstOrFail();
             return $shipment;
         } catch (ModelNotFoundException $e) {
             return  ApiService::_response(trans('response.responses.404'), 404);

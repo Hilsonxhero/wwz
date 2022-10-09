@@ -15,7 +15,8 @@ class ShipmentDateResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'shipment' => new ShipmentTypeResource($this->shipment_type),
+            'id' => $this->id,
+            'type' => new ShipmentTypeResource($this->shipment_type),
             'date' => formatGregorian($this->date, 'Y/m/d'),
             'weekday_name' => formatGregorian($this->date, '%A'),
             'is_holiday' => $this->is_holiday,

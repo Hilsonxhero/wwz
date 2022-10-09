@@ -2,10 +2,10 @@
 
 namespace Modules\Shipment\Repository;
 
-interface DeliveryTypeRepositoryInterface
+interface ShipmentIntervalRepositoryInterface
 {
     public function find($id);
-    public function get();
+    public function get($shipment);
     public function all();
     public function create($data);
     public function update($id, $data);
