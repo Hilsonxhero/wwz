@@ -13,11 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('shipment_type_dates', function (Blueprint $table) {
+        Schema::create('delivery_types', function (Blueprint $table) {
             $table->id();
-            $table->foreignId("shipment_type_id")->constrained("shipment_types")->cascadeOnDelete();
-            $table->timestamp('date');
-            $table->boolean('is_holiday')->default(false);
+            $table->string("title");
+            $table->string("code");
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('shipment_type_dates');
+        Schema::dropIfExists('delivery_types');
     }
 };

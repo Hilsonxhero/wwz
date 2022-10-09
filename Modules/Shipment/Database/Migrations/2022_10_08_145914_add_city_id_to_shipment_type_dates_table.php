@@ -13,12 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('shipment_type_dates', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId("shipment_type_id")->constrained("shipment_types")->cascadeOnDelete();
-            $table->timestamp('date');
-            $table->boolean('is_holiday')->default(false);
-            $table->timestamps();
+        Schema::table('shipment_type_dates', function (Blueprint $table) {
+            $table->foreignId("city_id")->after('shipment_type_id')->constrained("cities")->cascadeOnDelete();
         });
     }
 
@@ -29,6 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('shipment_type_dates');
+        Schema::table('shipment_type_dates', function (Blueprint $table) {
+            $table->dropColumn("city_id");
+        });
     }
 };

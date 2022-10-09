@@ -49,8 +49,8 @@ class StateRepository implements StateRepositoryInterface
     public function cities($id)
     {
         $state = $this->find($id);
-        // return $state->cities()->orderByDesc('created_at')->paginate();
-        return $state->cities()->orderByDesc('created_at')->get();
+        return $state->cities()->orderByDesc('created_at')->paginate();
+        // return $state->cities()->orderByDesc('created_at')->get();
     }
 
     public function find($id)

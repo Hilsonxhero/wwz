@@ -12,16 +12,22 @@ use Modules\Shipment\Entities\ShipmentType;
 use Modules\Shipment\Transformers\Panel\ShipmentDateResource;
 use Modules\Shipment\Repository\ShipmentDateRepositoryInterface;
 use Modules\Shipment\Repository\ShipmentTypeRepositoryInterface;
+use Modules\State\Repository\CityRepositoryInterface;
 
 class ShipmentDateController extends Controller
 {
     private $shipmentDateRepo;
     private $shipmentTypeRepo;
+    private $cityRepo;
 
-    public function __construct(ShipmentTypeRepositoryInterface $shipmentTypeRepo, ShipmentDateRepositoryInterface $shipmentDateRepo)
-    {
+    public function __construct(
+        ShipmentTypeRepositoryInterface $shipmentTypeRepo,
+        ShipmentDateRepositoryInterface $shipmentDateRepo,
+        CityRepositoryInterface $cityRepo
+    ) {
         $this->shipmentDateRepo = $shipmentDateRepo;
         $this->shipmentTypeRepo = $shipmentTypeRepo;
+        $this->cityRepo = $cityRepo;
     }
 
     /**
@@ -30,9 +36,10 @@ class ShipmentDateController extends Controller
      */
     public function index(Request $request, $id)
     {
-        $shipment = $this->shipmentTypeRepo->find($id);
-        $dates = $this->shipmentDateRepo->get($shipment);
-        return new ShipmentDateResource($dates);
+        // $shipment = $this->shipmentTypeRepo->find($id);
+        $city = $this->cityRepo->find($id);
+        $dates = $this->shipmentDateRepo->get($city);
+        return  ShipmentDateResource::collection($dates);
     }
 
     /**
@@ -42,39 +49,9 @@ class ShipmentDateController extends Controller
      */
     public function store(Request $request)
     {
-
-        $today = Carbon::now();
-
-        $today2 = Carbon::now();
-
-        $next_two_week = $today->addWeek(1);
-
-        $days = CarbonPeriod::create($today2, $next_two_week)->toArray();
-
-        $week_days = array();
-
-        foreach ($days as $oneDay) {
-
-            $date = $oneDay->format('Y/m/d');
-            $day = $oneDay->format('D');
-
-            array_push($week_days, [
-                'date' => $date,
-                'weekday_name' => formatGregorian($day, '%A'),
-                'is_holiday' => 0
-            ]);
-        }
-
-        $shippings = ShipmentType::query()->get();
-
-        foreach ($shippings as $key => $shipping) {
-            $shipping->dates()->createMany($week_days);
-        }
-
-        ApiService::_success($week_days);
-
         ApiService::Validator($request->all(), [
-            'shipment_type_id' => ['required'],
+            'shipment_type_id' => ['required', 'exists:shipment_types,id'],
+            'city_id' => ['required', 'exists:cities,id'],
             'date' => ['required'],
             'is_holiday' => ['nullable'],
         ]);

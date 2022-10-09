@@ -4,7 +4,7 @@ namespace Modules\Shipment\Transformers\Panel;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ShipmentDateResource extends JsonResource
+class DelieryTypeResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,10 +15,9 @@ class ShipmentDateResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'shipment' => new ShipmentTypeResource($this->shipment_type),
-            'date' => formatGregorian($this->date, 'Y/m/d'),
-            'weekday_name' => formatGregorian($this->date, '%A'),
-            'is_holiday' => $this->is_holiday,
+            'id' => $this->id,
+            'title' => $this->title,
+            'code' => $this->code,
         ];
     }
 }

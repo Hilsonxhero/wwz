@@ -39,6 +39,7 @@ class ShipmentServiceProvider extends ServiceProvider
     {
         $this->app->register(RouteServiceProvider::class);
         $this->app->register(ShipmentRepoServiceProvider::class);
+        $this->app->register(ShipmentScheduleServiceProvider::class);
     }
 
     /**

@@ -16,6 +16,12 @@ class ShipmentTypeRepository implements ShipmentTypeRepositoryInterface
             ->paginate();
     }
 
+    public function get()
+    {
+        return ShipmentType::orderBy('created_at', 'desc')
+            ->get();
+    }
+
     public function create($data)
     {
         $shipment =  ShipmentType::query()->create([
@@ -25,6 +31,12 @@ class ShipmentTypeRepository implements ShipmentTypeRepositoryInterface
         ]);
         return $shipment;
     }
+    public function createMany($shipment, $data)
+    {
+        return $shipment->dates()->createMany($data);
+    }
+
+
     public function update($id, $data)
     {
         $shipment = $this->find($id);

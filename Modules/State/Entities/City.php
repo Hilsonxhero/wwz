@@ -4,6 +4,7 @@ namespace Modules\State\Entities;
 
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Shipment\Entities\ShipmentTypeDate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class City extends Model
@@ -37,6 +38,8 @@ class City extends Model
         });
     }
 
+
+
     // protected static function newFactory()
     // {
     //     return \Modules\State\Database\factories\CityFactory::new();
@@ -45,5 +48,10 @@ class City extends Model
     public function state()
     {
         return $this->belongsTo(State::class);
+    }
+
+    public function dates()
+    {
+        return $this->hasMany(ShipmentTypeDate::class);
     }
 }

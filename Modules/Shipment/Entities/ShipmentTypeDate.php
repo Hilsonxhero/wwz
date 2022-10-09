@@ -11,8 +11,8 @@ class ShipmentTypeDate extends Model
 
     protected $fillable = [
         'shipment_type_id',
+        'city_id',
         'date',
-        'weekday_name',
         'is_holiday',
     ];
 
