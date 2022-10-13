@@ -17,6 +17,7 @@ class ShipmentType extends Model implements HasMedia
         'title',
         'description',
         'shipping_cost',
+        'is_default'
     ];
 
     public static function last()

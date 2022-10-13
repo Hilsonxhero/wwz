@@ -2,7 +2,9 @@
 
 use Illuminate\Http\Request;
 use Modules\Cart\Http\Controllers\v1\App\CartController;
+use Modules\Cart\Http\Controllers\v1\App\ShippingController;
 
 Route::prefix('v1/application')->group(function () {
     Route::apiResource('cart', CartController::class);
+    Route::get('shipping', [ShippingController::class, 'init'])->middleware(['auth:api']);
 });

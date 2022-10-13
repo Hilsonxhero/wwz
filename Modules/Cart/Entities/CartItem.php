@@ -4,6 +4,7 @@ namespace Modules\Cart\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Product\Entities\Product;
 use Modules\Product\Entities\ProductVariant;
 
 class CartItem extends Model
@@ -28,5 +29,10 @@ class CartItem extends Model
     public function variant()
     {
         return $this->belongsTo(ProductVariant::class);
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
     }
 }

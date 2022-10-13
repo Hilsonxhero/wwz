@@ -1,10 +1,11 @@
 <?php
 
-namespace Modules\Shipment\Transformers\Panel;
+namespace Modules\Shipment\Transformers\App;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Modules\Shipment\Transformers\Panel\ShipmentDateResource;
 
-class ShipmentTypeResource extends JsonResource
+class ShippingSubmitTypeResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -19,7 +20,7 @@ class ShipmentTypeResource extends JsonResource
             'title' => $this->title,
             'description' => $this->description,
             'shipping_cost' => $this->shipping_cost,
-            'is_default' => !!$this->is_default,
+            'time_scopes' => ShipmentDateResource::collection($this->dates)
         ];
     }
 }

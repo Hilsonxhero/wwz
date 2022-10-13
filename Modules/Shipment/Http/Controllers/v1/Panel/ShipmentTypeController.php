@@ -36,6 +36,7 @@ class ShipmentTypeController extends Controller
      */
     public function store(ShipmentTypeRequest $request)
     {
+
         $shipment = $this->shipmentRepo->create($request);
 
         ApiService::_success(trans('response.responses.200'));

@@ -21,7 +21,7 @@ class UserRepository implements UserRepositoryInterface
 
     public function cart()
     {
-        return  auth()->user()->cart->items()->with('variant')->get();
+        return  auth()->user()->cart->items()->with(['variant', 'product'])->get();
     }
 
 

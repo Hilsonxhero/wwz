@@ -18,8 +18,10 @@ class ShipmentDateResource extends JsonResource
             'id' => $this->id,
             'type' => new ShipmentTypeResource($this->shipment_type),
             'date' => formatGregorian($this->date, 'Y/m/d'),
+            'day' => formatGregorian($this->date, 'd'),
             'weekday_name' => formatGregorian($this->date, '%A'),
             'is_holiday' => $this->is_holiday,
+            'intervals' => ShipmentIntervalResource::collection($this->intervals)
         ];
     }
 }

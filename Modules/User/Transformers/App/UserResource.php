@@ -23,7 +23,6 @@ class UserResource extends JsonResource
             'city_id' => $this->city_id,
             'wallet' => $this->wallet,
             'national_identity_number ' => $this->national_identity_number,
-
         ];
     }
 }

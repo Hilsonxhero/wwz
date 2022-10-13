@@ -36,17 +36,16 @@ class UserAddressRepository implements UserAddressRepositoryInterface
         ]);
         return $address;
     }
+
     public function update($id, $data)
     {
         $address = $this->find($id);
-        if (!request()->filled('password')) {
-            unset($data['password']);
-        } elseif (request()->filled('role')) {
-            $address->syncRoles($data['role'])->update($data);
-        }
         $address->update($data);
         return $address;
     }
+
+
+
     public function show($id)
     {
         $address = $this->find($id);
@@ -68,7 +67,6 @@ class UserAddressRepository implements UserAddressRepositoryInterface
             return  ApiService::_response(trans('response.responses.404'), 404);
         }
     }
-
 
     public function delete($id)
     {

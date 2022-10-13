@@ -18,6 +18,7 @@ use Modules\Cart\Exceptions\UnknownModelException;
 use Modules\Cart\Repository\CartItemRepositoryInterface;
 use Modules\Cart\Repository\CartRepositoryInterface;
 use Modules\Product\Repository\ProductVariantRepositoryInterface;
+use Modules\Product\Transformers\Cart\ProductResource;
 use Modules\User\Repository\UserRepositoryInterface;
 
 class Cart
@@ -376,7 +377,7 @@ class Cart
                     $item->variant->price,
                     $item->variant->weight,
                     $item->quantity,
-                    []
+                    ['delivery' => $item->product->delivery_type->id]
                 )->setDiscountRate($item->variant->calculate_discount);
             });
             $cart = $data;

@@ -3,6 +3,7 @@
 namespace Modules\Product\Transformers\Cart;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Modules\Shipment\Transformers\Panel\DeliveryTypeResource;
 
 class ProductResource extends JsonResource
 {
@@ -25,6 +26,7 @@ class ProductResource extends JsonResource
                 'thumb' => $this->getFirstMediaUrl('main', 'thumb'),
                 'thumbs' => $this->getMedia('thumbs')->toArray()
             ],
+            'delivery' => $this->delivery_type->id,
         ];
     }
 }

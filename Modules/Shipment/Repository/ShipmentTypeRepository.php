@@ -24,10 +24,16 @@ class ShipmentTypeRepository implements ShipmentTypeRepositoryInterface
 
     public function create($data)
     {
+        if ($data->filled('is_default')) {
+            ShipmentType::query()->update([
+                'is_default' => false,
+            ]);
+        }
         $shipment =  ShipmentType::query()->create([
             'title' => $data->input('title'),
             'description' => $data->input('description'),
             'shipping_cost' => $data->input('shipping_cost'),
+            'is_default' => $data->input('is_default'),
         ]);
         return $shipment;
     }
@@ -39,11 +45,17 @@ class ShipmentTypeRepository implements ShipmentTypeRepositoryInterface
 
     public function update($id, $data)
     {
+        if ($data->filled('is_default')) {
+            ShipmentType::query()->where('is_default', true)->update([
+                'is_default' => false,
+            ]);
+        }
         $shipment = $this->find($id);
         $shipment->update([
             'title' => $data->input('title'),
             'description' => $data->input('description'),
             'shipping_cost' => $data->input('shipping_cost'),
+            'is_default' => $data->input('is_default'),
         ]);
         return $shipment;
     }

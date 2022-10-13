@@ -135,7 +135,17 @@ class User extends Authenticatable implements HasMedia
     }
 
 
-
+    /**
+     * Get default address.
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    protected function defaultAddress(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $this->addresses()->where('is_default', true)->first(),
+        );
+    }
 
 
     // protected static function newFactory()

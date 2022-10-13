@@ -22,6 +22,11 @@ class ShipmentTypeDate extends Model
         return $this->belongsTo(ShipmentType::class);
     }
 
+    public function delivery_type()
+    {
+        return $this->belongsTo(DeliveryType::class);
+    }
+
     public function intervals()
     {
         return $this->hasMany(ShipmentTypeInterval::class);
