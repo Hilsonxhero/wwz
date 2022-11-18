@@ -8,7 +8,7 @@ use Modules\Media\Entities\Media;
 
 interface FileServiceContract
 {
-    public static function upload($file, string $filename, $dir): array;
+    public static function upload($file, string $filename, $dir);
 
     public static function delete($media);
 

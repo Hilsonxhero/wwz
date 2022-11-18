@@ -6,15 +6,15 @@ use App\Services\ApiService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Modules\Shipment\Entities\Shipment;
-use Modules\Shipment\Entities\ShipmentType;
-use Modules\Shipment\Entities\ShipmentTypeDate;
-use Modules\Shipment\Entities\ShipmentTypeInterval;
+use Modules\Shipment\Entities\Shipment;
+use Modules\Shipment\Entities\ShipmentDate;
+use Modules\Shipment\Entities\ShipmentInterval;
 
 class ShipmentIntervalRepository implements ShipmentIntervalRepositoryInterface
 {
     public function all()
     {
-        return ShipmentTypeDate::query()->paginate();
+        return ShipmentDate::query()->paginate();
     }
 
     public function get($shipment_date)
@@ -25,8 +25,8 @@ class ShipmentIntervalRepository implements ShipmentIntervalRepositoryInterface
     public function create($data)
     {
 
-        $item =  ShipmentTypeInterval::query()->create([
-            'shipment_type_date_id' =>  $data->input('shipment_type_date_id'),
+        $item =  ShipmentInterval::query()->create([
+            'shipment_date_id' =>  $data->input('shipment_date_id'),
             'shipping_cost' =>  $data->input('shipping_cost'),
             'order_capacity' =>  $data->input('order_capacity'),
             'end_at' =>  $data->input('end_at'),
@@ -42,7 +42,7 @@ class ShipmentIntervalRepository implements ShipmentIntervalRepositoryInterface
     {
         $interval = $this->find($id);
         $interval->update([
-            'shipment_type_date_id' =>  $data->input('shipment_type_date_id'),
+            'shipment_date_id' =>  $data->input('shipment_date_id'),
             'shipping_cost' =>  $data->input('shipping_cost'),
             'order_capacity' =>  $data->input('order_capacity'),
             'end_at' =>  $data->input('end_at'),
@@ -59,7 +59,7 @@ class ShipmentIntervalRepository implements ShipmentIntervalRepositoryInterface
     public function find($id)
     {
         try {
-            $interval = ShipmentTypeInterval::query()->where('id', $id)->firstOrFail();
+            $interval = ShipmentInterval::query()->where('id', $id)->firstOrFail();
             return $interval;
         } catch (ModelNotFoundException $e) {
             return  ApiService::_response(trans('response.responses.404'), 404);

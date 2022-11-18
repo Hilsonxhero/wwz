@@ -81,7 +81,7 @@ class ProductRepository implements ProductRepositoryInterface
             'category_id' => $data->category_id,
             'brand_id' => $data->brand_id,
             'status' => $data->status,
-            'delivery_type_id' => $data->delivery_type
+            'delivery_id' => $data->delivery
         ]);
 
         $this->createVariants($product, $data->input('variants'));
@@ -99,7 +99,6 @@ class ProductRepository implements ProductRepositoryInterface
         foreach ($variants as $key => $variant) {
             $producy_variant = $product->variants()->create([
                 'warranty_id' => $variant->warranty,
-                'shipment_type_id' => $variant->shipment_type,
                 'shipment_id' => $variant->shipment,
                 'price' => $variant->rrp_price,
                 'discount' => $variant->discount,
@@ -113,7 +112,7 @@ class ProductRepository implements ProductRepositoryInterface
 
             foreach ($variant->combinations as $combination) {
                 $producy_variant->combinations()->firstOrCreate([
-                    'variant_id' => $combination->id,
+                    'variant_id' => $combination->variant_id,
                 ]);
             }
         }
@@ -130,7 +129,6 @@ class ProductRepository implements ProductRepositoryInterface
                     [
                         'warranty_id' => $variant->warranty,
                         'shipment_id' => $variant->shipment,
-                        'shipment_type_id' => $variant->shipment_type,
                         'price' => $variant->rrp_price,
                         'discount' => $variant->discount,
                         'discount_price' => $variant->rrp_price * $variant->discount / 100,
@@ -165,7 +163,7 @@ class ProductRepository implements ProductRepositoryInterface
             'category_id' => $data->category_id,
             'brand_id' => $data->brand_id,
             'status' => $data->status,
-            'delivery_type_id' => $data->delivery_type
+            'delivery_id' => $data->delivery_type
         ]);
 
         $this->updateVariants($product, $data->input('variants'));
@@ -200,11 +198,11 @@ class ProductRepository implements ProductRepositoryInterface
         //             'parent:id,title'
         //         ]
         //     ],
-            // 'combinations' => [
-            //     'variant:id,name,value,variant_group_id' => [
-            //         'group:id,name,type'
-            //     ]
-            // ],
+        // 'combinations' => [
+        //     'variant:id,name,value,variant_group_id' => [
+        //         'group:id,name,type'
+        //     ]
+        // ],
         // ]
         try {
             $product = Product::query()->where('id', $id)->with($relationships)->firstOrFail();

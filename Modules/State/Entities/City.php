@@ -4,9 +4,9 @@ namespace Modules\State\Entities;
 
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
-use Modules\Shipment\Entities\ShipmentTypeDate;
+use Modules\Shipment\Entities\ShipmentDate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\Shipment\Entities\ShipmentTypeCity;
+use Modules\Shipment\Entities\ShipmentCity;
 
 class City extends Model
 {
@@ -53,7 +53,7 @@ class City extends Model
 
     public function shipments()
     {
-        return $this->hasMany(ShipmentTypeCity::class);
+        return $this->hasMany(ShipmentCity::class);
     }
 
 

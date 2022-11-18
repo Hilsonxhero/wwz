@@ -59,12 +59,13 @@ class SettingRepository implements SettingRepositoryInterface
 
     public function find($name)
     {
-        try {
-            $setting = Setting::query()->where('name', $name)->firstOrFail();
-            return $setting;
-        } catch (ModelNotFoundException $e) {
-            return  ApiService::_response(trans('response.responses.404'), 404);
-        }
+        $setting = Setting::query()->where('name', $name)->first();
+        return $setting;
+        // try {
+        //     $setting = Setting::query()->where('name', $name)->firstOrFail();
+        // } catch (ModelNotFoundException $e) {
+        //     return  ApiService::_response(trans('response.responses.404'), 404);
+        // }
     }
     public function delete($id)
     {

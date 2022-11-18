@@ -3,7 +3,7 @@
 namespace Modules\Product\Transformers\Cart;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use Modules\Shipment\Transformers\Panel\DeliveryTypeResource;
+use Modules\Shipment\Transformers\Panel\DeliveryResource;
 
 class ProductResource extends JsonResource
 {

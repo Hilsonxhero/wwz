@@ -15,8 +15,13 @@ return new class extends Migration
     {
         Schema::create('shipments', function (Blueprint $table) {
             $table->id();
+            $table->foreignId("delivery_id")->constrained('deliveries');
             $table->string("title");
-            $table->text("description");
+            $table->string("description");
+            $table->decimal("shipping_cost")->default(0);
+            $table->boolean('is_default')->default(false);
+
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -6,15 +6,15 @@ use App\Services\ApiService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Modules\Shipment\Entities\Shipment;
-use Modules\Shipment\Entities\ShipmentType;
-use Modules\Shipment\Entities\ShipmentTypeCity;
-use Modules\Shipment\Entities\ShipmentTypeDate;
+use Modules\Shipment\Entities\Shipment;
+use Modules\Shipment\Entities\ShipmentCity;
+use Modules\Shipment\Entities\ShipmentDate;
 
 class ShipmentCityRepository implements ShipmentCityRepositoryInterface
 {
     public function all()
     {
-        return ShipmentTypeDate::query()->paginate();
+        return ShipmentDate::query()->paginate();
     }
 
     public function get($city)
@@ -32,7 +32,7 @@ class ShipmentCityRepository implements ShipmentCityRepositoryInterface
 
     public function create($data)
     {
-        $item =  ShipmentTypeCity::query()->create($data);
+        $item =  ShipmentCity::query()->create($data);
         return $item;
     }
 
@@ -52,7 +52,7 @@ class ShipmentCityRepository implements ShipmentCityRepositoryInterface
     public function find($id)
     {
         try {
-            $shipment = ShipmentTypeCity::query()->where('id', $id)->firstOrFail();
+            $shipment = ShipmentCity::query()->where('id', $id)->firstOrFail();
             return $shipment;
         } catch (ModelNotFoundException $e) {
             return  ApiService::_response(trans('response.responses.404'), 404);

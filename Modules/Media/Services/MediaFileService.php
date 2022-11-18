@@ -4,13 +4,15 @@
 namespace Modules\Media\Services;
 
 
-use Modules\Media\Contracts\FileServiceContract;
-use Modules\Media\Entities\Media;
 use PHPUnit\Util\Filesystem;
+use Modules\Media\Entities\Media;
+use Illuminate\Support\Facades\Storage;
+use Modules\Media\Contracts\FileServiceContract;
 
 class MediaFileService
 {
     private static $file;
+    private static $path;
     private static $dir;
     private static $isPrivate;
 
@@ -22,10 +24,12 @@ class MediaFileService
         return self::upload();
     }
 
-    public static function publicUpload($file)
+    public static function publicUpload($file, $path = null)
     {
         self::$file = $file;
+        self::$path = $path;
         self::$dir = 'app/public/';
+        if ($path) self::$dir = self::$dir . $path  . '/';
         self::$isPrivate = false;
         return self::upload();
     }
@@ -33,7 +37,7 @@ class MediaFileService
     private static function upload()
     {
         $ext = self::normalizeExtension(self::$file);
-        foreach (config('MediaFile.MediaTypeServices') as $key => $service) {
+        foreach (config('media.MediaTypeServices') as $key => $service) {
             if (in_array($ext, $service['extensions'])) {
                 return self::uploadByHandler(new $service['handler'], $key);
             }
@@ -42,11 +46,12 @@ class MediaFileService
 
     public static function delete($media)
     {
-        foreach (config('MediaFile.MediaTypeServices') as $type => $service) {
-            if ($media->type == $type) {
-                return $service['handler']::delete($media);
-            }
-        }
+        // foreach (config('media.MediaTypeServices') as $type => $service) {
+        //     if ($media->type == $type) {
+        //         return $service['handler']::delete($media);
+        //     }
+        // }
+        Storage::delete('public\\' . $media);
     }
 
     private static function normalizeExtension($file): string
@@ -59,22 +64,21 @@ class MediaFileService
         return uniqid();
     }
 
-    private static function uploadByHandler(FileServiceContract $handler, $key): Media
+    private static function uploadByHandler($handler, $key)
     {
-        $media = new Media();
-        $media->files = $handler::upload(self::$file, self::filenameGenerator(), self::$dir);
+        // FileServiceContract
+        $media = (object) array();
+        $media->files = $handler::upload(self::$file, self::filenameGenerator(), self::$dir, self::$path);
         $media->type = $key;
-        $media->user_id = auth()->id();
         $media->filename = self::$file->getClientOriginalName();
         $media->is_private = self::$isPrivate;
-        $media->save();
+        // $media->save();
         return $media;
     }
 
     public static function thumb(Media $media)
     {
-
-        foreach (config('MediaFile.MediaTypeServices') as $type => $service) {
+        foreach (config('media.MediaTypeServices') as $type => $service) {
             if ($media->type == $type) {
                 return $service['handler']::thumb($media);
             }
@@ -85,7 +89,7 @@ class MediaFileService
     {
 
         //        dd($media);
-        foreach (config('MediaFile.MediaTypeServices') as $type => $service) {
+        foreach (config('media.MediaTypeServices') as $type => $service) {
             if ($media->type == $type) {
                 return $service['handler']::stream($media);
             }

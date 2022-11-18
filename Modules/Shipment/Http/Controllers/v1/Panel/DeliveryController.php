@@ -6,17 +6,17 @@ use App\Services\ApiService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
-use Modules\Shipment\Http\Requests\ShipmentTypeRequest;
-use Modules\Shipment\Repository\ShipmentTypeRepositoryInterface;
-use Modules\Shipment\Transformers\Panel\ShipmentTypeResource;
+use Modules\Shipment\Repository\DeliveryRepositoryInterface;
+use Modules\Shipment\Transformers\Panel\DeliveryResource;
 
-class ShipmentTypeController extends Controller
+class DeliveryController extends Controller
 {
-    private $shipmentRepo;
 
-    public function __construct(ShipmentTypeRepositoryInterface $shipmentRepo)
+    private $deliveryRepo;
+
+    public function __construct(DeliveryRepositoryInterface $deliveryRepo)
     {
-        $this->shipmentRepo = $shipmentRepo;
+        $this->deliveryRepo = $deliveryRepo;
     }
 
     /**
@@ -25,8 +25,19 @@ class ShipmentTypeController extends Controller
      */
     public function index()
     {
-        $shipments = $this->shipmentRepo->all();
-        return  ShipmentTypeResource::collection($shipments);
+        $types = $this->deliveryRepo->all();
+        return DeliveryResource::collection($types);
+    }
+
+
+    /**
+     * Display a listing of the resource.
+     * @return Response
+     */
+    public function select()
+    {
+        $types = $this->deliveryRepo->get();
+        return DeliveryResource::collection($types);
     }
 
     /**
@@ -34,10 +45,13 @@ class ShipmentTypeController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function store(ShipmentTypeRequest $request)
+    public function store(Request $request)
     {
+        ApiService::Validator($request->all(), [
+            'title' => ['required'],
+        ]);
 
-        $shipment = $this->shipmentRepo->create($request);
+        $this->deliveryRepo->create($request);
 
         ApiService::_success(trans('response.responses.200'));
     }
@@ -49,9 +63,8 @@ class ShipmentTypeController extends Controller
      */
     public function show($id)
     {
-        $shipment = $this->shipmentRepo->show($id);
-
-        return new ShipmentTypeResource($shipment);
+        $type = $this->deliveryRepo->show($id);
+        return new DeliveryResource($type);
     }
 
     /**
@@ -62,7 +75,11 @@ class ShipmentTypeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $shipment = $this->shipmentRepo->update($id, $request);
+        ApiService::Validator($request->all(), [
+            'title' => ['required'],
+        ]);
+
+        $this->deliveryRepo->update($id, $request);
 
         ApiService::_success(trans('response.responses.200'));
     }
@@ -74,7 +91,7 @@ class ShipmentTypeController extends Controller
      */
     public function destroy($id)
     {
-        $shipment = $this->shipmentRepo->delete($id);
+        $this->deliveryRepo->delete($id);
 
         ApiService::_success(trans('response.responses.200'));
     }

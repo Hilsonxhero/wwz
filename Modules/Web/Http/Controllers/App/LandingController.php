@@ -37,17 +37,24 @@ class LandingController extends Controller
     {
         $incredible_products = $this->IncredibleProductRepo->take();
         $landing_page = Page::query()->where('title_en', 'landing')->first();
-        $header_banners = $landing_page->banners()->where('type', 'hero')->get();
-        $top_banners = $landing_page->banners()->where('type', 'top')->get();
-        $middle_banners = $landing_page->banners()->where('type', 'middle')->get();
         $articles = $this->articleRepo->take();
         $data = [
             'incredible_products' => IncredibleProductResource::collection($incredible_products),
-            'header_banners' =>  SettingBannerResource::collection($header_banners),
-            'top_banners' =>  SettingBannerResource::collection($top_banners),
-            'middle_banners' =>  SettingBannerResource::collection($middle_banners),
+            'header_banners' =>  array(),
+            'top_banners' =>  array(),
+            'middle_banners' =>  array(),
             'articles' =>  ArticleResource::collection($articles),
         ];
+
+        if ($landing_page) {
+
+            $data['banners']['header_banners'] =
+                SettingBannerResource::collection($landing_page->banners()->where('type', 'hero')->get());
+            $data['banners']['top_banners'] =
+                SettingBannerResource::collection($landing_page->banners()->where('type', 'top')->get());
+            $data['banners']['middle_banners'] =
+                SettingBannerResource::collection($landing_page->banners()->where('type', 'middle')->get());
+        }
 
         ApiService::_success($data);
     }

@@ -15,24 +15,48 @@ class ShipmentRepository implements ShipmentRepositoryInterface
             ->paginate();
     }
 
-    public function allActive()
+    public function get()
     {
         return Shipment::orderBy('created_at', 'desc')
-            ->where('status', Shipment::ENABLE_STATUS)
-            ->with('parent')
-            ->paginate();
+            ->get();
     }
-
 
     public function create($data)
     {
-        $shipment =  Shipment::query()->create($data);
+        if ($data->filled('is_default')) {
+            Shipment::query()->update([
+                'is_default' => false,
+            ]);
+        }
+        $shipment =  Shipment::query()->create([
+            'title' => $data->input('title'),
+            'delivery_id' => $data->input('delivery_type'),
+            'description' => $data->input('description'),
+            'shipping_cost' => $data->input('shipping_cost'),
+            'is_default' => $data->input('is_default'),
+        ]);
         return $shipment;
     }
+    public function createMany($shipment, $data)
+    {
+        return $shipment->dates()->createMany($data);
+    }
+
+
     public function update($id, $data)
     {
+        if ($data->filled('is_default')) {
+            Shipment::query()->where('is_default', true)->update([
+                'is_default' => false,
+            ]);
+        }
         $shipment = $this->find($id);
-        $shipment->update($data);
+        $shipment->update([
+            'title' => $data->input('title'),
+            'description' => $data->input('description'),
+            'shipping_cost' => $data->input('shipping_cost'),
+            'is_default' => $data->input('is_default'),
+        ]);
         return $shipment;
     }
     public function show($id)

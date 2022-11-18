@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class ShipmentTypeCity extends Model
+class ShipmentCity extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['shipment_type_id', 'delivery_type_id', 'city_id'];
+    protected $fillable = ['shipment_id', 'delivery_id', 'city_id'];
 
 
     public function city()
@@ -21,22 +21,22 @@ class ShipmentTypeCity extends Model
 
     public function delivery()
     {
-        return $this->belongsTo(DeliveryType::class, 'delivery_type_id');
+        return $this->belongsTo(Delivery::class, 'delivery_id');
     }
 
     public function shipment()
     {
-        return $this->belongsTo(ShipmentType::class, 'shipment_type_id');
+        return $this->belongsTo(Shipment::class, 'shipment_id');
     }
 
     public function dates()
     {
-        return $this->hasMany(ShipmentTypeDate::class);
+        return $this->hasMany(ShipmentDate::class);
     }
 
     public function intervals()
     {
-        return $this->hasManyThrough(ShipmentTypeInterval::class, ShipmentTypeDate::class);
+        return $this->hasManyThrough(ShipmentInterval::class, ShipmentDate::class);
     }
 
         /**

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string("title_en");
             $table->string("slug");
             $table->longText("review");
+
             $table->foreignId("category_id")->constrained('categories')->onDelete('cascade');
             $table->foreignId("brand_id")->constrained('brands')->onDelete('cascade');
             $table->enum('status', Product::$statuses)->default(Product::ENABLE_STATUS);

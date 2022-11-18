@@ -9,7 +9,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Modules\Shipment\Repository\ShipmentTypeRepository;
+use Modules\Shipment\Repository\ShipmentRepository;
 
 class GenerateShipmentDate implements ShouldQueue
 {
@@ -51,10 +51,10 @@ class GenerateShipmentDate implements ShouldQueue
             ]);
         }
 
-        $shippings = resolve(ShipmentTypeRepository::class)->get();
+        $shippings = resolve(ShipmentRepository::class)->get();
 
         foreach ($shippings as $key => $shipping) {
-            resolve(ShipmentTypeRepository::class)->createMany($shipping, $week_days);
+            resolve(ShipmentRepository::class)->createMany($shipping, $week_days);
         }
     }
 }

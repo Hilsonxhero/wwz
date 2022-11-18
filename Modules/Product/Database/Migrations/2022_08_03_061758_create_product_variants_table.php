@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreignId("shipment_id")->constrained('shipments');
             $table->decimal('price', $precision = 64, $scale = 8);
             $table->integer('discount');
-            $table->bigInteger('discount_price');
+            $table->decimal('discount_price', $precision = 64, $scale = 8);
             $table->integer('stock');
             $table->decimal('weight');
             $table->integer('order_limit');

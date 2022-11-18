@@ -13,8 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('product_variants', function (Blueprint $table) {
-            $table->foreignId("shipment_type_id")->after('shipment_id')->nullable()->constrained('shipment_types')->cascadeOnDelete();
+        Schema::create('deliveries', function (Blueprint $table) {
+            $table->id();
+            $table->string("title");
+            $table->string("code");
+            $table->timestamps();
         });
     }
 
@@ -25,8 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('product_variants', function (Blueprint $table) {
-            $table->dropColumn("shipment_type_id");
-        });
+        Schema::dropIfExists('deliveries');
     }
 };

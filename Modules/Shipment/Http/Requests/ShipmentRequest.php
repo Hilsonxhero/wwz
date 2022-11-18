@@ -5,7 +5,7 @@ namespace Modules\Shipment\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class ShipmentTypeRequest extends FormRequest
+class ShipmentRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -20,6 +20,7 @@ class ShipmentTypeRequest extends FormRequest
                 'icon' => ['nullable'],
                 'shipping_cost' => ['required'],
                 'description' => ['required'],
+                'delivery_type' => ['required'],
             ];
         }
 
@@ -28,6 +29,7 @@ class ShipmentTypeRequest extends FormRequest
             'icon' => ['nullable'],
             'shipping_cost' => ['required'],
             'description' => ['required'],
+            'delivery_type' => ['required'],
 
         ];
     }

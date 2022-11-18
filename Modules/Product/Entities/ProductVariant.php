@@ -5,18 +5,18 @@ namespace Modules\Product\Entities;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Modules\Shipment\Entities\Shipment;
+
 use Modules\Warranty\Entities\Warranty;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Modules\Shipment\Entities\ShipmentType;
+use Modules\Shipment\Entities\Shipment;
 
 class ProductVariant extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'product_id', 'warranty_id', 'price', 'discount', 'discount_price', 'stock',
-        'weight', 'order_limit', 'default_on', 'shipment_id', 'discount_expire_at', 'shipment_type_id'
+        'product_id', 'warranty_id', 'shipment_id', 'price', 'discount', 'discount_price', 'stock',
+        'weight', 'order_limit', 'default_on', 'discount_expire_at'
     ];
 
     /**
@@ -44,10 +44,7 @@ class ProductVariant extends Model
         return $this->belongsTo(Shipment::class);
     }
 
-    public function shipment_type()
-    {
-        return $this->belongsTo(ShipmentType::class);
-    }
+
 
     public function incredible()
     {

@@ -6,7 +6,7 @@ use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class DeliveryType extends Model
+class Delivery extends Model
 {
     use HasFactory;
 
@@ -24,6 +24,6 @@ class DeliveryType extends Model
 
     // protected static function newFactory()
     // {
-    //     return \Modules\Shipment\Database\factories\DeliveryTypeFactory::new();
+    //     return \Modules\Shipment\Database\factories\DeliveryFactory::new();
     // }
 }

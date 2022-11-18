@@ -47,7 +47,7 @@ class ShipmentIntervalController extends Controller
             'end_at' => ['required'],
             'order_capacity' => ['required'],
             'shipping_cost' => ['required'],
-            'shipment_type_date_id' => ['required', 'exists:shipment_type_dates,id'],
+            'shipment_date_id' => ['required', 'exists:shipment_dates,id'],
         ]);
 
         $this->intervalRepo->create($request);
@@ -79,7 +79,7 @@ class ShipmentIntervalController extends Controller
             'end_at' => ['required'],
             'order_capacity' => ['required'],
             'shipping_cost' => ['required'],
-            'shipment_type_date_id' => ['required', 'exists:shipment_type_dates,id'],
+            'shipment_date_id' => ['required', 'exists:shipment_dates,id'],
         ]);
 
         $this->intervalRepo->update($id, $request);

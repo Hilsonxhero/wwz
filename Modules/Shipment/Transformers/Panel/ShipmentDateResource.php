@@ -16,14 +16,14 @@ class ShipmentDateResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            // 'type' => new ShipmentTypeResource($this->shipment),
+            // 'type' => new ShipmentResource($this->shipment),
             'type' => $this->shipment->shipment,
             'date' => formatGregorian($this->date, 'Y/m/d'),
             'day' => formatGregorian($this->date, 'd'),
             'weekday_name' => formatGregorian($this->date, '%A'),
             'is_holiday' => $this->is_holiday,
             'has_time_scope' => $this->has_time_scope,
-            // 'intervals' =>  ShipmentIntervalResource::collection($this->intervals)
+            'intervals' =>  ShipmentIntervalResource::collection($this->intervals)
         ];
     }
 }

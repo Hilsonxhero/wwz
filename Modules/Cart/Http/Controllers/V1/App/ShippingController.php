@@ -7,16 +7,15 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Modules\Cart\Facades\Cart;
 use Illuminate\Routing\Controller;
-use Modules\Shipment\Entities\ShipmentType;
+use Modules\Shipment\Entities\Shipment;
 use Modules\User\Transformers\UserResource;
 use Modules\Cart\Transformers\App\CartResource;
-use Modules\Shipment\Entities\ShipmentTypeCity;
-use Modules\Shipment\Entities\ShipmentTypeDate;
+use Modules\Shipment\Entities\ShipmentCity;
+use Modules\Shipment\Entities\ShipmentDate;
 use Modules\Cart\Transformers\App\ShippingResource;
 use Modules\Cart\Transformers\App\CartItemsResource;
 use Modules\User\Transformers\App\UserAddressResource;
 use Modules\Shipment\Transformers\Panel\ShipmentDateResource;
-use Modules\Shipment\Transformers\App\ShippingSubmitTypeResource;
 
 class ShippingController extends Controller
 {
@@ -31,13 +30,13 @@ class ShippingController extends Controller
         $user = auth()->user();
 
 
-        $default_shipment =  ShipmentType::query()->where('is_default', true)->first();
+        $default_shipment =  Shipment::query()->where('is_default', true)->first();
 
         // TODO:REFACTOR
 
         $data = collect($cart_items)->groupBy('options.delivery')->transform(function ($item, $key) use ($user, $default_shipment) {
 
-            $shipment = ShipmentTypeCity::query()->where('delivery_type_id', $key)->where('city_id', $user->default_address->city_id)->with('shipment')->first();
+            $shipment = ShipmentCity::query()->where('delivery_id', $key)->where('city_id', $user->default_address->city_id)->with('shipment')->first();
 
             // dump($shipment);
             // && $shipment->has_interval_scope
@@ -68,7 +67,7 @@ class ShippingController extends Controller
             return ['submit_type' => array_merge(...$item2->pluck('submit_type')), 'items' => array_merge(...$item2->pluck('cart_items'))];
         })->all();
 
-        return $grouped2;
+        // return $grouped2;
 
 
 
@@ -79,12 +78,12 @@ class ShippingController extends Controller
         // return $grouped->all();
 
         $content = (object) [
-            'items' => $data,
+            'items' => $grouped2,
         ];
 
         $content = [
-            'packages' => $data,
-            'packages_count' => count($data),
+            'packages' => $grouped2,
+            'packages_count' => count($grouped2),
             'default_address' => new UserAddressResource($user->default_address),
             'cart' => new CartResource(Cart::content()),
             'user' => new UserResource($user),

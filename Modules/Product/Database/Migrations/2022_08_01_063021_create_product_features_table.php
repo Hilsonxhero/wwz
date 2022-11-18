@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('feature_id')->constrained('features')->onDelete('cascade');
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
             $table->foreignId('feature_value_id')->nullable()->constrained('feature_values')->onDelete('cascade');
+            $table->text('value')->nullable();
             // $table->primary(['product_id', 'feature_value_id']);
         });
     }

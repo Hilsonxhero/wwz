@@ -42,14 +42,14 @@ class ShipmentCityController extends Controller
     {
         ApiService::Validator($request->all(), [
             'city_id' => ['required'],
-            'shipment_type_id' => ['required'],
-            'delivery_type_id' => ['required'],
+            'shipment_id' => ['required'],
+            'delivery_id' => ['required'],
         ]);
 
         $data = [
             'city_id' => $request->input('city_id'),
-            'shipment_type_id' => $request->input('shipment_type_id'),
-            'delivery_type_id' => $request->input('delivery_type_id'),
+            'shipment_id' => $request->input('shipment_id'),
+            'delivery_id' => $request->input('delivery_id'),
         ];
 
         $this->shipmentCityRepo->create($data);
@@ -79,14 +79,14 @@ class ShipmentCityController extends Controller
     {
         ApiService::Validator($request->all(), [
             'city_id' => ['required'],
-            'shipment_type_id' => ['required'],
-            'delivery_type_id' => ['required'],
+            'shipment_id' => ['required'],
+            'delivery_id' => ['required'],
         ]);
 
         $data = [
             'city_id' => $request->input('city_id'),
-            'shipment_type_id' => $request->input('shipment_type_id'),
-            'delivery_type_id' => $request->input('delivery_type_id'),
+            'shipment_id' => $request->input('shipment_id'),
+            'delivery_id' => $request->input('delivery_id'),
         ];
 
         $this->shipmentCityRepo->update($id, $data);

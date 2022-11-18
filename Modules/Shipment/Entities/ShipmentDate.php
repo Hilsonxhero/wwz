@@ -6,12 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class ShipmentTypeDate extends Model
+class ShipmentDate extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'shipment_type_city_id',
+        'shipment_city_id',
         'date',
         'is_holiday',
     ];
@@ -19,12 +19,12 @@ class ShipmentTypeDate extends Model
 
     public function shipment()
     {
-        return $this->belongsTo(ShipmentTypeCity::class, 'shipment_type_city_id');
+        return $this->belongsTo(ShipmentCity::class, 'shipment_city_id');
     }
 
     public function intervals()
     {
-        return $this->hasMany(ShipmentTypeInterval::class);
+        return $this->hasMany(ShipmentInterval::class);
     }
 
     /**

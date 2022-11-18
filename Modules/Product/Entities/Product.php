@@ -11,7 +11,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\Shipment\Entities\DeliveryType;
+use Modules\Shipment\Entities\Delivery;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Product extends Model implements HasMedia
@@ -19,7 +19,7 @@ class Product extends Model implements HasMedia
     use HasFactory, Sluggable, SoftDeletes, InteractsWithMedia;
 
     protected $fillable = [
-        'title_fa', 'title_en', 'slug', 'review', 'category_id', 'brand_id', 'status', 'delivery_type_id',
+        'title_fa', 'title_en', 'slug', 'review', 'category_id', 'brand_id', 'status', 'delivery_id',
     ];
 
     const DISABLE_STATUS = 'disable';
@@ -32,7 +32,7 @@ class Product extends Model implements HasMedia
 
     public function delivery_type()
     {
-        return $this->belongsTo(DeliveryType::class);
+        return $this->belongsTo(Delivery::class);
     }
 
     public function features()

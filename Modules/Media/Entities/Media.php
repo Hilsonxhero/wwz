@@ -10,9 +10,8 @@ class Media extends Model
     use HasFactory;
 
     protected $fillable = [];
-    
+
     protected static function newFactory()
     {
-        return \Modules\Media\Database\factories\MediaFactory::new();
     }
 }

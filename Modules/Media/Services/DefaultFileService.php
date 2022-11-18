@@ -14,7 +14,6 @@ abstract class DefaultFileService
 
     public static function delete($media)
     {
-
         foreach ($media->files as $file) {
             if ($media->is_private) {
                 Storage::delete('private\\' . $file);

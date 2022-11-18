@@ -5,7 +5,7 @@ namespace Modules\Shipment\Entities;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class ShipmentTypeInterval extends Model
+class ShipmentInterval extends Model
 {
     use HasFactory;
 
@@ -14,13 +14,13 @@ class ShipmentTypeInterval extends Model
         'end_at',
         'order_capacity',
         'shipping_cost',
-        'shipment_type_date_id',
+        'shipment_date_id',
     ];
 
 
 
     public function shipment_date()
     {
-        return $this->belongsTo(ShipmentTypeDate::class, 'shipment_type_date_id');
+        return $this->belongsTo(ShipmentDate::class, 'shipment_date_id');
     }
 }

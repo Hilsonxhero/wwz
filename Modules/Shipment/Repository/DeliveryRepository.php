@@ -5,27 +5,26 @@ namespace Modules\Shipment\Repository;
 use App\Services\ApiService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Modules\Shipment\Entities\DeliveryType;
+use Modules\Shipment\Entities\Delivery;
 use Modules\Shipment\Entities\Shipment;
-use Modules\Shipment\Entities\ShipmentType;
-use Modules\Shipment\Entities\ShipmentTypeDate;
+use Modules\Shipment\Entities\ShipmentDate;
 
-class DeliveryTypeRepository implements DeliveryTypeRepositoryInterface
+class DeliveryRepository implements DeliveryRepositoryInterface
 {
     public function all()
     {
-        return DeliveryType::query()->orderBy('created_at', 'desc')->paginate();
+        return Delivery::query()->orderBy('created_at', 'desc')->paginate();
     }
 
     public function get()
     {
-        return DeliveryType::query()->orderBy('created_at', 'desc')->get();
+        return Delivery::query()->orderBy('created_at', 'desc')->get();
     }
 
     public function create($data)
     {
 
-        $item =  DeliveryType::query()->create([
+        $item =  Delivery::query()->create([
             'title' =>  $data->input('title'),
             'code' =>  $data->input('code'),
         ]);
@@ -53,7 +52,7 @@ class DeliveryTypeRepository implements DeliveryTypeRepositoryInterface
     public function find($id)
     {
         try {
-            $shipment = DeliveryType::query()->where('id', $id)->firstOrFail();
+            $shipment = Delivery::query()->where('id', $id)->firstOrFail();
             return $shipment;
         } catch (ModelNotFoundException $e) {
             return  ApiService::_response(trans('response.responses.404'), 404);

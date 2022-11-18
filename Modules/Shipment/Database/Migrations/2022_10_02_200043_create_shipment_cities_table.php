@@ -13,8 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('product_features', function (Blueprint $table) {
-            $table->text('value')->after('feature_value_id')->nullable();
+        Schema::create('shipment_cities', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId("shipment_id")->constrained("shipments");
+            $table->foreignId("delivery_id")->constrained('deliveries');
+            $table->foreignId("city_id")->constrained("cities");
+            $table->timestamps();
         });
     }
 
@@ -25,8 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('product_features', function (Blueprint $table) {
-            $table->dropColumn('value');
-        });
+        Schema::dropIfExists('shipment_cities');
     }
 };

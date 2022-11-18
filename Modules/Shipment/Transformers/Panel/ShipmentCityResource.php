@@ -18,8 +18,8 @@ class ShipmentCityResource extends JsonResource
         return [
             'id' => $this->id,
             'city' => new CityResource($this->city),
-            'shipment' => new ShipmentTypeResource($this->shipment),
-            'delivery' => new DeliveryTypeResource($this->delivery),
+            'shipment' => new ShipmentResource($this->shipment),
+            'delivery' => new DeliveryResource($this->delivery),
         ];
     }
 }

@@ -30,16 +30,22 @@ class InitController extends Controller
      */
     public function __invoke()
     {
+
         $settings = $this->settingrRepo->all();
-        $ad_pages = Page::query()->where('title_en', 'all')->first();
-        $top_header_banner = $ad_pages->banners()->where('type', 'header')->where('status', 'enable')->first();
+        $pages = Page::query()->where('title_en', 'all')->first();
 
         $data = [
             'config' => SettingResource::collection($settings),
             'banners' => [],
         ];
 
-        if ($top_header_banner)  $data['banners']['top_header_banner'] = new  SettingBannerResource($top_header_banner);
+        if ($pages) {
+            $top_header_banner = $pages->banners()->where('type', 'header')->where('status', 'enable')->first();
+            // if ($top_header_banner) {
+            //     $data['banners']['top_header_banner'] = new  SettingBannerResource($top_header_banner);
+            // }
+        }
+
 
         ApiService::_success($data);
         // return SettingResource::collection($settings);

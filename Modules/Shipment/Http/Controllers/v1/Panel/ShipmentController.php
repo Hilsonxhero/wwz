@@ -6,29 +6,27 @@ use App\Services\ApiService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
-use Modules\Brand\Transformers\BrandResource;
+use Modules\Shipment\Http\Requests\ShipmentRequest;
 use Modules\Shipment\Repository\ShipmentRepositoryInterface;
-use Modules\Shipment\Transformers\ShipmentCollectionResource;
-use Modules\Shipment\Transformers\ShipmentResource;
+use Modules\Shipment\Transformers\Panel\ShipmentResource;
 
 class ShipmentController extends Controller
 {
-    /**
-     * @var ShipmentRepositoryInterface
-     */
-    private $brandRepo;
+    private $shipmentRepo;
 
-    public function __construct(ShipmentRepositoryInterface $brandRepo)
+    public function __construct(ShipmentRepositoryInterface $shipmentRepo)
     {
-        $this->brandRepo = $brandRepo;
+        $this->shipmentRepo = $shipmentRepo;
     }
 
-
+    /**
+     * Display a listing of the resource.
+     * @return Response
+     */
     public function index()
     {
-        $shipments = $this->brandRepo->all();
-        // ApiService::_success($shipments);
-        return new ShipmentCollectionResource($shipments);
+        $shipments = $this->shipmentRepo->all();
+        return  ShipmentResource::collection($shipments);
     }
 
     /**
@@ -36,20 +34,12 @@ class ShipmentController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function store(Request $request)
+    public function store(ShipmentRequest $request)
     {
-        ApiService::Validator($request->all(), [
-            'title' => ['required'],
-            'description' => ['required'],
-        ]);
 
-        $data = [
-            'title' => $request->title,
-            'description' => $request->description,
-        ];
-        $shipment = $this->brandRepo->create($data);
+        $shipment = $this->shipmentRepo->create($request);
 
-        ApiService::_success($shipment);
+        ApiService::_success(trans('response.responses.200'));
     }
 
     /**
@@ -59,7 +49,8 @@ class ShipmentController extends Controller
      */
     public function show($id)
     {
-        $shipment = $this->brandRepo->show($id);
+        $shipment = $this->shipmentRepo->show($id);
+
         return new ShipmentResource($shipment);
     }
 
@@ -71,17 +62,7 @@ class ShipmentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        ApiService::Validator($request->all(), [
-            'title' => ['required'],
-            'description' => ['required'],
-        ]);
-
-        $data = [
-            'title' => $request->title,
-            'description' => $request->description,
-        ];
-
-        $shipment =  $this->brandRepo->update($id, $data);
+        $shipment = $this->shipmentRepo->update($id, $request);
 
         ApiService::_success(trans('response.responses.200'));
     }
@@ -93,7 +74,8 @@ class ShipmentController extends Controller
      */
     public function destroy($id)
     {
-        $this->brandRepo->delete($id);
+        $shipment = $this->shipmentRepo->delete($id);
+
         ApiService::_success(trans('response.responses.200'));
     }
 }
