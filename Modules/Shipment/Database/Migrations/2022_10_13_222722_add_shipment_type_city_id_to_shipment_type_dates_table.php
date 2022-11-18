@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('shipment_type_dates', function (Blueprint $table) {
-            $table->foreignId("city_id")->after('shipment_type_id')->constrained("cities")->cascadeOnDelete();
+            $table->foreignId("shipment_type_city_id")->after('id')->constrained("shipment_type_cities");
         });
     }
 
@@ -26,7 +26,8 @@ return new class extends Migration
     public function down()
     {
         Schema::table('shipment_type_dates', function (Blueprint $table) {
-            $table->dropColumn("city_id");
+            $table->dropForeign(['shipment_type_city_id']);
+            $table->dropColumn("shipment_type_city_id");
         });
     }
 };

@@ -5,6 +5,8 @@ namespace Modules\Shipment\Providers;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Modules\Shipment\Repository\DeliveryTypeRepository;
 use Modules\Shipment\Repository\DeliveryTypeRepositoryInterface;
+use Modules\Shipment\Repository\ShipmentCityRepository;
+use Modules\Shipment\Repository\ShipmentCityRepositoryInterface;
 use Modules\Shipment\Repository\ShipmentDateRepository;
 use Modules\Shipment\Repository\ShipmentDateRepositoryInterface;
 use Modules\Shipment\Repository\ShipmentIntervalRepository;
@@ -38,5 +40,6 @@ class ShipmentRepoServiceProvider extends ServiceProvider
         $this->app->bind(ShipmentDateRepositoryInterface::class, ShipmentDateRepository::class);
         $this->app->bind(ShipmentIntervalRepositoryInterface::class, ShipmentIntervalRepository::class);
         $this->app->bind(DeliveryTypeRepositoryInterface::class, DeliveryTypeRepository::class);
+        $this->app->bind(ShipmentCityRepositoryInterface::class, ShipmentCityRepository::class);
     }
 }

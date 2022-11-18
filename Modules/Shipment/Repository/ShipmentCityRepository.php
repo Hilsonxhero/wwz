@@ -7,9 +7,10 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Modules\Shipment\Entities\Shipment;
 use Modules\Shipment\Entities\ShipmentType;
+use Modules\Shipment\Entities\ShipmentTypeCity;
 use Modules\Shipment\Entities\ShipmentTypeDate;
 
-class ShipmentDateRepository implements ShipmentDateRepositoryInterface
+class ShipmentCityRepository implements ShipmentCityRepositoryInterface
 {
     public function all()
     {
@@ -18,26 +19,28 @@ class ShipmentDateRepository implements ShipmentDateRepositoryInterface
 
     public function get($city)
     {
-        return $city->dates()->paginate();
+        return $city->shipments()->paginate();
+    }
+
+
+    public function dates($item)
+    {
+        return $item->dates()->with(['shipment' => [
+            'shipment:id,title'
+        ]])->paginate();
     }
 
     public function create($data)
     {
-        $item =  ShipmentTypeDate::query()->create($data);
+        $item =  ShipmentTypeCity::query()->create($data);
         return $item;
     }
 
 
     public function update($id, $data)
     {
-        $date = createDatetimeFromFormat($data->input('date'), 'Y/m/d');
         $shipment = $this->find($id);
-        $shipment->update([
-            'shipment_type_id' =>  $data->input('shipment_type_id'),
-            'city_id' =>  $data->input('city_id'),
-            'is_holiday' =>  $data->input('is_holiday'),
-            'date' => $date,
-        ]);
+        $shipment->update($data);
         return $shipment;
     }
     public function show($id)
@@ -49,7 +52,7 @@ class ShipmentDateRepository implements ShipmentDateRepositoryInterface
     public function find($id)
     {
         try {
-            $shipment = ShipmentTypeDate::query()->where('id', $id)->firstOrFail();
+            $shipment = ShipmentTypeCity::query()->where('id', $id)->firstOrFail();
             return $shipment;
         } catch (ModelNotFoundException $e) {
             return  ApiService::_response(trans('response.responses.404'), 404);

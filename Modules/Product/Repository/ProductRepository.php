@@ -200,11 +200,11 @@ class ProductRepository implements ProductRepositoryInterface
         //             'parent:id,title'
         //         ]
         //     ],
-        //     'combinations' => [
-        //         'variant:id,name,value,variant_group_id' => [
-        //             'group:id,name,type'
-        //         ]
-        //     ],
+            // 'combinations' => [
+            //     'variant:id,name,value,variant_group_id' => [
+            //         'group:id,name,type'
+            //     ]
+            // ],
         // ]
         try {
             $product = Product::query()->where('id', $id)->with($relationships)->firstOrFail();

@@ -6,6 +6,7 @@ use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Shipment\Entities\ShipmentTypeDate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Shipment\Entities\ShipmentTypeCity;
 
 class City extends Model
 {
@@ -50,8 +51,10 @@ class City extends Model
         return $this->belongsTo(State::class);
     }
 
-    public function dates()
+    public function shipments()
     {
-        return $this->hasMany(ShipmentTypeDate::class);
+        return $this->hasMany(ShipmentTypeCity::class);
     }
+
+
 }

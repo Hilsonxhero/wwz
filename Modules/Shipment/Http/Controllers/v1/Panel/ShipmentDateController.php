@@ -9,25 +9,29 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Modules\Shipment\Entities\ShipmentType;
+use Modules\State\Repository\CityRepositoryInterface;
 use Modules\Shipment\Transformers\Panel\ShipmentDateResource;
+use Modules\Shipment\Repository\ShipmentCityRepositoryInterface;
 use Modules\Shipment\Repository\ShipmentDateRepositoryInterface;
 use Modules\Shipment\Repository\ShipmentTypeRepositoryInterface;
-use Modules\State\Repository\CityRepositoryInterface;
 
 class ShipmentDateController extends Controller
 {
     private $shipmentDateRepo;
     private $shipmentTypeRepo;
     private $cityRepo;
+    private $shipmentCityRepo;
 
     public function __construct(
         ShipmentTypeRepositoryInterface $shipmentTypeRepo,
         ShipmentDateRepositoryInterface $shipmentDateRepo,
+        ShipmentCityRepositoryInterface $shipmentCityRepo,
         CityRepositoryInterface $cityRepo
     ) {
         $this->shipmentDateRepo = $shipmentDateRepo;
         $this->shipmentTypeRepo = $shipmentTypeRepo;
         $this->cityRepo = $cityRepo;
+        $this->shipmentCityRepo = $shipmentCityRepo;
     }
 
     /**
@@ -36,8 +40,8 @@ class ShipmentDateController extends Controller
      */
     public function index(Request $request, $id)
     {
-        $city = $this->cityRepo->find($id);
-        $dates = $this->shipmentDateRepo->get($city);
+        $shipment_type_city = $this->shipmentCityRepo->find($id);
+        $dates = $this->shipmentCityRepo->dates($shipment_type_city);
         return  ShipmentDateResource::collection($dates);
     }
 
@@ -49,13 +53,19 @@ class ShipmentDateController extends Controller
     public function store(Request $request)
     {
         ApiService::Validator($request->all(), [
-            'shipment_type_id' => ['required', 'exists:shipment_types,id'],
-            'city_id' => ['required', 'exists:cities,id'],
+            'shipment_type_city_id' => ['required', 'exists:shipment_type_cities,id'],
             'date' => ['required'],
             'is_holiday' => ['nullable'],
         ]);
 
-        $this->shipmentDateRepo->create($request);
+        $date = createDatetimeFromFormat($request->input('date'), 'Y/m/d');
+        $data = [
+            'shipment_type_city_id' =>  $request->input('shipment_type_city_id'),
+            'is_holiday' =>  $request->input('is_holiday'),
+            'date' => $date,
+        ];
+
+        $this->shipmentDateRepo->create($data);
 
         ApiService::_success(trans('response.responses.200'));
     }

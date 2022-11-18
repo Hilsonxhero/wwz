@@ -17,7 +17,7 @@ class ShipmentIntervalResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            // 'shipment_date' => new ShipmentDateResource($this->shipment_date),
+            'shipment_date' =>  new ShipmentDateResource($this->shipment_date),
             'order_capacity' => $this->order_capacity,
             'shipping_cost' => round($this->shipping_cost) / 10,
             'start_at' => $this->start_at,
