@@ -163,7 +163,7 @@ class ProductRepository implements ProductRepositoryInterface
             'category_id' => $data->category_id,
             'brand_id' => $data->brand_id,
             'status' => $data->status,
-            'delivery_id' => $data->delivery_type
+            'delivery_id' => $data->delivery
         ]);
 
         $this->updateVariants($product, $data->input('variants'));

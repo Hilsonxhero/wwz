@@ -377,7 +377,7 @@ class Cart
                     $item->variant->price,
                     $item->variant->weight,
                     $item->quantity,
-                    ['delivery' => $item->product->delivery_type->id]
+                    ['delivery' => $item->product->delivery->id]
                 )->setDiscountRate($item->variant->calculate_discount);
             });
             $cart = $data;

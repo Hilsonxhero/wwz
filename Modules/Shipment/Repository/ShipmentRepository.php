@@ -30,7 +30,7 @@ class ShipmentRepository implements ShipmentRepositoryInterface
         }
         $shipment =  Shipment::query()->create([
             'title' => $data->input('title'),
-            'delivery_id' => $data->input('delivery_type'),
+            'delivery_id' => $data->input('delivery'),
             'description' => $data->input('description'),
             'shipping_cost' => $data->input('shipping_cost'),
             'is_default' => $data->input('is_default'),
@@ -53,6 +53,7 @@ class ShipmentRepository implements ShipmentRepositoryInterface
         $shipment = $this->find($id);
         $shipment->update([
             'title' => $data->input('title'),
+            'delivery_id' => $data->input('delivery'),
             'description' => $data->input('description'),
             'shipping_cost' => $data->input('shipping_cost'),
             'is_default' => $data->input('is_default'),

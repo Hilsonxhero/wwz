@@ -22,7 +22,7 @@ class ProductResource extends JsonResource
             'title_en' => $this->title_en,
             'slug' => $this->slug,
             'category' => new CategoryResource($this->category),
-            'delivery_type' => new DeliveryResource($this->delivery_type),
+            'delivery' => new DeliveryResource($this->delivery),
             'brand' => $this->brand->id,
             'combinations' =>  collect($this->combinations)->unique('variant_id')->groupBy('variant.group')->transform(function ($item, $key) {
                 return ['group' => json_decode($key), 'values' => $item->transform(function ($combination, $key) {

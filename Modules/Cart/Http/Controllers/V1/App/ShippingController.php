@@ -30,11 +30,12 @@ class ShippingController extends Controller
         $user = auth()->user();
 
 
-        $default_shipment =  Shipment::query()->where('is_default', true)->first();
+
 
         // TODO:REFACTOR
 
-        $data = collect($cart_items)->groupBy('options.delivery')->transform(function ($item, $key) use ($user, $default_shipment) {
+        $data = collect($cart_items)->groupBy('options.delivery')->transform(function ($item, $key) use ($user) {
+            $default_shipment =  Shipment::query()->where('is_default', true)->where('delivery_id', $key)->first();
 
             $shipment = ShipmentCity::query()->where('delivery_id', $key)->where('city_id', $user->default_address->city_id)->with('shipment')->first();
 
@@ -65,7 +66,7 @@ class ShippingController extends Controller
 
         $grouped2 = $data->groupBy('submit_type.id')->map(function ($item2) {
             return ['submit_type' => array_merge(...$item2->pluck('submit_type')), 'items' => array_merge(...$item2->pluck('cart_items'))];
-        })->all();
+        })->values();
 
         // return $grouped2;
 

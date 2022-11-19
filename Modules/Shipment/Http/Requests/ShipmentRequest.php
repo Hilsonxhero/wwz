@@ -20,7 +20,7 @@ class ShipmentRequest extends FormRequest
                 'icon' => ['nullable'],
                 'shipping_cost' => ['required'],
                 'description' => ['required'],
-                'delivery_type' => ['required'],
+                'delivery' => ['required'],
             ];
         }
 
@@ -29,7 +29,7 @@ class ShipmentRequest extends FormRequest
             'icon' => ['nullable'],
             'shipping_cost' => ['required'],
             'description' => ['required'],
-            'delivery_type' => ['required'],
+            'delivery' => ['required'],
 
         ];
     }

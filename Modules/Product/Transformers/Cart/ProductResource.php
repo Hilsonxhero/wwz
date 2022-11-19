@@ -26,7 +26,7 @@ class ProductResource extends JsonResource
                 'thumb' => $this->getFirstMediaUrl('main', 'thumb'),
                 'thumbs' => $this->getMedia('thumbs')->toArray()
             ],
-            'delivery' => $this->delivery_type->id,
+            'delivery' => $this->delivery->id,
         ];
     }
 }

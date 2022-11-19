@@ -2,11 +2,12 @@
 
 namespace Modules\Shipment\Entities;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
+use Illuminate\Database\Eloquent\Model;
+use Modules\Shipment\Entities\Delivery;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Shipment extends Model implements HasMedia
@@ -21,6 +22,11 @@ class Shipment extends Model implements HasMedia
         'is_default'
     ];
 
+    public function delivery()
+    {
+        return $this->belongsTo(Delivery::class);
+    }
+
     public static function last()
     {
         return static::all()->last();
@@ -32,6 +38,7 @@ class Shipment extends Model implements HasMedia
             ->width(368)
             ->height(232);
     }
+
 
     public function dates()
     {

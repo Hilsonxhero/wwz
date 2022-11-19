@@ -30,7 +30,7 @@ class Product extends Model implements HasMedia
     static $statuses = [self::DISABLE_STATUS, self::ENABLE_STATUS, self::PENDING_STATUS, self::REJECTED_STATUS];
 
 
-    public function delivery_type()
+    public function delivery()
     {
         return $this->belongsTo(Delivery::class);
     }

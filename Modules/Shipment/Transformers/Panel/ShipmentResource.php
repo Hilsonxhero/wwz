@@ -17,6 +17,7 @@ class ShipmentResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
+            'delivery' => new DeliveryResource($this->delivery),
             'description' => $this->description,
             'shipping_cost' => $this->shipping_cost,
             'is_default' => !!$this->is_default,
