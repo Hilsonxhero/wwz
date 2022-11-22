@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Modules\Cart\Entities\Cart as EntitiesCart;
+use Modules\Cart\Entities\Shipping;
 
 class User extends Authenticatable implements HasMedia
 {
@@ -75,6 +76,11 @@ class User extends Authenticatable implements HasMedia
     public function validateForPassportPasswordGrant($password)
     {
         return true;
+    }
+
+    public function shippings()
+    {
+        return $this->hasMany(Shipping::class);
     }
 
 

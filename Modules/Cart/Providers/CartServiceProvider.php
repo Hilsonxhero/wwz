@@ -2,9 +2,10 @@
 
 namespace Modules\Cart\Providers;
 
+use Modules\Cart\Services\Cart;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
-use Modules\Cart\Services\Cart;
+use Modules\Cart\Services\Shipping\Shipping;
 
 
 class CartServiceProvider extends ServiceProvider
@@ -42,6 +43,7 @@ class CartServiceProvider extends ServiceProvider
         $this->app->register(RouteServiceProvider::class);
         $this->app->register(CartRepoServiceProvider::class);
         $this->app->bind('cart', Cart::class);
+        $this->app->bind('shipping', Shipping::class);
     }
 
     /**

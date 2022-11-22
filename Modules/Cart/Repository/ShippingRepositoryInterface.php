@@ -1,12 +1,10 @@
 <?php
 
-namespace Modules\Shipment\Repository;
+namespace Modules\Cart\Repository;
 
-interface ShipmentCityRepositoryInterface
+interface ShippingRepositoryInterface
 {
     public function find($id);
-    public function shipment($delivery);
-    public function get($shipment);
     public function all();
     public function create($data);
     public function update($id, $data);

@@ -36,7 +36,9 @@ class CartController extends Controller
 
     public function index(Request $request)
     {
-        $cart = Cart::content();
+        $dd = $cart = Cart::content();
+        // return $dd;
+        // return Cart::content()->items;
         return new CartResource($cart);
     }
 

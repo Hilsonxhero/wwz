@@ -18,16 +18,20 @@ class CartItemsResource extends JsonResource
      */
     public function toArray($request)
     {
+
+        $variant = new ProductVariantResource(resolve(ProductVariantRepositoryInterface::class)->find($this->variant));
+
         return [
             'id' => $this->id,
             'uuid' => $this->rowId,
             'quantity' => $this->quantity,
             'product' => new ProductResource(resolve(ProductRepositoryInterface::class)->find($this->product)),
-            'variant' => new ProductVariantResource(resolve(ProductVariantRepositoryInterface::class)->find($this->variant)),
+            'variant' => $variant,
             'price' => $this->price,
-            'subtotal' => $this->subtotal,
-            'total' => $this->total,
-            'discount' => $this->discount,
+            'subtotal' => ($variant->price * $this->quantity - round($variant->price * ($variant->calculate_discount / 100) * $this->quantity)),
+            'total' => $variant->price * ($this->quantity),
+            'discount' => $variant->price * ($variant->calculate_discount / 100),
+            'discount_total' => round($variant->price * ($variant->calculate_discount / 100) * $this->quantity),
         ];
     }
 }

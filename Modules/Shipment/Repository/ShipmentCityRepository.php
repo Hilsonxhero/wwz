@@ -58,6 +58,12 @@ class ShipmentCityRepository implements ShipmentCityRepositoryInterface
             return  ApiService::_response(trans('response.responses.404'), 404);
         }
     }
+
+    public function shipment($delivery)
+    {
+        return ShipmentCity::query()->where('delivery_id', $delivery)->where('city_id', auth()->user()->default_address->city_id)->with('shipment')->first();
+    }
+
     public function delete($id)
     {
         $shipment = $this->find($id);

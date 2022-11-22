@@ -6,12 +6,13 @@ use Modules\Brand\Entities\Brand;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Category\Entities\Category;
+use Modules\Shipment\Entities\Delivery;
+use Modules\Shipment\Entities\Shipment;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\Shipment\Entities\Delivery;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Product extends Model implements HasMedia
@@ -87,6 +88,17 @@ class Product extends Model implements HasMedia
         $this->addMediaConversion('thumb')
             ->width(300)
             ->height(300);
+    }
+    /**
+     * Calculate default delivery.
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    protected function defaultShipment(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => Shipment::query()->where('is_default', true)->where('delivery_id', $this->delivery->id)->first()
+        );
     }
 
     /**

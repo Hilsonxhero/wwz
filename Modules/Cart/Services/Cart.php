@@ -4,6 +4,7 @@ namespace Modules\Cart\Services;
 
 use Closure;
 use Carbon\Carbon;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Redis\RedisManager;
 use Illuminate\Support\Collection;
@@ -15,11 +16,12 @@ use Illuminate\Contracts\Events\Dispatcher;
 use Modules\Cart\Contracts\InstanceIdentifier;
 use Modules\Cart\Exceptions\InvalidRowIDException;
 use Modules\Cart\Exceptions\UnknownModelException;
-use Modules\Cart\Repository\CartItemRepositoryInterface;
 use Modules\Cart\Repository\CartRepositoryInterface;
-use Modules\Product\Repository\ProductVariantRepositoryInterface;
-use Modules\Product\Transformers\Cart\ProductResource;
+use Modules\Cart\Transformers\App\CartItemsResource;
 use Modules\User\Repository\UserRepositoryInterface;
+use Modules\Product\Transformers\Cart\ProductResource;
+use Modules\Cart\Repository\CartItemRepositoryInterface;
+use Modules\Product\Repository\ProductVariantRepositoryInterface;
 
 class Cart
 {
@@ -34,6 +36,10 @@ class Cart
      */
 
     private $storage;
+
+    private $shipment_cost = 0;
+
+    private $shipment_discount = 0;
 
     /**
      * provide cart token cookie.
@@ -108,6 +114,7 @@ class Cart
      * @param \Illuminate\Redis\RedisManager $storage
      * @param \Illuminate\Contracts\Events\Dispatcher $events
      */
+
     public function __construct(RedisManager $storage, Dispatcher $events)
     {
         $this->cart_token  = request()->cookie('cart_token');
@@ -193,7 +200,21 @@ class Cart
             }, $id);
         }
 
-        $cartItem = $this->createCartItem($id, $product, $variant, $discount, $price, $weight, $quantity, $options);
+        // $cartItem = $this->createCartItem($id, $product, $variant, $discount, $price, $weight, $quantity, $options);
+        // return $cartItem;
+        $cartItem = (object) array(
+            "rowId" => md5($id),
+            "id" => $id,
+            "product" => $product,
+            "variant" => $variant,
+            "quantity" => $quantity,
+            "price" => $price,
+            "weight" => $weight,
+            "options" => $options,
+        );
+
+
+        // return $cartItem;
 
         return $this->addCartItem($cartItem, $discount);
     }
@@ -210,13 +231,13 @@ class Cart
      */
     public function addCartItem($item, $discount, $keepDiscount = false, $keepTax = false, $dispatchEvent = true)
     {
-        if (!$keepDiscount) {
-            $item->setDiscountRate($discount);
-        }
+        // if (!$keepDiscount) {
+        //     $item->setDiscountRate($discount);
+        // }
 
-        if (!$keepTax) {
-            $item->setTaxRate($this->taxRate);
-        }
+        // if (!$keepTax) {
+        //     $item->setTaxRate($this->taxRate);
+        // }
 
         if (!auth()->check()) {
             $content = $this->getContent();
@@ -245,9 +266,9 @@ class Cart
             }
         }
 
-        if ($dispatchEvent) {
-            $this->events->dispatch('cart.added', $item);
-        }
+        // if ($dispatchEvent) {
+        //     $this->events->dispatch('cart.added', $item);
+        // }
 
         return $item;
     }
@@ -264,8 +285,9 @@ class Cart
     {
         if (!$this->authenticated) {
             $cartItem =  $this->get($rowId);
+            $cartItem->quantity = Arr::get($quantity, 'quantity', $cartItem->quantity);
             // return  $cartItem;
-            $cartItem->updateFromArray($quantity);
+            // $cartItem->updateFromArray($quantity);
             $content = $this->getContent();
 
 
@@ -359,6 +381,16 @@ class Cart
         $this->storage->del($this->instance);
     }
 
+    public function setShipment($value)
+    {
+        $this->shipment_cost = $value;
+    }
+
+    public function setShipmentDiscount($value)
+    {
+        $this->shipment_discount = $value;
+    }
+
     /**
      * Get the content of the cart.
      *
@@ -366,6 +398,7 @@ class Cart
      */
     public function content()
     {
+
         if (auth()->check()) {
             $data = resolve(UserRepositoryInterface::class)->cart();
             $data = $data->map(function ($item) {
@@ -378,48 +411,55 @@ class Cart
                     $item->variant->weight,
                     $item->quantity,
                     ['delivery' => $item->product->delivery->id]
-                )->setDiscountRate($item->variant->calculate_discount);
+                );
             });
             $cart = $data;
+            $cart = collect(CartItemsResource::collection($cart));
+            $cart = collect(json_decode($cart));
         } else {
-
             $data = $this->storage->get($this->instance);
-
             if (is_null($data)) {
                 return (object)  collect([
                     'items' => [],
                     'items_count' => 0,
                     'payable_price' => 0,
                     'rrp_price' => 0,
-                    'items_discount' => 0
+                    'items_discount' => 0,
+                    'shipment_cost' => 0,
+                    'shipment_discount' => 0,
                 ])->toArray();
             }
 
+            // $cart = collect(unserialize($this->storage->get($this->instance)));
+
+
+            // $cart->map(function ($item) {
+            //     $variant = resolve(ProductVariantRepositoryInterface::class)->find($item->variant);
+            //     $this->update($item->id, ['discount' => $variant->calculate_discount, 'price' => $variant->price]);
+            // });
+
+
             $cart = collect(unserialize($this->storage->get($this->instance)));
-
-
-            $cart->map(function ($item) {
-                $variant = resolve(ProductVariantRepositoryInterface::class)->find($item->variant);
-                $this->update($item->id, ['discount' => $variant->calculate_discount, 'price' => $variant->price]);
-            });
-
-
-            $cart = collect(unserialize($this->storage->get($this->instance)));
+            $cart = collect(CartItemsResource::collection($cart));
+            $cart = collect(json_decode($cart));
+            // return $cart;
         }
 
         $content = (object) [
+            // 'id' => $cart->id,
             'items' => $cart,
             'items_count' => $this->count($cart),
             'payable_price' => $this->subtotal($cart),
             'rrp_price' => $this->total($cart),
-            'items_discount' => $this->discount($cart)
+            'items_discount' => $this->discount($cart),
+            'shipment_cost' => $this->shipment_cost,
+            'shipment_discount' => $this->shipment_discount,
         ];
 
         return $content;
     }
 
     /**
-     * Get the total quantity of all CartItems in the cart.
      *
      * @return int|float
      */
@@ -527,7 +567,7 @@ class Cart
     {
 
         return $cart->reduce(function ($discount, $cartItem) {
-            return $discount + $cartItem->discountTotal;
+            return $discount + $cartItem->discount_total;
         }, 0);
     }
 
@@ -909,19 +949,19 @@ class Cart
      *
      * @return float|null
      */
-    public function __get($attribute)
-    {
-        switch ($attribute) {
-            case 'total':
-                return $this->total();
-            case 'tax':
-                return $this->tax();
-            case 'subtotal':
-                return $this->subtotal();
-            default:
-                return;
-        }
-    }
+    // public function __get($attribute)
+    // {
+    //     switch ($attribute) {
+    //         case 'total':
+    //             return $this->total();
+    //         case 'tax':
+    //             return $this->tax();
+    //         case 'subtotal':
+    //             return $this->subtotal();
+    //         default:
+    //             return;
+    //     }
+    // }
 
     /**
      * Get the carts content, if there is no cart content set yet, return a new empty Collection.
@@ -952,22 +992,19 @@ class Cart
     private function createCartItem($id, $product, $variant, $discount, $price, $weight, $quantity, array $options)
     {
 
-        if ($id instanceof Buyable) {
-            // $cartItem = CartItem::fromBuyable($id, $quantity ?: []);
-            // $cartItem->setQuantity($name ?: 1);
-            // $cartItem->associate($id);
-        } elseif (is_array($id)) {
-            // $cartItem = CartItem::fromArray($id);
-            // $cartItem->setQuantity($id['quantity']);
-        } else {
-
-            $cartItem = CartItem::fromAttributes($id, $product, $variant, $discount, $price, $weight, $quantity, $options);
-
-            $cartItem->setQuantity($quantity);
-        }
-
-        $cartItem->setInstance($this->currentInstance());
-
+        // $cartItem = CartItem::fromAttributes($id, $product, $variant, $discount, $price, $weight, $quantity, $options);
+        // $cartItem->setQuantity($quantity);
+        // $cartItem->setInstance($this->currentInstance());
+        $cartItem = (object) array(
+            "rowId" => md5($id),
+            "id" => $id,
+            "product" => $product,
+            "variant" => $variant,
+            "quantity" => $quantity,
+            "price" => $price,
+            "weight" => $weight,
+            "options" => $options,
+        );
         return $cartItem;
     }
 

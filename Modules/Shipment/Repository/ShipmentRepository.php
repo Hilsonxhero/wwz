@@ -60,6 +60,7 @@ class ShipmentRepository implements ShipmentRepositoryInterface
         ]);
         return $shipment;
     }
+
     public function show($id)
     {
         $shipment = $this->find($id);
@@ -74,6 +75,11 @@ class ShipmentRepository implements ShipmentRepositoryInterface
         } catch (ModelNotFoundException $e) {
             return  ApiService::_response(trans('response.responses.404'), 404);
         }
+    }
+    public function default($delivery)
+    {
+        $shipment = Shipment::query()->where('is_default', true)->where('delivery_id', $delivery)->first();
+        return $shipment;
     }
     public function delete($id)
     {

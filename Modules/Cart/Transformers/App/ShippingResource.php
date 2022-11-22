@@ -4,12 +4,14 @@ namespace Modules\Cart\Transformers\App;
 
 use Modules\Cart\Facades\Cart;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 use Modules\User\Transformers\App\AddressResource;
 use Modules\User\Transformers\App\UserAddressResource;
 use Modules\User\Transformers\UserResource;
 
 class ShippingResource extends JsonResource
 {
+
     /**
      * Transform the resource into an array.
      *
