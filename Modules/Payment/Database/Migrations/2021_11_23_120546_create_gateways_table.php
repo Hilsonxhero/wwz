@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-use Modules\Payment\Entities\PaymentMethod;
+use Modules\Payment\Entities\Gateway;
 
 return new class extends Migration
 {
@@ -14,14 +14,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('payment_methods', function (Blueprint $table) {
+        Schema::create('gateways', function (Blueprint $table) {
             $table->id();
             $table->string("title");
             $table->string("slug");
-            $table->text("description");
-            $table->string("type");
-            $table->enum("status", PaymentMethod::$statuses)->default(PaymentMethod::PENDING_STATUS);
+            $table->text("config")->nullable();
             $table->boolean("is_default")->default(false);
+            $table->enum("type", Gateway::$types);
+            $table->enum("status", Gateway::$statuses);
             $table->softDeletes();
             $table->timestamps();
         });
@@ -34,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('payment_methods');
+        Schema::dropIfExists('gateways');
     }
 };

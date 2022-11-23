@@ -1,18 +1,22 @@
 <?php
 
+
+
 use Illuminate\Http\Request;
+use Modules\Cart\Http\Controllers\v1\App\PaymentController;
+use Modules\Payment\Http\Controllers\v1\Panel\GatewayController;
+use Modules\Payment\Http\Controllers\v1\Panel\PaymentController as PanelPaymentController;
+use Modules\Payment\Http\Controllers\v1\Panel\PaymentMethodController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
+Route::prefix('v1/application')->group(function () {
+    Route::get('payment', [PaymentController::class, 'init'])->middleware(['auth:api']);
+    Route::post('payment', [PaymentController::class, 'store'])->middleware(['auth:api']);
+});
 
-Route::middleware('auth:api')->get('/payment', function (Request $request) {
-    return $request->user();
+
+
+Route::prefix('v1/panel')->group(function () {
+    Route::apiResource("payments", PanelPaymentController::class);
+    Route::apiResource("gateways", GatewayController::class);
+    Route::apiResource("payment/methods", PaymentMethodController::class);
 });
