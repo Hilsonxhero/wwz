@@ -6,7 +6,6 @@ use App\Services\ApiService;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Modules\Shipment\Entities\Shipment;
-use Modules\Shipment\Entities\Shipment;
 use Modules\Shipment\Entities\ShipmentDate;
 use Modules\Shipment\Entities\ShipmentInterval;
 

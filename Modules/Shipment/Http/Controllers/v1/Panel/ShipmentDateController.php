@@ -61,6 +61,7 @@ class ShipmentDateController extends Controller
         $date = createDatetimeFromFormat($request->input('date'), 'Y/m/d');
         $data = [
             'shipment_city_id' =>  $request->input('shipment_city_id'),
+            'shipment_id' =>  $request->input('shipment_id'),
             'is_holiday' =>  $request->input('is_holiday'),
             'date' => $date,
         ];

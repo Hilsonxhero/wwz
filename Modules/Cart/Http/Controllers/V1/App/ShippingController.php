@@ -19,9 +19,11 @@ use Modules\Cart\Transformers\App\ShippingResource;
 use Modules\Cart\Transformers\App\CartItemsResource;
 use Modules\User\Transformers\App\UserAddressResource;
 use Modules\Cart\Entities\Shipping as EntitiesShipping;
+use Modules\Cart\Http\Requests\App\ShippingRequest;
 use Modules\Cart\Repository\ShippingRepositoryInterface;
 use Modules\Shipment\Repository\ShipmentRepositoryInterface;
 use Modules\Shipment\Transformers\Panel\ShipmentDateResource;
+use Modules\User\Entities\Address;
 
 class ShippingController extends Controller
 {
@@ -48,15 +50,27 @@ class ShippingController extends Controller
         return new ShippingResource($content);
     }
 
-    public function store(Request $request)
+    public function store(ShippingRequest $request)
     {
         $user = auth()->user();
 
-        $packages = $request->packages;
+        $packages_delivery = $request->packages;
+
+        // ApiService::_throw($packages_delivery);
+
+        $address = Address::query()->where('id', $request->address_id)->first();
+
+        $address =  new UserAddressResource($address);
+
+        $user->cart->update([
+            'address' => json_decode(json_encode($address))
+        ]);
+
+
+        $packages_delivery = collect($request->packages);
 
         Cart::setShipment(50000);
 
-        // return Cart::content();
 
         $shipping = Shipping::content();
 
@@ -69,18 +83,17 @@ class ShippingController extends Controller
 
         $packages = collect($packages);
 
-
-        // ApiService::_success($shipping);
-
-
         $user->shippings()->delete();
 
         foreach ($packages->get('packages') as  $value) {
+
+            $filtered = (object) $packages_delivery->where('delivery_id', $value->delivery_id)->first();
+
             $data = [
                 'user_id' => $user->id,
                 'cart_id' => $user->cart->id,
                 'shipment_id' => $value->submit_type->id,
-                'shipment_interval_id' => null,
+                'shipment_interval_id' => $filtered->time_scope,
                 'package_price' => $value->package_price,
             ];
 
@@ -94,7 +107,7 @@ class ShippingController extends Controller
             $shipping_item->cart_items()->createMany($shipping_cart_items);
         }
 
-        ApiService::_success("done");
+        ApiService::_success(trans('response.responses.200'));
 
         $data = [];
     }

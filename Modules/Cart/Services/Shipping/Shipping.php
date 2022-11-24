@@ -54,6 +54,7 @@ class Shipping
 
         $grouped = $data->groupBy('submit_type.id')->map(function ($item2, $key) {
             return (object) array(
+                'delivery_id' =>  json_decode(json_encode(...$item2->pluck('delivery_id')), false),
                 'package_price' => collect(array_merge(...$item2->pluck('cart_items')->toArray()))->sum('subtotal'),
                 'submit_type' => (object) json_decode(json_encode(...$item2->pluck('submit_type')), false),
                 'cart_items' => (object) array_merge(...$item2->pluck('cart_items')->toArray())

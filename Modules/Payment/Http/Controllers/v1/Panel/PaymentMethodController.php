@@ -90,6 +90,6 @@ class PaymentMethodController extends Controller
     public function destroy($id)
     {
         $method = $this->paymentMethodRepo->delete($id);
-        return new PaymentMethodResource($method);
+        ApiService::_success(trans('response.responses.200'));
     }
 }
