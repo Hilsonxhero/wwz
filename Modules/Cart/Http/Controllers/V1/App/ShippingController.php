@@ -93,7 +93,7 @@ class ShippingController extends Controller
                 'user_id' => $user->id,
                 'cart_id' => $user->cart->id,
                 'shipment_id' => $value->submit_type->id,
-                'shipment_interval_id' => $filtered->time_scope,
+                'shipment_interval_id' => $filtered->time_scope ?? null,
                 'package_price' => $value->package_price,
             ];
 

@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('ref_num')->nullable();
             $table->string("reference_code");
             $table->decimal('amount', $precision = 64, $scale = 8);
-            $table->enum("status", Payment::$statuses)->default(Payment::PENDING_STATUS);
+            $table->string("status");
             $table->softDeletes();
             $table->timestamps();
         });

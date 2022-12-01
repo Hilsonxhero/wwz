@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained('products');
             $table->foreignId('variant_id')->constrained('product_variants');
-            $table->foreignId('order_shipping_id')->constrained('order_shippings');
+            $table->foreignId('order_shipping_id')->constrained('order_shippings')->cascadeOnDelete();
             $table->unsignedBigInteger('quantity');
             $table->unsignedBigInteger('returned_quantity')->default(0);
             $table->unsignedBigInteger('cancelled_quantity')->default(0);

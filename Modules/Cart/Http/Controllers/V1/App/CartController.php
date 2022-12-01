@@ -9,6 +9,7 @@ use Modules\Cart\Facades\Cart;
 use Illuminate\Routing\Controller;
 use Modules\Cart\Http\Requests\App\CartRequest;
 use Modules\Cart\Transformers\App\CartResource;
+use Modules\Payment\Entities\Payment;
 use Modules\Product\Entities\ProductVariant;
 use Modules\Product\Transformers\ProductResource;
 use Modules\Product\Repository\ProductRepositoryInterface;
@@ -36,9 +37,7 @@ class CartController extends Controller
 
     public function index(Request $request)
     {
-        $dd = $cart = Cart::content();
-        // return $dd;
-        // return Cart::content()->items;
+        $cart = Cart::content();
         return new CartResource($cart);
     }
 
@@ -50,6 +49,7 @@ class CartController extends Controller
 
     public function store(CartRequest $request)
     {
+
         $variant = $this->variantRepo->find($request->variant_id);
         $product = $this->productRepo->find($variant->product_id);
 

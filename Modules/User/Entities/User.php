@@ -21,6 +21,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Modules\Cart\Entities\Cart as EntitiesCart;
 use Modules\Cart\Entities\Shipping;
+use Modules\Cart\Enums\CartStatus;
 
 class User extends Authenticatable implements HasMedia
 {
@@ -92,6 +93,12 @@ class User extends Authenticatable implements HasMedia
     public function cart()
     {
         return $this->hasOne(EntitiesCart::class);
+        // ->where('status', CartStatus::Available->value)->first()
+    }
+
+    public function carts()
+    {
+        return $this->hasMany(EntitiesCart::class);
     }
 
     public function addresses()
@@ -114,6 +121,12 @@ class User extends Authenticatable implements HasMedia
             ->height(250);
     }
 
+    protected function availableCart(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $this->carts()->where('status', CartStatus::Available->value)->first()
+        );
+    }
 
     /**
      * Check user is login .

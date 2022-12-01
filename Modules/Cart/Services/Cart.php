@@ -14,6 +14,7 @@ use Illuminate\Database\DatabaseManager;
 use Illuminate\Support\Traits\Macroable;
 use Illuminate\Contracts\Events\Dispatcher;
 use Modules\Cart\Contracts\InstanceIdentifier;
+use Modules\Cart\Enums\CartStatus;
 use Modules\Cart\Exceptions\InvalidRowIDException;
 use Modules\Cart\Exceptions\UnknownModelException;
 use Modules\Cart\Repository\CartRepositoryInterface;
@@ -248,15 +249,27 @@ class Cart
             $this->storage->set($this->instance, serialize($content));
         } else {
             $user = auth()->user();
-            $content  = $user->cart;
+
+            if (is_null($user->available_cart)) {
+                $cart = resolve(CartRepositoryInterface::class)->firstOrCreate([
+                    'user_id' => $user->id,
+                    'status' => CartStatus::Available->value
+                ], [
+                    'user_id' => $user->id,
+                    'identifier' => $user->phone,
+                    'instance'   =>  $this->currentInstance()
+                ]);
+            }
+            $content  = $user->available_cart;
             $res = resolve(CartItemRepositoryInterface::class)->findByVariant($content, $item->variant);
             if ($res) {
                 $data = ['quantity' => $res->quantity + 1];
                 resolve(CartItemRepositoryInterface::class)->update($res->id, $data);
             } else {
+
                 $data = [
                     'uuid' => $item->rowId,
-                    'cart_id' => $user->cart->id,
+                    'cart_id' => $user->available_cart->id,
                     'product_id' => $item->product,
                     'variant_id' => $item->variant,
                     'quantity' => $item->quantity,
@@ -398,28 +411,24 @@ class Cart
      */
     public function content()
     {
-
         if (auth()->check()) {
-            $data = resolve(UserRepositoryInterface::class)->cart();
-            $data = $data->map(function ($item) {
-                return $this->createCartItem(
-                    $item->id,
-                    $item->product_id,
-                    $item->variant_id,
-                    $item->variant->calculate_discount,
-                    $item->variant->price,
-                    $item->variant->weight,
-                    $item->quantity,
-                    ['delivery' => $item->product->delivery->id]
-                );
-            });
-            $cart = $data;
-            $cart = collect(CartItemsResource::collection($cart));
-            $cart = collect(json_decode($cart));
-        } else {
-            $data = $this->storage->get($this->instance);
-            if (is_null($data)) {
+            $cart = resolve(UserRepositoryInterface::class)->cart();
+
+            if (!is_null($cart)) {
+                $cart_items = $cart->items->map(function ($item) {
+                    return $this->createCartItem(
+                        $item->id,
+                        $item->product_id,
+                        $item->variant_id,
+                        $item->variant->calculate_discount,
+                        $item->variant->price,
+                        $item->variant->weight,
+                        $item->quantity
+                    );
+                });
+            } else {
                 return (object)  collect([
+                    'id' =>  random_int(1000000, 10000000),
                     'items' => [],
                     'items_count' => 0,
                     'payable_price' => 0,
@@ -429,29 +438,32 @@ class Cart
                     'shipment_discount' => 0,
                 ])->toArray();
             }
-
-            // $cart = collect(unserialize($this->storage->get($this->instance)));
-
-
-            // $cart->map(function ($item) {
-            //     $variant = resolve(ProductVariantRepositoryInterface::class)->find($item->variant);
-            //     $this->update($item->id, ['discount' => $variant->calculate_discount, 'price' => $variant->price]);
-            // });
-
-
-            $cart = collect(unserialize($this->storage->get($this->instance)));
-            $cart = collect(CartItemsResource::collection($cart));
-            $cart = collect(json_decode($cart));
-            // return $cart;
+        } else {
+            $cart_items = $this->storage->get($this->instance);
+            if (is_null($cart_items)) {
+                return (object)  collect([
+                    'id' =>  random_int(1000000, 10000000),
+                    'items' => [],
+                    'items_count' => 0,
+                    'payable_price' => 0,
+                    'rrp_price' => 0,
+                    'items_discount' => 0,
+                    'shipment_cost' => 0,
+                    'shipment_discount' => 0,
+                ])->toArray();
+            }
+            $cart_items = collect(unserialize($this->storage->get($this->instance)));
         }
+        $cart_items = collect(CartItemsResource::collection($cart_items));
+        $cart_items = collect(json_decode($cart_items));
 
         $content = (object) [
-            // 'id' => $cart->id,
-            'items' => $cart,
-            'items_count' => $this->count($cart),
-            'payable_price' => $this->subtotal($cart),
-            'rrp_price' => $this->total($cart),
-            'items_discount' => $this->discount($cart),
+            'id' => $cart->id ?? random_int(1000000, 10000000),
+            'items' => $cart_items->toArray(),
+            'items_count' => $this->count($cart_items),
+            'payable_price' =>  $this->subtotal($cart_items),
+            'rrp_price' => $this->total($cart_items),
+            'items_discount' => $this->discount($cart_items),
             'shipment_cost' => $this->shipment_cost,
             'shipment_discount' => $this->shipment_discount,
         ];
@@ -539,9 +551,11 @@ class Cart
      */
     public function subtotalFloat($cart)
     {
-        return $cart->reduce(function ($subTotal,  $cartItem) {
+        $total = $cart->reduce(function ($subTotal,  $cartItem) {
             return $subTotal + $cartItem->subtotal;
         }, 0);
+
+        return $total + $this->shipment_cost;
     }
 
     /**
@@ -797,7 +811,10 @@ class Cart
 
         $user = auth()->user();
 
-        $cart = resolve(CartRepositoryInterface::class)->firstOrCreate(['user_id' => $user->id], [
+        $cart = resolve(CartRepositoryInterface::class)->firstOrCreate([
+            'user_id' => $user->id,
+            'status' => CartStatus::Available->value
+        ], [
             'user_id' => $user->id,
             'identifier' => $identifier,
             'instance'   => $instance,
@@ -817,9 +834,9 @@ class Cart
                         'product_id' => $item->product,
                         'variant_id' => $item->variant,
                         'price' => $item->price,
-                        'subtotal' => $item->subtotal,
-                        'total' => $item->total,
-                        'discount' => $item->discount,
+                        // 'subtotal' => $item->subtotal,
+                        // 'total' => $item->total,
+                        // 'discount' => $item->discount,
                         'quantity' => $item->quantity,
                     ]
                 );
@@ -989,7 +1006,7 @@ class Cart
      *
      * @return \Modules\Cart\Services\CartItem
      */
-    private function createCartItem($id, $product, $variant, $discount, $price, $weight, $quantity, array $options)
+    private function createCartItem($id, $product, $variant, $discount, $price, $weight, $quantity, array $options = [])
     {
 
         // $cartItem = CartItem::fromAttributes($id, $product, $variant, $discount, $price, $weight, $quantity, $options);
