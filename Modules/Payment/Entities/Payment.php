@@ -41,4 +41,9 @@ class Payment extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function gateway()
+    {
+        return $this->belongsTo(Gateway::class);
+    }
 }

@@ -14,10 +14,18 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Laravel\Scout\Searchable;
+use JeroenG\Explorer\Application\Aliased;
+use JeroenG\Explorer\Application\Explored;
+use JeroenG\Explorer\Application\IndexSettings;
+use JeroenG\Explorer\Application\BePrepared;
+use JeroenG\Explorer\Domain\Analysis\Analysis;
+use JeroenG\Explorer\Domain\Analysis\Analyzer\StandardAnalyzer;
+use JeroenG\Explorer\Domain\Analysis\Filter\SynonymFilter;
 
-class Product extends Model implements HasMedia
+class Product extends Model implements HasMedia, Explored
 {
-    use HasFactory, Sluggable, SoftDeletes, InteractsWithMedia;
+    use HasFactory, Sluggable, SoftDeletes, InteractsWithMedia, Searchable;
 
     protected $fillable = [
         'title_fa', 'title_en', 'slug', 'review', 'category_id', 'brand_id', 'status', 'delivery_id',
@@ -29,6 +37,69 @@ class Product extends Model implements HasMedia
     const REJECTED_STATUS = 'rejected';
 
     static $statuses = [self::DISABLE_STATUS, self::ENABLE_STATUS, self::PENDING_STATUS, self::REJECTED_STATUS];
+
+    public function mappableAs(): array
+    {
+        return [
+            'id' => 'keyword',
+            'title_fa' => [
+                'type' => 'text',
+                // 'analyzer' => 'synonym',
+            ],
+            'status' => [
+                'type' => 'text',
+                // 'analyzer' => 'synonym',
+            ],
+            'category' => 'nested',
+        ];
+    }
+
+    public function toSearchableArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'title_fa' => $this->title_fa,
+            'status' => $this->status,
+            // 'category' => $this->category,
+            'category' => $this->category
+        ];
+    }
+
+    // public function prepare($searchable): array
+    // {
+    //     // if ($searchable['title_fa'] === 'Sicily') {
+    //     //     $searchable['title_fa'] = ['Italy', 'Sicily'];
+    //     // }
+
+    //     return array();
+    // }
+
+    // public function indexSettings(): array
+    // {
+    //     $synonymFilter = new SynonymFilter();
+    //     $synonymFilter->setSynonyms(['mona lisa => leonardo']);
+
+    //     $synonymAnalyzer = new StandardAnalyzer('synonym');
+    //     $synonymAnalyzer->setFilters(['lowercase', $synonymFilter]);
+
+
+    //     return array();
+
+    //     // return (new Analysis())
+    //     //     ->addAnalyzer($synonymAnalyzer)
+    //     //     ->addFilter($synonymFilter)
+    //     //     ->build();
+    // }
+
+    /**
+     * Get the name of the index associated with the model.
+     *
+     * @return string
+     */
+    public function searchableAs()
+    {
+        return 'products';
+    }
 
 
     public function delivery()

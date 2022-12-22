@@ -39,5 +39,12 @@ return [
     'payment' => [
         'callback' => '',
     ],
+    'elasticsearch' => [
+        'hosts' => [
+            'localhost:9200'
+        ],
+        'username' => 'elastic',
+        'password' => 'jG63LI8Yj*wfYeO=k*Sc',
+    ]
 
 ];

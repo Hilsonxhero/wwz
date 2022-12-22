@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use Modules\Product\Http\Controllers\v1\Panel\FeatureController;
 use Modules\Product\Http\Controllers\v1\Panel\FeatureValueController;
 use Modules\Product\Http\Controllers\v1\Panel\ProductController;

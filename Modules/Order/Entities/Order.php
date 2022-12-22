@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Modules\Payment\Entities\PaymentMethod;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Payment\Entities\Payment;
 
 class Order extends Model
 {
@@ -54,7 +55,7 @@ class Order extends Model
     }
     public function payments()
     {
-        return $this->belongsTo(PaymentMethod::class);
+        return $this->morphMany(Payment::class, "paymentable");
     }
     public function shippings()
     {
