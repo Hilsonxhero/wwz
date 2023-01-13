@@ -29,12 +29,7 @@ class LoginController extends Controller
         //     ApiService::_throw(trans('response.auth.invalid_code'), 200);
         // }
 
-
-
         $user = User::where('phone', $phone)->first();
-
-
-
 
         if (!$user) {
             $user = User::create([
@@ -43,22 +38,16 @@ class LoginController extends Controller
             ]);
         }
 
-
         try {
-            // config('services.passport.login_endpoint')
 
-            $response = Http::asForm()->post("http://localhost/oauth/token", [
+            $response = Http::asForm()->post(config('services.passport.login_endpoint'), [
                 'grant_type' => 'password',
-                'client_id' => 2,
-                'client_secret' => "7Oe6huGcJOZbcqQtlPNQZc4mJi8hoRNgn0TB21ov",
+                'client_id' => config('services.passport.client_id'),
+                'client_secret' => config('services.passport.client_secret'),
                 'username' => $phone,
                 'password' => $phone,
                 'scope' => '',
             ]);
-
-            // $response = Http::get("https://jsonplaceholder.typicode.com/posts");
-
-            return "hello";
 
             $data = json_decode($response->getBody());
 
