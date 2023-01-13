@@ -99,7 +99,7 @@ class CategoryController extends Controller
             'link' => $request->link,
             'parent_id' => $request->parent,
         ];
-        $category =  $this->categoryRepo->update($id, $data);
+        $category = $this->categoryRepo->update($id, $data);
 
         if ($request->image) {
             // $category->last()->delete();

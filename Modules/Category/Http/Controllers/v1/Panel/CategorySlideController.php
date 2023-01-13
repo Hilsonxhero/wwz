@@ -60,7 +60,7 @@ class CategorySlideController extends Controller
     public function show($id)
     {
         $slide = $this->slideRepo->show($id);
-        return new  CategorySlideResource($slide);
+        return new CategorySlideResource($slide);
     }
 
     /**

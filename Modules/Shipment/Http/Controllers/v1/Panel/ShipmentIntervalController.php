@@ -19,7 +19,8 @@ class ShipmentIntervalController extends Controller
     public function __construct(
         ShipmentIntervalRepositoryInterface $intervalRepo,
         ShipmentDateRepositoryInterface $shipmentDateRepo
-    ) {
+    )
+    {
         $this->intervalRepo = $intervalRepo;
         $this->shipmentDateRepo = $shipmentDateRepo;
     }

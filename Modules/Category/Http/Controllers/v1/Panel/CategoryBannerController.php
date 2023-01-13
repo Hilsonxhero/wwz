@@ -60,7 +60,7 @@ class CategoryBannerController extends Controller
     public function show($id)
     {
         $slide = $this->bannerRepo->show($id);
-        return new  CategoryBannerResource($slide);
+        return new CategoryBannerResource($slide);
     }
 
     /**

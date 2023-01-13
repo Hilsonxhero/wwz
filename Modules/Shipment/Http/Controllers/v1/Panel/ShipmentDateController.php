@@ -27,7 +27,8 @@ class ShipmentDateController extends Controller
         ShipmentDateRepositoryInterface $shipmentDateRepo,
         ShipmentCityRepositoryInterface $shipmentCityRepo,
         CityRepositoryInterface $cityRepo
-    ) {
+    )
+    {
         $this->shipmentDateRepo = $shipmentDateRepo;
         $this->ShipmentRepo = $ShipmentRepo;
         $this->cityRepo = $cityRepo;
@@ -42,7 +43,7 @@ class ShipmentDateController extends Controller
     {
         $shipment_city = $this->shipmentCityRepo->find($id);
         $dates = $this->shipmentCityRepo->dates($shipment_city);
-        return  ShipmentDateResource::collection($dates);
+        return ShipmentDateResource::collection($dates);
     }
 
     /**
@@ -60,9 +61,9 @@ class ShipmentDateController extends Controller
 
         $date = createDatetimeFromFormat($request->input('date'), 'Y/m/d');
         $data = [
-            'shipment_city_id' =>  $request->input('shipment_city_id'),
-            'shipment_id' =>  $request->input('shipment_id'),
-            'is_holiday' =>  $request->input('is_holiday'),
+            'shipment_city_id' => $request->input('shipment_city_id'),
+            'shipment_id' => $request->input('shipment_id'),
+            'is_holiday' => $request->input('is_holiday'),
             'date' => $date,
         ];
 

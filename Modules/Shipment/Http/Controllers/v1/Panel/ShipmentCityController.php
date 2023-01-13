@@ -18,7 +18,8 @@ class ShipmentCityController extends Controller
     public function __construct(
         ShipmentCityRepositoryInterface $shipmentCityRepo,
         CityRepositoryInterface $cityRepo
-    ) {
+    )
+    {
         $this->shipmentCityRepo = $shipmentCityRepo;
         $this->cityRepo = $cityRepo;
     }
@@ -64,7 +65,7 @@ class ShipmentCityController extends Controller
      */
     public function show($city, $id)
     {
-        $shipment =  $this->shipmentCityRepo->find($id);
+        $shipment = $this->shipmentCityRepo->find($id);
 
         return new ShipmentCityResource($shipment);
     }

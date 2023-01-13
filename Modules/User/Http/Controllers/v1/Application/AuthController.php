@@ -35,11 +35,13 @@ class AuthController extends Controller
             $ttl = $has_exists;
             $code = $has_exists->code;
         }
-        
+
         //        Notification::send(null, new VerifyPhoneNotification($phone, $code));
         ApiService::_success([
-            'phone' => $phone, 'has_account' =>  !!$user,
-            'login_method' => 'otp', 'ttl' => Carbon::parse($ttl->ttl)->DiffInSeconds(now())
+            'phone' => $phone,
+            'has_account' => !!$user,
+            'login_method' => 'otp',
+            'ttl' => Carbon::parse($ttl->ttl)->DiffInSeconds(now())
         ]);
     }
 

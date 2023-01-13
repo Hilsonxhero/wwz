@@ -1,13 +1,15 @@
 <?php
 
 use Illuminate\Http\Request;
-use Modules\State\Http\Controllers\v1\Panel\CityController;
+
+use Illuminate\Support\Facades\Route;
+use Modules\State\Http\Controllers\v1\App\CityController;
 use Modules\State\Http\Controllers\v1\Panel\StateController;
 
 Route::prefix('v1/application')->group(function () {
     Route::get("/states", [\Modules\State\Http\Controllers\v1\App\StateController::class, 'index']);
     Route::get("/states/{id}/cities", [\Modules\State\Http\Controllers\v1\App\StateController::class, 'cities']);
-    Route::get("/cities", \Modules\State\Http\Controllers\v1\App\CityController::class);
+    // Route::get("/cities", Modules\State\Http\Controllers\v1\App\CityController::class);
 });
 
 

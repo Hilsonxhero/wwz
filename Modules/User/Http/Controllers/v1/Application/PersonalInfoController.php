@@ -13,7 +13,7 @@ class PersonalInfoController extends Controller
      * Display a listing of the resource.
      * @return Response
      */
-    public function __invoke()
+    public function index()
     {
         $user = auth()->user();
         return new PersonalInfoResource($user);

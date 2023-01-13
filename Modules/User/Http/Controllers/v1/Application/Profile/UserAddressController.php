@@ -27,7 +27,7 @@ class UserAddressController extends Controller
     public function index()
     {
         $addresses = $this->addressRepo->all();
-        return  UserAddressResource::collection($addresses);
+        return UserAddressResource::collection($addresses);
     }
 
     /**

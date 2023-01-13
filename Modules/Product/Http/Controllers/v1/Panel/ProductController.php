@@ -28,7 +28,7 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $products = $this->productRepo->all($request->q);
-        return  ProductResource::collection($products);
+        return ProductResource::collection($products);
     }
 
 
@@ -43,7 +43,7 @@ class ProductController extends Controller
     {
         //        ApiService::_response("www",403);
         $combinations = $this->productRepo->combinations($id);
-        return  ProductVariantCombinationResource::collection($combinations);
+        return ProductVariantCombinationResource::collection($combinations);
         //        ApiService::_success($combinations);
     }
 

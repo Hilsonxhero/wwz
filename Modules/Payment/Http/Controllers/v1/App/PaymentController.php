@@ -30,7 +30,8 @@ class PaymentController extends Controller
         PaymentMethodRepositoryInterface $paymentMethodRepo,
         PaymentRepositoryInterface $paymentRepo,
         OrderRepositoryInterface $orderRepo
-    ) {
+    )
+    {
         $this->paymentMethodRepo = $paymentMethodRepo;
         $this->paymentRepo = $paymentRepo;
         $this->orderRepo = $orderRepo;
@@ -41,7 +42,7 @@ class PaymentController extends Controller
      */
     public function init()
     {
-        $user  = auth()->user();
+        $user = auth()->user();
 
         $cart = $user->cart;
 
@@ -154,7 +155,7 @@ class PaymentController extends Controller
 
     public function checkout(Request $request)
     {
-        $payment =  $this->paymentRepo->findByReferenceCode($request->reference_code);
+        $payment = $this->paymentRepo->findByReferenceCode($request->reference_code);
 
         $data = array(
             'order' => new OrderResource($payment->paymentable),

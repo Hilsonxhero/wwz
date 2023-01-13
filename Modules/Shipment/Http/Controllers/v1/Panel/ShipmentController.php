@@ -26,7 +26,7 @@ class ShipmentController extends Controller
     public function index()
     {
         $shipments = $this->shipmentRepo->all();
-        return  ShipmentResource::collection($shipments);
+        return ShipmentResource::collection($shipments);
     }
 
     /**

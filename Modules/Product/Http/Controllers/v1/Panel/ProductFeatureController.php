@@ -20,7 +20,8 @@ class ProductFeatureController extends Controller
     public function __construct(
         ProductFeatureRepositoryInterface $featureRepo,
         ProductRepositoryInterface $productRepo
-    ) {
+    )
+    {
         $this->featureRepo = $featureRepo;
         $this->productRepo = $productRepo;
     }
@@ -34,7 +35,7 @@ class ProductFeatureController extends Controller
     {
         // $features = $this->featureRepo->show($id);
         $features = $this->productRepo->find($id)->productFeatures()->paginate();
-        return  ProductFeatureResource::collection($features);
+        return ProductFeatureResource::collection($features);
         ApiService::_success($features);
     }
 

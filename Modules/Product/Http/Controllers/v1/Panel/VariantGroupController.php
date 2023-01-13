@@ -26,7 +26,7 @@ class VariantGroupController extends Controller
     public function index()
     {
         $groups = $this->groupRepo->all();
-        return  VariantGroupResource::collection($groups);
+        return VariantGroupResource::collection($groups);
         // ApiService::_success($groups);
     }
 
@@ -37,7 +37,7 @@ class VariantGroupController extends Controller
     public function list()
     {
         $groups = $this->groupRepo->active();
-        return  VariantGroupResource::collection($groups);
+        return VariantGroupResource::collection($groups);
         // ApiService::_success($groups);
     }
 
@@ -82,8 +82,8 @@ class VariantGroupController extends Controller
      */
     public function values($id)
     {
-        $values =  $this->groupRepo->values($id);
-        return  VariantResource::collection($values);
+        $values = $this->groupRepo->values($id);
+        return VariantResource::collection($values);
         // ApiService::_success($values);
     }
 

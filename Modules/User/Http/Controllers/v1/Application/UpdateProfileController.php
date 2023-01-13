@@ -70,11 +70,11 @@ class UpdateProfileController extends Controller
         $user = auth()->user();
 
         ApiService::Validator($request->all(), [
-            'current_password' => [Rule::requiredIf(fn () => $user->has_password)],
+            'current_password' => [Rule::requiredIf(fn() => $user->has_password)],
             'password' => ['required', 'confirmed'],
         ]);
 
-        $password =  Hash::make($request->password);
+        $password = Hash::make($request->password);
 
         if ($user->has_password) {
             $exists = Hash::check($request->current_password, $user->password);

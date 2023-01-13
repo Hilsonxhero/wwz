@@ -15,13 +15,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Laravel\Scout\Searchable;
-use JeroenG\Explorer\Application\Aliased;
 use JeroenG\Explorer\Application\Explored;
-use JeroenG\Explorer\Application\IndexSettings;
-use JeroenG\Explorer\Application\BePrepared;
-use JeroenG\Explorer\Domain\Analysis\Analysis;
-use JeroenG\Explorer\Domain\Analysis\Analyzer\StandardAnalyzer;
-use JeroenG\Explorer\Domain\Analysis\Filter\SynonymFilter;
 
 class Product extends Model implements HasMedia, Explored
 {
@@ -60,36 +54,10 @@ class Product extends Model implements HasMedia, Explored
             'id' => $this->id,
             'title_fa' => $this->title_fa,
             'status' => $this->status,
-            // 'category' => $this->category,
             'category' => $this->category
         ];
     }
 
-    // public function prepare($searchable): array
-    // {
-    //     // if ($searchable['title_fa'] === 'Sicily') {
-    //     //     $searchable['title_fa'] = ['Italy', 'Sicily'];
-    //     // }
-
-    //     return array();
-    // }
-
-    // public function indexSettings(): array
-    // {
-    //     $synonymFilter = new SynonymFilter();
-    //     $synonymFilter->setSynonyms(['mona lisa => leonardo']);
-
-    //     $synonymAnalyzer = new StandardAnalyzer('synonym');
-    //     $synonymAnalyzer->setFilters(['lowercase', $synonymFilter]);
-
-
-    //     return array();
-
-    //     // return (new Analysis())
-    //     //     ->addAnalyzer($synonymAnalyzer)
-    //     //     ->addFilter($synonymFilter)
-    //     //     ->build();
-    // }
 
     /**
      * Get the name of the index associated with the model.

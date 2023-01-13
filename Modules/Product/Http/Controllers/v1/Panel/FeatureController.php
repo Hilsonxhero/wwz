@@ -34,7 +34,7 @@ class FeatureController extends Controller
     public function index()
     {
         $features = $this->featureRepo->all();
-        return  FeatureResource::collection($features);
+        return FeatureResource::collection($features);
         // ApiService::_success($features);
     }
 
@@ -69,7 +69,7 @@ class FeatureController extends Controller
      */
     public function show($id)
     {
-        $feature =  $this->featureRepo->find($id);
+        $feature = $this->featureRepo->find($id);
         return new FeatureResource($feature);
         // ApiService::_success($feature);
     }
@@ -82,9 +82,9 @@ class FeatureController extends Controller
      */
     public function select(Request $request, $id = null)
     {
-        $features =  $this->featureRepo->select($id, $request->q);
+        $features = $this->featureRepo->select($id, $request->q);
         // return $features;
-        return  FeatureResource::collection($features);
+        return FeatureResource::collection($features);
         // ApiService::_success($feature);
     }
 
@@ -95,8 +95,8 @@ class FeatureController extends Controller
      */
     public function values($id)
     {
-        $values =  $this->featureRepo->values($id);
-        return  FeatureValueResource::collection($values);
+        $values = $this->featureRepo->values($id);
+        return FeatureValueResource::collection($values);
         // ApiService::_success($values);
     }
 

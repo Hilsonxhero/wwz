@@ -25,7 +25,7 @@ class PaymentMethodController extends Controller
     public function index()
     {
         $methods = $this->paymentMethodRepo->all();
-        return  PaymentMethodResource::collection($methods);
+        return PaymentMethodResource::collection($methods);
     }
 
     /**

@@ -11,16 +11,20 @@ use Modules\Shipment\Http\Controllers\v1\Panel\ShipmentIntervalController;
 
 
 Route::prefix('v1/application')->group(function () {
-    Route::prefix('shipment')->group(function () {
-        Route::post("address/change", [ShipmentAddressController::class, 'change'])->middleware('auth:api');
-    });
+    Route::prefix('shipment')->group(
+        function () {
+            Route::post("address/change", [ShipmentAddressController::class, 'change'])->middleware('auth:api');
+        }
+    );
 });
 Route::prefix('v1/panel')->group(function () {
-    Route::prefix('shipment')->group(function () {
-        Route::apiResource("cities/{id}/dates", ShipmentDateController::class);
-        Route::apiResource("dates/{id}/intervals", ShipmentIntervalController::class);
-        Route::apiResource("cities/{id}/types", ShipmentCityController::class);
-    });
+    Route::prefix('shipment')->group(
+        function () {
+            Route::apiResource("cities/{id}/dates", ShipmentDateController::class);
+            Route::apiResource("dates/{id}/intervals", ShipmentIntervalController::class);
+            Route::apiResource("cities/{id}/types", ShipmentCityController::class);
+        }
+    );
 
     Route::apiResource("shipments", ShipmentController::class);
     Route::apiResource("deliveries", DeliveryController::class);

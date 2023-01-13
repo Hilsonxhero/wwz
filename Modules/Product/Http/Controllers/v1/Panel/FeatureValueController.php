@@ -64,7 +64,7 @@ class FeatureValueController extends Controller
      */
     public function show($id)
     {
-        $feature =  $this->featureValueRepo->find($id);
+        $feature = $this->featureValueRepo->find($id);
         ApiService::_success($feature);
     }
 

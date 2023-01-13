@@ -54,7 +54,7 @@ class BrandController extends Controller
             'description' => $request->description,
             'link' => $request->link,
             'category_id' => $request->category_id,
-            'is_special' =>  $request->is_special
+            'is_special' => $request->is_special
         ];
         $brand = $this->brandRepo->create($data);
         // if (base64($request->logo)) {
@@ -115,9 +115,9 @@ class BrandController extends Controller
             'link' => $request->link,
             'status' => $request->status,
             'category_id' => $request->category_id,
-            'is_special' =>  $request->is_special
+            'is_special' => $request->is_special
         ];
-        $brand =  $this->brandRepo->update($id, $data);
+        $brand = $this->brandRepo->update($id, $data);
 
         if ($request->image) {
             // $brand->last()->delete();

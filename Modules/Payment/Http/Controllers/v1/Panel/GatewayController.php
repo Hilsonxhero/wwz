@@ -25,7 +25,7 @@ class GatewayController extends Controller
     public function index()
     {
         $methods = $this->gatewayRepo->all();
-        return  GatewayResource::collection($methods);
+        return GatewayResource::collection($methods);
     }
 
     /**
