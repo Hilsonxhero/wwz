@@ -50,9 +50,9 @@ class LoginController extends Controller
             $response = Http::asForm()->post("http://localhost/oauth/token", [
                 'grant_type' => 'password',
                 'client_id' => 2,
-                'client_secret' => "xxxx",
+                'client_secret' => "7Oe6huGcJOZbcqQtlPNQZc4mJi8hoRNgn0TB21ov",
                 'username' => $phone,
-                'password' => "1111111111",
+                'password' => $phone,
                 'scope' => '',
             ]);
 
