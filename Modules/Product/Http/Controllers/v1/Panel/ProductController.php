@@ -54,7 +54,9 @@ class ProductController extends Controller
      */
     public function store(ProductRequest $request)
     {
+
         $product = $this->productRepo->create($request);
+
         ApiService::_success($product);
     }
 

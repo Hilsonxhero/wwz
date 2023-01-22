@@ -3,7 +3,8 @@
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Route;
-use Modules\State\Http\Controllers\v1\App\CityController;
+
+use Modules\State\Http\Controllers\v1\Panel\CityController;
 use Modules\State\Http\Controllers\v1\Panel\StateController;
 
 Route::prefix('v1/application')->group(function () {

@@ -15,14 +15,21 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Laravel\Scout\Searchable;
-use JeroenG\Explorer\Application\Explored;
+use Hilsonxhero\ElasticVision\Application\Explored;
 
 class Product extends Model implements HasMedia, Explored
 {
     use HasFactory, Sluggable, SoftDeletes, InteractsWithMedia, Searchable;
 
     protected $fillable = [
-        'title_fa', 'title_en', 'slug', 'review', 'category_id', 'brand_id', 'status', 'delivery_id',
+        'title_fa',
+        'title_en',
+        'slug',
+        'review',
+        'category_id',
+        'brand_id',
+        'status',
+        'delivery_id',
     ];
 
     const DISABLE_STATUS = 'disable';

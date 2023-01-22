@@ -7,6 +7,7 @@
     "devDependencies": {
         "autoprefixer": "^10.4.7",
         "axios": "^0.25.0",
+        "chokidar": "^3.5.3",
         "laravel-vite-plugin": "^0.4.0",
         "lodash": "^4.17.21",
         "postcss": "^8.4.14",
