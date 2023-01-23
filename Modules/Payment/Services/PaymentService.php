@@ -10,6 +10,7 @@ use Shetabit\Payment\Facade\Payment;
 use Shetabit\Multipay\Exceptions\InvalidPaymentException;
 use Illuminate\Http\Request;
 use Modules\Cart\Enums\CartStatus;
+use Modules\Payment\Entities\Gateway;
 use Modules\Payment\Repository\PaymentRepositoryInterface;
 
 class PaymentService
@@ -26,7 +27,7 @@ class PaymentService
             resolve(PaymentRepository::class)->create([
                 'user_id' => auth()->user()->id,
                 'payment_method_id' => $payment_method,
-                'gateway_id' => 2,
+                // 'gateway_id' => Gateway::query()->first(),
                 'invoice_id' => $transactionId,
                 'paymentable_type' => get_class($paymentable),
                 'paymentable_id' => $paymentable->id,

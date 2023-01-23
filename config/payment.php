@@ -265,7 +265,7 @@ return [
             'mode' => 'sandbox', // can be normal, sandbox, zaringate
             'merchantId' => 'c0856b42-65f7-48bc-81b6-00fcc2b2d943',
             // 'callbackUrl' => url('/api/v1/application/payment/zarinpal/callback'),
-            'callbackUrl' => 'http://127.0.0.1:8000/api/v1/application/payment/zarinpal/callback',
+            'callbackUrl' => 'http://127.0.0.1:9090/api/v1/application/payment/zarinpal/callback',
             'description' => 'payment using zarinpal',
         ],
         'zibal' => [
