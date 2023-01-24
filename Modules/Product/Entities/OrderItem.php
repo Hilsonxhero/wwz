@@ -10,9 +10,4 @@ class OrderItem extends Model
     use HasFactory;
 
     protected $fillable = [];
-    
-    protected static function newFactory()
-    {
-        return \Modules\Product\Database\factories\OrderItemFactory::new();
-    }
 }

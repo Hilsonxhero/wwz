@@ -2,11 +2,12 @@
 
 namespace Modules\Order\Entities;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Product\Entities\Product;
+use Illuminate\Database\Eloquent\Model;
 use Modules\Product\Entities\ProductVariant;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class OrderShippingItem extends Model
 {
@@ -15,6 +16,11 @@ class OrderShippingItem extends Model
     protected $fillable = [
         'product_id', 'variant_id', 'quantity', 'returned_quantity',
         'cancelled_quantity', 'price', 'order_shipping_id',
+    ];
+
+
+    protected $casts = [
+        'price' => 'json'
     ];
 
 
