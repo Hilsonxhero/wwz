@@ -6,6 +6,7 @@ use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Payment\Casts\PaymentStatus;
 use Modules\User\Entities\User;
 
 class Payment extends Model
@@ -18,6 +19,12 @@ class Payment extends Model
         'user_id', 'payment_method_id', 'gateway_id', 'paymentable_type',
         'paymentable_id', 'reference_code', 'amount', 'status', 'ref_num', 'invoice_id'
     ];
+
+
+    protected $casts = [
+        'status_fa' => PaymentStatus::class
+    ];
+
 
 
     public static function booted()

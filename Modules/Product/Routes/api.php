@@ -7,6 +7,8 @@ use Modules\Product\Http\Controllers\v1\Panel\FeatureValueController;
 use Modules\Product\Http\Controllers\v1\Panel\ProductController;
 use Modules\Product\Http\Controllers\v1\Panel\ProductFeatureController;
 use Modules\Product\Http\Controllers\v1\Panel\ProductVariantController;
+use Modules\Product\Http\Controllers\v1\Panel\RecommendationController;
+use Modules\Product\Http\Controllers\v1\Panel\RecommendationProductController;
 use Modules\Product\Http\Controllers\v1\Panel\VariantController;
 use Modules\Product\Http\Controllers\v1\Panel\VariantGroupController;
 
@@ -17,9 +19,13 @@ Route::prefix('v1/application')->group(function () {
 
 
 Route::prefix('v1/panel')->group(function () {
-    //products
+    // products
     Route::apiResource("/products", ProductController::class);
-    //products
+    // recommendation
+    Route::apiResource("/recommendations", RecommendationController::class);
+    // recommendation products
+    Route::apiResource("/recommendation/products", RecommendationProductController::class);
+    // products
     Route::apiResource("/product/incredibles", \Modules\Product\Http\Controllers\v1\Panel\IncredibleProductController::class);
     // product features
     Route::apiResource("/products/{id}/features", ProductFeatureController::class);

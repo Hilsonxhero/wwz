@@ -32,6 +32,7 @@ class OrderRepository implements OrderRepositoryInterface
 
     public function update($id, $data)
     {
+
         $payment = $this->find($id);
         $payment->update($data);
         return $payment;
@@ -45,6 +46,7 @@ class OrderRepository implements OrderRepositoryInterface
 
     public function find($id)
     {
+
         try {
             $payment = Order::query()->where('id', $id)->firstOrFail();
             return $payment;

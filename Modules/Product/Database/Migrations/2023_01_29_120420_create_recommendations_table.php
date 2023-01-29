@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-use Modules\Product\Entities\Product;
 
 return new class extends Migration
 {
@@ -14,16 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('recommendations', function (Blueprint $table) {
             $table->id();
-            $table->string("title_fa");
-            $table->string("title_en");
-            $table->string("slug");
-            $table->longText("review");
             $table->foreignId("category_id")->constrained('categories')->onDelete('cascade');
-            $table->foreignId("brand_id")->constrained('brands')->onDelete('cascade');
-            $table->enum('status', Product::$statuses)->default(Product::ENABLE_STATUS);
-            $table->softDeletes();
+            $table->string('description');
             $table->timestamps();
         });
     }
@@ -35,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('recommendations');
     }
 };

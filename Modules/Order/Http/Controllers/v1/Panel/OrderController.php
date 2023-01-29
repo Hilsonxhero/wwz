@@ -2,6 +2,7 @@
 
 namespace Modules\Order\Http\Controllers\v1\Panel;
 
+use App\Services\ApiService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
@@ -43,7 +44,8 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        //
+        $order = $this->orderRepo->show($id);
+        return new OrderResource($order);
     }
 
     /**
@@ -54,7 +56,12 @@ class OrderController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+
+        $data = [
+            'status' => $request->status
+        ];
+        $order = $this->orderRepo->update($id, $data);
+        return  ApiService::_success(trans('response.responses.200'));
     }
 
     /**
