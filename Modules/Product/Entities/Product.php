@@ -2,6 +2,8 @@
 
 namespace Modules\Product\Entities;
 
+use Laravel\Scout\Searchable;
+use Spatie\Image\Manipulations;
 use Modules\Brand\Entities\Brand;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
@@ -12,10 +14,9 @@ use Cviebrock\EloquentSluggable\Sluggable;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Hilsonxhero\ElasticVision\Application\Explored;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
-use Laravel\Scout\Searchable;
-use Hilsonxhero\ElasticVision\Application\Explored;
 
 class Product extends Model implements HasMedia, Explored
 {
@@ -132,8 +133,10 @@ class Product extends Model implements HasMedia, Explored
     public function registerMediaConversions(Media $media = null): void
     {
         $this->addMediaConversion('thumb')
+            ->keepOriginalImageFormat()
             ->width(300)
-            ->height(300);
+            ->height(300)
+            ->format(Manipulations::FORMAT_PNG);
     }
     /**
      * Calculate default delivery.
