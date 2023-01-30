@@ -2,13 +2,11 @@
 
 namespace Modules\Category\Repository;
 
-interface CategoryRepositoryInterface
+interface RecommendationCategoryRepoInterface
 {
     public function find($id);
     public function select($query);
     public function all();
-    public function group();
-    public function mainCategories();
     public function allActive();
     public function create($data);
     public function update($id, $data);

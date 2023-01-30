@@ -3,14 +3,16 @@
 namespace Modules\Category\Entities;
 
 use Illuminate\Support\Str;
-use Modules\Banner\Entities\Banner;
+use Spatie\Image\Manipulations;
+use Modules\Slide\Entities\Slide;
 use Spatie\MediaLibrary\HasMedia;
+use Modules\Banner\Entities\Banner;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\Slide\Entities\Slide;
+use Modules\Product\Entities\Product;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Category extends Model implements HasMedia
@@ -62,12 +64,12 @@ class Category extends Model implements HasMedia
         $this->addMediaConversion('thumb')
             ->width(368)
             ->height(232)
-            ->sharpen(10);
+            ->format(Manipulations::FORMAT_PNG);
     }
 
     public function children()
     {
-        return $this->hasMany(Category::class, 'parent_id')->with('children');
+        return $this->hasMany(Category::class, 'parent_id')->with('children')->withCount(['products']);
     }
 
     public function parent()
@@ -83,5 +85,9 @@ class Category extends Model implements HasMedia
     public function banners()
     {
         return $this->morphMany(Banner::class, 'bannerable');
+    }
+    public function products()
+    {
+        return $this->hasMany(Product::class);
     }
 }

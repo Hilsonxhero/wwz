@@ -6,7 +6,7 @@ use App\Services\ApiService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Modules\Category\Entities\Category;
 
-class CategoryRepository implements CategoryRepositoryInterface
+class RecommendationCategoryRepo implements RecommendationCategoryRepoInterface
 {
 
     public function all()
@@ -15,22 +15,6 @@ class CategoryRepository implements CategoryRepositoryInterface
             ->paginate();
     }
 
-    public function group()
-    {
-        return Category::query()
-
-            ->whereNull('parent_id')
-            ->with(['children'])
-            ->withCount(['products'])
-            ->get();
-    }
-
-
-    public function mainCategories()
-    {
-        return Category::query()->whereNull('parent_id')->orderBy('created_at', 'desc')
-            ->get();
-    }
 
     public function select($q)
     {

@@ -6,6 +6,7 @@ interface ArticleRepositoryInterface
 {
     public function find($id);
     public function all();
+    public function take();
     public function allActive();
     public function create($data);
     public function update($id, $data);
