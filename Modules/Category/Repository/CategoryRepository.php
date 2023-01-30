@@ -15,6 +15,19 @@ class CategoryRepository implements CategoryRepositoryInterface
             ->paginate();
     }
 
+
+    public function select($q)
+    {
+        $query =  Category::select('id', 'title')->orderBy('created_at', 'desc');
+
+
+        $query->when(request()->has('q'), function ($query) use ($q) {
+            $query->where('title', 'LIKE', "%" . $q . "%");
+        });
+
+        return $query->get();
+    }
+
     public function allActive()
     {
         return Category::orderBy('created_at', 'desc')

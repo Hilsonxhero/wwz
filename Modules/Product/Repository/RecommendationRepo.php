@@ -17,6 +17,9 @@ class RecommendationRepo implements RecommendationRepoInterface
             ->get();
     }
 
+
+
+
     public function all()
     {
         return Recommendation::orderBy('created_at', 'desc')
@@ -39,26 +42,21 @@ class RecommendationRepo implements RecommendationRepoInterface
         $recommendation = $this->find($id);
         return $recommendation;
     }
-
-    public function select($id, $q = '')
+    public function products($id)
     {
-        // return Recommendation::select('id', 'title')->whereNot('id', $id)->orderBy('created_at', 'desc')
-        //     ->get();
+        $recommendation = $this->find($id);
+        return $recommendation->products()->paginate();
+    }
 
+    public function select($q = '')
+    {
+        $query =  Recommendation::query()->orderBy('created_at', 'desc');
 
+        // $query->when(request()->has('q'), function ($query) use ($q) {
+        //     $query->where('title', 'LIKE', "%" . $q . "%");
+        // });
 
-        $query =  Recommendation::select('id', 'title', 'parent_id')->orderBy('created_at', 'desc');
-
-
-        $query->when(request()->has('q'), function ($query) use ($q) {
-            $query->where('title', 'LIKE', "%" . $q . "%");
-        });
-
-        $query->when(request()->input('doesnt_have_parent'), function ($query) use ($q) {
-            $query->whereNotNull('parent_id');
-        });
-
-        return $query->paginate();
+        return $query->get();
     }
 
     public function find($id)

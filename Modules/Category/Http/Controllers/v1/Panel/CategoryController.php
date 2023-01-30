@@ -39,6 +39,18 @@ class CategoryController extends Controller
      * @param Request $request
      * @return Response
      */
+
+    public function select(Request $request)
+    {
+        $categories = $this->categoryRepo->select($request->q);
+        ApiService::_success($categories);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     * @param Request $request
+     * @return Response
+     */
     public function store(Request $request)
     {
         ApiService::Validator($request->all(), [

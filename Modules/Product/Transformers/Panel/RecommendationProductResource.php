@@ -17,7 +17,9 @@ class RecommendationProductResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            // 'recommendation' => new RecommendationResource($this->recommendation),
+            'recommendation_id' => $this->recommendation_id,
+            'product_id' => $this->product_id,
+            'recommendation' => $this->recommendation->category->title,
             'product' => new ProductResource($this->product),
         ];
     }

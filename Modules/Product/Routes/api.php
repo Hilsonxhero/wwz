@@ -19,22 +19,37 @@ Route::prefix('v1/application')->group(function () {
 
 
 Route::prefix('v1/panel')->group(function () {
+
     // products
     Route::apiResource("/products", ProductController::class);
+
     // recommendation
     Route::apiResource("/recommendations", RecommendationController::class);
+
+    // recommendations products
+    Route::get("/recommendations/{id}/products", [RecommendationController::class, 'products']);
+
+    // recommendations select
+    Route::get("/recommendations/select/active", [RecommendationController::class, 'select']);
+
     // recommendation products
     Route::apiResource("/recommendation/products", RecommendationProductController::class);
+
     // products
     Route::apiResource("/product/incredibles", \Modules\Product\Http\Controllers\v1\Panel\IncredibleProductController::class);
+
     // product features
     Route::apiResource("/products/{id}/features", ProductFeatureController::class);
+
     // product variants
     Route::apiResource("/products/{id}/variants", ProductVariantController::class);
+
     // product select
     Route::get("/product/select", [ProductController::class, 'select']);
+
     // product combinations
     Route::get("/product/{id}/combinations", [ProductController::class, 'combinations']);
+
     //variants
     Route::apiResource("/variants", VariantController::class);
     Route::apiResource("/variant/groups", VariantGroupController::class);

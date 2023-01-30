@@ -3,9 +3,8 @@
 namespace Modules\Product\Transformers\Panel;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use Modules\Category\Transformers\CategoryResource;
 
-class RecommendationResource extends JsonResource
+class RecommendationSelectResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,12 +14,9 @@ class RecommendationResource extends JsonResource
      */
     public function toArray($request)
     {
-        return array(
+        return [
             'id' => $this->id,
-            'category' => new CategoryResource($this->category),
             'title'  => $this->category->title,
-            'description'  => $this->description,
-            'products'  => RecommendationProductResource::collection($this->products),
-        );
+        ];
     }
 }

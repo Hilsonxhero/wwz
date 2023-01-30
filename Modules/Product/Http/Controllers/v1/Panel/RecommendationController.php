@@ -9,7 +9,9 @@ use Illuminate\Routing\Controller;
 use Modules\Product\Http\Requests\Panel\RecommendationRequest;
 use Modules\Product\Repository\RecommendationProductRepoInterface;
 use Modules\Product\Repository\RecommendationRepoInterface;
+use Modules\Product\Transformers\Panel\RecommendationProductResource;
 use Modules\Product\Transformers\Panel\RecommendationResource;
+use Modules\Product\Transformers\Panel\RecommendationSelectResource;
 
 class RecommendationController extends Controller
 {
@@ -27,6 +29,16 @@ class RecommendationController extends Controller
     {
         $recommendations = $this->recommendationRepo->all();
         return RecommendationResource::collection($recommendations);
+    }
+
+    /**
+     * Display a listing of the resource.
+     * @return Response
+     */
+    public function select()
+    {
+        $recommendations = $this->recommendationRepo->select();
+        return RecommendationSelectResource::collection($recommendations);
     }
 
     /**
@@ -53,6 +65,18 @@ class RecommendationController extends Controller
     {
         $recommendation = $this->recommendationRepo->show($id);
         return new RecommendationResource($recommendation);
+    }
+
+    /**
+     * Show the recommendation products.
+     * @param int $id
+     * @return Response
+     */
+    public function products($id)
+    {
+
+        $products = $this->recommendationRepo->products($id);
+        return  RecommendationProductResource::collection($products);
     }
 
     /**
