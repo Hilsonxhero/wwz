@@ -17,5 +17,6 @@
     "Page": true,
     "Article": true,
     "Cart": true,
-    "Order": true
+    "Order": true,
+    "Voucher": true
 }
