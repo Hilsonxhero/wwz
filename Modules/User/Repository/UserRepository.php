@@ -19,6 +19,17 @@ class UserRepository implements UserRepositoryInterface
             ->paginate();
     }
 
+    public function select($q)
+    {
+        $query =  User::select('id', 'username')->orderBy('created_at', 'desc');
+
+        $query->when(request()->has('q'), function ($query) use ($q) {
+            $query->where('username', 'LIKE', "%" . $q . "%");
+        });
+
+        return $query->take(25)->get();
+    }
+
     public function cart()
     {
         // return  auth()->user()->cart->items()->with(['variant', 'product'])->get();

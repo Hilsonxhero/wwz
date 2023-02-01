@@ -1,4 +1,5 @@
 <?php
+
 namespace Modules\User;
 
 use Illuminate\Http\Request;
@@ -23,20 +24,20 @@ Route::prefix('v1/application')->group(function () {
             Route::prefix('profile')->middleware(['auth:api'])->group(
                 function () {
 
-                        Route::prefix('update')->group(
-                            function () {
-                                            Route::post('username', [UpdateProfileController::class, 'username']);
-                                            Route::post('email', [UpdateProfileController::class, 'email']);
-                                            Route::post('password', [UpdateProfileController::class, 'password']);
-                                            Route::post('mobile/request', [UpdateProfileController::class, 'mobileRequest']);
-                                            Route::post('mobile/verify', [UpdateProfileController::class, 'mobileVerify']);
-                                        }
-                        );
+                    Route::prefix('update')->group(
+                        function () {
+                            Route::post('username', [UpdateProfileController::class, 'username']);
+                            Route::post('email', [UpdateProfileController::class, 'email']);
+                            Route::post('password', [UpdateProfileController::class, 'password']);
+                            Route::post('mobile/request', [UpdateProfileController::class, 'mobileRequest']);
+                            Route::post('mobile/verify', [UpdateProfileController::class, 'mobileVerify']);
+                        }
+                    );
 
-                        Route::apiResource('addresses', UserAddressController::class);
+                    Route::apiResource('addresses', UserAddressController::class);
 
-                        Route::get('personal-info', [PersonalInfoController::class, 'index']);
-                    }
+                    Route::get('personal-info', [PersonalInfoController::class, 'index']);
+                }
             );
         }
     );
@@ -45,4 +46,5 @@ Route::prefix('v1/application')->group(function () {
 
 Route::prefix('v1/panel')->group(function () {
     Route::apiResource("/users", UserController::class);
+    Route::get("/user/select", [UserController::class, 'select']);
 });

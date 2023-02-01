@@ -26,7 +26,18 @@ class UserController extends Controller
     {
         $users = $this->userRepo->all();
         return UserResource::collection($users);
+    }
 
+    /**
+     * Display a listing of the resource.
+     * @param Request $request
+     * @return Response
+     */
+
+    public function select(Request $request)
+    {
+        $categories = $this->userRepo->select($request->q);
+        ApiService::_success($categories);
     }
 
     /**

@@ -41,7 +41,7 @@ class CategoryRepository implements CategoryRepositoryInterface
             $query->where('title', 'LIKE', "%" . $q . "%");
         });
 
-        return $query->get();
+        return $query->take(25)->get();
     }
 
     public function allActive()

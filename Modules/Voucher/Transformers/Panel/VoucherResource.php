@@ -17,9 +17,9 @@ class VoucherResource extends JsonResource
         return [
             'id' => $this->id,
             'code' => $this->code,
-            'value' => $this->value,
-            'minimum_spend' => $this->minimum_spend,
-            'maximum_spend' => $this->maximum_spend,
+            'value' => round($this->value),
+            'minimum_spend' => round($this->minimum_spend),
+            'maximum_spend' => round($this->maximum_spend),
             'usage_limit_per_voucher' => $this->usage_limit_per_voucher,
             'usage_limit_per_customer' => $this->usage_limit_per_customer,
             'used' => $this->used,

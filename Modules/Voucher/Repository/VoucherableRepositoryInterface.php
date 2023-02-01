@@ -2,7 +2,7 @@
 
 namespace Modules\Voucher\Repository;
 
-interface VoucherRepositoryInterface
+interface VoucherableRepositoryInterface
 {
     public function find($id);
     public function all();
@@ -11,6 +11,5 @@ interface VoucherRepositoryInterface
     public function createMany($data);
     public function update($id, $data);
     public function show($id);
-    public function voucherables($id);
     public function delete($id);
 }

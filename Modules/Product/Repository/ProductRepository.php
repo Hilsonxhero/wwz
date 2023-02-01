@@ -48,7 +48,7 @@ class ProductRepository implements ProductRepositoryInterface
                 $query->where('discount', 0)->whereNull('discount_expire_at')->orWhereDate('discount_expire_at', '<', now());
             });
         });
-        return $query->paginate();
+        return $query->take(25)->get();
     }
 
     public function variants($id)

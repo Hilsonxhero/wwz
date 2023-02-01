@@ -7,12 +7,13 @@ use Spatie\Image\Manipulations;
 use Modules\Slide\Entities\Slide;
 use Spatie\MediaLibrary\HasMedia;
 use Modules\Banner\Entities\Banner;
+use Modules\Product\Entities\Product;
+use Modules\Voucher\Entities\Voucher;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\Product\Entities\Product;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Category extends Model implements HasMedia
@@ -89,5 +90,13 @@ class Category extends Model implements HasMedia
     public function products()
     {
         return $this->hasMany(Product::class);
+    }
+
+    /**
+     * Get all of the vouchers.
+     */
+    public function vouchers()
+    {
+        return $this->morphToMany(Voucher::class, 'voucherable');
     }
 }

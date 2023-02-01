@@ -6,7 +6,9 @@ interface ProductRepositoryInterface
 {
     public function find($id);
     public function all($query);
+    public function select($query);
     public function variants($id);
+    public function combinations($id);
     public function createVariants($id, $variants);
     public function updateVariants($id, $variants);
     public function allActive();

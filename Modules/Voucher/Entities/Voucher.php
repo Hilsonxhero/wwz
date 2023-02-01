@@ -13,7 +13,7 @@ class Voucher extends Model
     protected $fillable = [
         'code', 'value', 'minimum_spend', 'maximum_spend',
         'usage_limit_per_voucher', 'usage_limit_per_customer', 'used',
-        'is_percent', 'is_active', 'start_date', 'end_date',
+        'is_percent', 'is_active', 'is_flexable', 'start_date', 'end_date',
     ];
 
     /**
@@ -25,4 +25,9 @@ class Voucher extends Model
         'start_date' => 'datetime',
         'end_date' => 'datetime',
     ];
+
+    public function voucherables()
+    {
+        return $this->hasMany(Voucherable::class);
+    }
 }

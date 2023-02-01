@@ -30,17 +30,29 @@ class VoucherRepository implements VoucherRepositoryInterface
         $voucher =  Voucher::query()->create($data);
         return $voucher;
     }
+
+    public function createMany($data)
+    {
+        $voucher =  Voucher::query()->createMany($data);
+        return $voucher;
+    }
+
     public function update($id, $data)
     {
         $voucher = $this->find($id);
-
-        $voucher =  Voucher::query()->update($data);
+        $voucher->update($data);
         return $voucher;
     }
     public function show($id)
     {
         $voucher = $this->find($id);
         return $voucher;
+    }
+
+    public function voucherables($id)
+    {
+        $voucher = $this->find($id);
+        return $voucher->voucherables()->paginate();
     }
 
     public function find($id)

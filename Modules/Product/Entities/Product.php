@@ -6,6 +6,7 @@ use Laravel\Scout\Searchable;
 use Spatie\Image\Manipulations;
 use Modules\Brand\Entities\Brand;
 use Spatie\MediaLibrary\HasMedia;
+use Modules\Voucher\Entities\Voucher;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Category\Entities\Category;
 use Modules\Shipment\Entities\Delivery;
@@ -174,5 +175,13 @@ class Product extends Model implements HasMedia, Explored
                 'source' => 'title_fa'
             ]
         ];
+    }
+
+    /**
+     * Get all of the vouchers.
+     */
+    public function vouchers()
+    {
+        return $this->morphToMany(Voucher::class, 'voucherable');
     }
 }

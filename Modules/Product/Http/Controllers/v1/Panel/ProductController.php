@@ -41,10 +41,8 @@ class ProductController extends Controller
 
     public function combinations($id)
     {
-        //        ApiService::_response("www",403);
         $combinations = $this->productRepo->combinations($id);
         return ProductVariantCombinationResource::collection($combinations);
-        //        ApiService::_success($combinations);
     }
 
     /**
