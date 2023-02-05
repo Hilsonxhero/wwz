@@ -2,6 +2,7 @@
 
 namespace Modules\Cart\Entities;
 
+use Modules\Voucher\Entities\Voucher;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -27,4 +28,12 @@ class Cart extends Model
     {
         return $this->hasMany(Shipping::class);
     }
+
+    /**
+     * Get all of the vouchers.
+     */
+    // public function voucher()
+    // {
+    //     return $this->morphToMany(Voucher::class, 'voucherable');
+    // }
 }

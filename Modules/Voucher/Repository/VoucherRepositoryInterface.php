@@ -5,6 +5,7 @@ namespace Modules\Voucher\Repository;
 interface VoucherRepositoryInterface
 {
     public function find($id);
+    public function check($data);
     public function all();
     public function take();
     public function create($data);

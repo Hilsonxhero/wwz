@@ -9,3 +9,8 @@ Route::prefix('v1/panel')->group(function () {
     Route::apiResource("/vouchers", VoucherController::class);
     Route::get("/voucher/{id}/voucherables", [VoucherController::class, 'voucherables']);
 });
+
+
+Route::prefix('v1/application')->group(function () {
+    Route::post("/voucher/check", [\Modules\Voucher\Http\Controllers\v1\App\VoucherController::class, 'check'])->middleware(['auth:api']);
+});

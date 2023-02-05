@@ -27,7 +27,7 @@ class CartItemsResource extends JsonResource
             'quantity' => $this->quantity,
             'product' => new ProductResource(resolve(ProductRepositoryInterface::class)->find($this->product)),
             'variant' => $variant,
-            'price' => $this->price,
+            'price' => round($this->price),
             'subtotal' => ($variant->price * $this->quantity - round($variant->price * ($variant->calculate_discount / 100) * $this->quantity)),
             'total' => $variant->price * ($this->quantity),
             'discount' => $variant->price * ($variant->calculate_discount / 100),

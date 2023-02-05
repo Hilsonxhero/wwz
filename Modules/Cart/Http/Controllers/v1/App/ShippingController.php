@@ -21,6 +21,7 @@ use Modules\User\Transformers\App\UserAddressResource;
 use Modules\Cart\Entities\Shipping as EntitiesShipping;
 use Modules\Cart\Http\Requests\App\ShippingRequest;
 use Modules\Cart\Repository\ShippingRepositoryInterface;
+use Modules\Cart\Transformers\App\ShippingCostResource;
 use Modules\Shipment\Repository\ShipmentRepositoryInterface;
 use Modules\Shipment\Transformers\Panel\ShipmentDateResource;
 use Modules\User\Entities\Address;
@@ -32,8 +33,7 @@ class ShippingController extends Controller
     public function __construct(
         ShipmentRepositoryInterface $shipmentRepo,
         ShippingRepositoryInterface $shippingRepo
-    )
-    {
+    ) {
         $this->shipmentRepo = $shipmentRepo;
         $this->shippingRepo = $shippingRepo;
     }
@@ -67,11 +67,9 @@ class ShippingController extends Controller
             'address' => json_decode(json_encode($address))
         ]);
 
-
         $packages_delivery = collect($request->packages);
 
         Cart::setShipment(50000);
-
 
         $shipping = Shipping::content();
 
@@ -111,5 +109,38 @@ class ShippingController extends Controller
         ApiService::_success(trans('response.responses.200'));
 
         $data = [];
+    }
+
+    public function cost(Request $request)
+    {
+        $cart = Cart::content();
+
+        $shipment_ids = array();
+
+        foreach ($request->packages as $key => $package) {
+            array_push($shipment_ids, $package['shipment_id']);
+        }
+
+        //TODO: refactor query
+
+        $shipments = Shipment::query()->whereIn('id', $shipment_ids)->get();
+
+        $submit_types = ShippingCostResource::collection($shipments);
+
+        $submit_types = $submit_types->toArray(false);
+
+        $shipping_cost = collect($submit_types)->reduce(function ($carry, $item) {
+            return $carry + $item['cost'];
+        });
+
+        $payable_price = $cart->payable_price + $shipping_cost;
+
+        $data =  (object) array(
+            'submit_types' =>  $submit_types,
+            'shipping_cost' => $shipping_cost,
+            'payable_price' => $payable_price
+        );
+
+        ApiService::_success($data);
     }
 }

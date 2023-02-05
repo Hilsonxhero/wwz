@@ -42,6 +42,7 @@ class VoucherableController extends Controller
      */
     public function store(VoucherableRequest $request)
     {
+        $request->merge(['voucherable_user' => "Modules\User\Entities\User"]);
 
         $data = array(
             // 'voucher_id' => $request->voucher,
@@ -49,11 +50,12 @@ class VoucherableController extends Controller
             // 'voucherable_type' => $request->voucherable_type,
         );
 
+
         if ($request->filled('category')) {
             array_push($data, array(
                 'voucher_id' => $request->voucher,
                 'voucherable_id' => $request->category,
-                'voucherable_type' => get_class(Category::query()->whereId($request->category)->first()),
+                'voucherable_type' => "Modules\Category\Entities\Category",
             ));
         }
 
@@ -62,15 +64,16 @@ class VoucherableController extends Controller
             array_push($data, array(
                 'voucher_id' => $request->voucher,
                 'voucherable_id' => $request->product,
-                'voucherable_type' => get_class(Product::query()->whereId($request->product)->first()),
+                'voucherable_type' => "Modules\Product\Entities\Product",
             ));
         }
 
         if ($request->filled('user')) {
+
             array_push($data, array(
                 'voucher_id' => $request->voucher,
                 'voucherable_id' => $request->user,
-                'voucherable_type' => get_class(User::query()->whereId($request->user)->first()),
+                'voucherable_type' => "Modules\User\Entities\User",
             ));
         }
 
