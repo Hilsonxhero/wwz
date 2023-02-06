@@ -4,6 +4,7 @@ namespace Modules\Cart\Entities;
 
 use Modules\Voucher\Entities\Voucher;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Cart extends Model
@@ -11,11 +12,12 @@ class Cart extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'identifier', 'instance', 'address', 'status'
+        'user_id', 'identifier', 'instance', 'address', 'config', 'status'
     ];
 
     protected $casts = [
-        'address' => 'json'
+        'address' => 'json',
+        'config' => 'object'
     ];
 
 
@@ -27,6 +29,15 @@ class Cart extends Model
     public function shippings()
     {
         return $this->hasMany(Shipping::class);
+    }
+
+    protected function shippingCost(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $this->shippings->reduce(function ($carry, $item) {
+                return $carry + $item->cost;
+            })
+        );
     }
 
     /**

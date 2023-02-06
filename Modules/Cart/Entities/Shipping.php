@@ -18,6 +18,7 @@ class Shipping extends Model
         'shipment_id',
         'shipment_interval_id',
         'package_price',
+        'cost'
     ];
 
     public function user()

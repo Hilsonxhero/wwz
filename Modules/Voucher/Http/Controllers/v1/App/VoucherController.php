@@ -33,6 +33,8 @@ class VoucherController extends Controller
     {
         $cart = Cart::content();
 
+        $user = auth()->user();
+
         // return $cart;
 
         $voucher = $this->voucherRepo->check($request->code);
@@ -41,30 +43,29 @@ class VoucherController extends Controller
             ApiService::_throw("کد تخفیف معتبر نمی باشد", 400);
         }
 
-        $ww = EntitiesCart::query()->where('id', $cart->id)->first();
-
-        // Voucherable::query()->create([
-        //     'voucher_id' => 5,
-        //     'voucherable_id' => $cart->id,
-        //     'voucherable_type' => "Modules\Cart\Entities\Cart",
-        // ]);
-
-        return  $ww->voucher;
-
-
-
         if ($voucher->is_percent) {
             $discount = $cart->payable_price * ($voucher->value / 100);
         } else {
             $discount = $voucher->value;
         }
 
+
+        $user->cart->update([
+            'config' => json_decode(json_encode(array(
+                "voucher_id" => $voucher->id,
+                "voucher_code" => $voucher->code,
+                "voucher_discount" => $discount,
+            )))
+        ]);
+
         $data = array(
             "voucher_code" => $voucher->code,
             "voucher_discount" => $discount,
             "items_discount" => $cart->items_discount,
             "rrp_price" => $cart->rrp_price,
+            "shipping_cost" => $cart->shipment_cost,
             "payable_price" => $cart->payable_price - $discount,
+
         );
 
         return ApiService::_success($data);

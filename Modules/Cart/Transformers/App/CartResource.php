@@ -19,12 +19,14 @@ class CartResource extends JsonResource
             'items_count' => $this->items_count,
             'payable_price' => $this->payable_price,
             'rrp_price' => $this->rrp_price,
+            'voucher_discount' => $this->voucher_discount,
             'items_discount' => $this->items_discount,
             'total_discount' => $this->items_discount,
-            // 'cart_items' =>  CartItemsResource::collection($this->items),
-            'cart_items' =>  $this->items,
             'shipment_cost' => $this->shipment_cost,
             'shipment_discount' => $this->shipment_discount,
+            // 'cart_items' =>  CartItemsResource::collection($this->items),
+            'cart_items' =>  $this->items,
+
         ];
     }
 }

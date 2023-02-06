@@ -19,8 +19,9 @@ class CartShippingResource extends JsonResource
         return [
             'id' => $this->id,
             'cart_items' => CartShippingItemResource::collection($this->cart_items),
-            'package_price' => $this->package_price,
+            'package_price' => round($this->package_price),
             'shipment' => new ShipmentResource($this->shipment),
+            'cost' => round($this->cost),
             'delivery_date' => new ShipmentIntervalResource($this->interval),
         ];
     }

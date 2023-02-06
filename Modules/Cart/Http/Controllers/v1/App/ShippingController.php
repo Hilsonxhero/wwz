@@ -69,7 +69,7 @@ class ShippingController extends Controller
 
         $packages_delivery = collect($request->packages);
 
-        Cart::setShipment(50000);
+        // Cart::setShipment(50000);
 
         $shipping = Shipping::content();
 
@@ -81,6 +81,10 @@ class ShippingController extends Controller
         $packages = new ShippingResource($content);
 
         $packages = collect($packages);
+
+        // $user->cart->update([
+        //     'config->voucher_id' => 6
+        // ]);
 
         $user->shippings()->delete();
 
@@ -94,6 +98,7 @@ class ShippingController extends Controller
                 'shipment_id' => $value->submit_type->id,
                 'shipment_interval_id' => $filtered->time_scope ?? null,
                 'package_price' => $value->package_price,
+                'cost' => $value->submit_type->shipping_cost,
             ];
 
             $shipping_item = $this->shippingRepo->create($data);

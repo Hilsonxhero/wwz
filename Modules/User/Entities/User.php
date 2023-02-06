@@ -93,8 +93,7 @@ class User extends Authenticatable implements HasMedia
 
     public function cart()
     {
-        return $this->hasOne(EntitiesCart::class);
-        // ->where('status', CartStatus::Available->value)->first()
+        return $this->hasOne(EntitiesCart::class)->where('status', CartStatus::Available->value);
     }
 
     public function carts()
@@ -106,7 +105,6 @@ class User extends Authenticatable implements HasMedia
     {
         return $this->hasMany(Address::class);
     }
-
 
     public static function last()
     {

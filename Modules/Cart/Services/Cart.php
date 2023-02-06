@@ -40,6 +40,8 @@ class Cart
 
     private $shipment_cost = 0;
 
+    private $voucher_discount = 0;
+
     private $shipment_discount = 0;
 
     /**
@@ -461,11 +463,12 @@ class Cart
             'id' => $cart->id ?? random_int(1000000, 10000000),
             'items' => $cart_items->toArray(),
             'items_count' => $this->count($cart_items),
-            'payable_price' =>  $this->subtotal($cart_items),
             'rrp_price' => $this->total($cart_items),
+            "voucher_discount" => $this->voucherDiscounTotal($cart),
             'items_discount' => $this->discount($cart_items),
-            'shipment_cost' => $this->shipment_cost,
+            'shipment_cost' => $this->shipmentCost($cart),
             'shipment_discount' => $this->shipment_discount,
+            'payable_price' =>  $this->subtotal($cart_items),
         ];
 
         return $content;
@@ -555,7 +558,7 @@ class Cart
             return $subTotal + $cartItem->subtotal;
         }, 0);
 
-        return $total + $this->shipment_cost;
+        return $total - $this->voucher_discount + $this->shipment_cost;
     }
 
     /**
@@ -570,6 +573,17 @@ class Cart
     public function subtotal($cart)
     {
         return $this->subtotalFloat($cart);
+    }
+
+    public function shipmentCost($cart)
+    {
+        $this->shipment_cost = $cart->shipping_cost ?? 0;
+        return $this->shipment_cost;
+    }
+    public function voucherDiscounTotal($cart)
+    {
+        $this->voucher_discount = $cart->config->voucher_discount ?? 0;
+        return $this->voucher_discount;
     }
 
     /**

@@ -30,8 +30,7 @@ class PaymentController extends Controller
         PaymentMethodRepositoryInterface $paymentMethodRepo,
         PaymentRepositoryInterface $paymentRepo,
         OrderRepositoryInterface $orderRepo
-    )
-    {
+    ) {
         $this->paymentMethodRepo = $paymentMethodRepo;
         $this->paymentRepo = $paymentRepo;
         $this->orderRepo = $orderRepo;
@@ -45,8 +44,6 @@ class PaymentController extends Controller
         $user = auth()->user();
 
         $cart = $user->cart;
-
-
 
         $cart_shippings = $cart->shippings;
 
