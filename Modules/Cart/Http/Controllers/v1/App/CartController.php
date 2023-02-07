@@ -6,16 +6,18 @@ use App\Services\ApiService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Modules\Cart\Facades\Cart;
+use Modules\Order\Entities\Order;
 use Illuminate\Routing\Controller;
+use Modules\Payment\Entities\Payment;
+use Modules\Order\Events\App\OrderCreated;
+use Modules\Product\Entities\ProductVariant;
 use Modules\Cart\Http\Requests\App\CartRequest;
 use Modules\Cart\Transformers\App\CartResource;
-use Modules\Payment\Entities\Payment;
-use Modules\Product\Entities\ProductVariant;
 use Modules\Product\Transformers\ProductResource;
+use Modules\Product\Transformers\VariantResource;
+use Modules\Product\Transformers\ProductVariantResource;
 use Modules\Product\Repository\ProductRepositoryInterface;
 use Modules\Product\Repository\ProductVariantRepositoryInterface;
-use Modules\Product\Transformers\ProductVariantResource;
-use Modules\Product\Transformers\VariantResource;
 
 class CartController extends Controller
 {
@@ -24,8 +26,7 @@ class CartController extends Controller
     public function __construct(
         ProductVariantRepositoryInterface $variantRepo,
         ProductRepositoryInterface $productRepo
-    )
-    {
+    ) {
         $this->variantRepo = $variantRepo;
         $this->productRepo = $productRepo;
     }

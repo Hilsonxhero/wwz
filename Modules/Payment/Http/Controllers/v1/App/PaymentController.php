@@ -11,6 +11,7 @@ use Modules\User\Transformers\UserResource;
 use Modules\Cart\Transformers\App\CartResource;
 use Modules\Cart\Transformers\App\PaymentResource;
 use Modules\Order\Enums\OrderStatus;
+use Modules\Order\Events\App\OrderCreated;
 use Modules\Order\Repository\OrderRepositoryInterface;
 use Modules\Payment\Repository\PaymentMethodRepositoryInterface;
 use Modules\Payment\Repository\PaymentRepositoryInterface;
@@ -74,15 +75,15 @@ class PaymentController extends Controller
 
         $cart = $user->cart;
 
-        $shipment_costs = collect(array());
+        // $shipment_costs = collect(array());
 
-        foreach ($cart->shippings as $key => $item) {
-            $shipment_costs->push($item->shipment->shipping_cost);
-        }
+        // foreach ($cart->shippings as $key => $item) {
+        //     $shipment_costs->push($item->shipment->shipping_cost);
+        // }
 
-        $total_shipment_cost = $shipment_costs->sum();
+        // $total_shipment_cost = $shipment_costs->sum();
 
-        Cart::setShipment($total_shipment_cost);
+        // Cart::setShipment($total_shipment_cost);
 
         $cart_content = Cart::content();
 
@@ -104,8 +105,9 @@ class PaymentController extends Controller
             ]),
         ];
 
-
         $order = $this->orderRepo->create($data);
+
+
 
         foreach ($cart->shippings as $key => $shipping) {
             $order_shipping = $order->shippings()->create([
@@ -134,7 +136,7 @@ class PaymentController extends Controller
             $order_shipping->items()->createMany($order_shipping_items);
         }
 
-
+        event(new OrderCreated($order));
 
         // ApiService::_success(trans('response.responses.200'));
 

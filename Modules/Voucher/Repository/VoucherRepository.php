@@ -30,6 +30,7 @@ class VoucherRepository implements VoucherRepositoryInterface
         $voucher =  Voucher::query()->where('code', $code)
             ->where('start_date', '<',  Carbon::now()->toDateString())
             ->where('end_date', '>',  Carbon::now()->toDateString())
+            ->whereRaw('usage_limit_per_voucher > used')
             ->where('is_active', true)
             ->first();
 

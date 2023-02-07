@@ -40,6 +40,7 @@ class VoucherServiceProvider extends ServiceProvider
     {
         $this->app->register(RouteServiceProvider::class);
         $this->app->register(VoucherRepoServiceProvider::class);
+        $this->app->register(VoucherEventServiceProvider::class);
     }
 
     /**

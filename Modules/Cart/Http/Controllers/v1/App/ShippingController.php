@@ -64,8 +64,10 @@ class ShippingController extends Controller
         $address = new UserAddressResource($address);
 
         $user->cart->update([
-            'address' => json_decode(json_encode($address))
+            'address' => json_decode(json_encode($address)),
+            'config' => null
         ]);
+
 
         $packages_delivery = collect($request->packages);
 

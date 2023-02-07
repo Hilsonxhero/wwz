@@ -413,6 +413,18 @@ class Cart
      */
     public function content()
     {
+        $cart_collection = (object)  collect([
+            'id' =>  random_int(1000000, 10000000),
+            'items' => [],
+            'items_count' => 0,
+            'payable_price' => 0,
+            'rrp_price' => 0,
+            "voucher_discount" => 0,
+            'items_discount' => 0,
+            'shipment_cost' => 0,
+            'shipment_discount' => 0,
+        ])->toArray();
+
         if (auth()->check()) {
             $cart = resolve(UserRepositoryInterface::class)->cart();
 
@@ -429,30 +441,12 @@ class Cart
                     );
                 });
             } else {
-                return (object)  collect([
-                    'id' =>  random_int(1000000, 10000000),
-                    'items' => [],
-                    'items_count' => 0,
-                    'payable_price' => 0,
-                    'rrp_price' => 0,
-                    'items_discount' => 0,
-                    'shipment_cost' => 0,
-                    'shipment_discount' => 0,
-                ])->toArray();
+                return $cart_collection;
             }
         } else {
             $cart_items = $this->storage->get($this->instance);
             if (is_null($cart_items)) {
-                return (object)  collect([
-                    'id' =>  random_int(1000000, 10000000),
-                    'items' => [],
-                    'items_count' => 0,
-                    'payable_price' => 0,
-                    'rrp_price' => 0,
-                    'items_discount' => 0,
-                    'shipment_cost' => 0,
-                    'shipment_discount' => 0,
-                ])->toArray();
+                return $cart_collection;
             }
             $cart_items = collect(unserialize($this->storage->get($this->instance)));
         }
@@ -461,13 +455,15 @@ class Cart
 
         $content = (object) [
             'id' => $cart->id ?? random_int(1000000, 10000000),
-            'items' => $cart_items->toArray(),
+            'items' => $cart_items,
             'items_count' => $this->count($cart_items),
             'rrp_price' => $this->total($cart_items),
-            "voucher_discount" => $this->voucherDiscounTotal($cart),
+            "voucher_discount" => $this->voucher($cart),
             'items_discount' => $this->discount($cart_items),
-            'shipment_cost' => $this->shipmentCost($cart),
+            'total_discount' => $this->discount($cart_items) + $this->voucher($cart),
+            'shipment_cost' => $this->shipment($cart),
             'shipment_discount' => $this->shipment_discount,
+            'summary_price' =>  $this->summary($cart_items),
             'payable_price' =>  $this->subtotal($cart_items),
         ];
 
@@ -494,18 +490,6 @@ class Cart
         return $this->getContent()->count();
     }
 
-    /**
-     * Get the total price of the items in the cart.
-     *
-     * @return float
-     */
-    public function totalFloat($cart)
-    {
-
-        return $cart->reduce(function ($total,  $cartItem) {
-            return $total + $cartItem->total;
-        }, 0);
-    }
 
     /**
      * Get the total price of the items in the cart as formatted string.
@@ -518,20 +502,12 @@ class Cart
      */
     public function total($cart)
     {
-        return $this->totalFloat($cart);
-    }
-
-    /**
-     * Get the total tax of the items in the cart.
-     *
-     * @return float
-     */
-    public function taxFloat()
-    {
-        return $this->getContent()->reduce(function ($tax, CartItem $cartItem) {
-            return $tax + $cartItem->taxTotal;
+        return $cart->reduce(function ($total,  $cartItem) {
+            return $total + $cartItem->total;
         }, 0);
     }
+
+
 
     /**
      * Get the total tax of the items in the cart as formatted string.
@@ -544,22 +520,11 @@ class Cart
      */
     public function tax($decimals = null, $decimalPoint = null, $thousandSeperator = null)
     {
-        return $this->numberFormat($this->taxFloat(), $decimals, $decimalPoint, $thousandSeperator);
-    }
-
-    /**
-     * Get the subtotal (total - tax) of the items in the cart.
-     *
-     * @return float
-     */
-    public function subtotalFloat($cart)
-    {
-        $total = $cart->reduce(function ($subTotal,  $cartItem) {
-            return $subTotal + $cartItem->subtotal;
+        return $this->getContent()->reduce(function ($tax, CartItem $cartItem) {
+            return $tax + $cartItem->taxTotal;
         }, 0);
-
-        return $total - $this->voucher_discount + $this->shipment_cost;
     }
+
 
     /**
      * Get the subtotal (total - tax) of the items in the cart as formatted string.
@@ -572,31 +537,40 @@ class Cart
      */
     public function subtotal($cart)
     {
-        return $this->subtotalFloat($cart);
+        $total = $cart->reduce(function ($subTotal,  $cartItem) {
+            return $subTotal + $cartItem->subtotal;
+        }, 0);
+        return $total - $this->voucher_discount + $this->shipment_cost;
     }
 
-    public function shipmentCost($cart)
+    /**
+     * Get the subtotal (total - tax)
+     *
+     * @param int    $decimals
+     * @param string $decimalPoint
+     * @param string $thousandSeperator
+     *
+     * @return string
+     */
+    public function summary($cart)
+    {
+        $total = $cart->reduce(function ($subTotal,  $cartItem) {
+            return $subTotal + $cartItem->subtotal;
+        }, 0);
+        return $total;
+    }
+
+
+
+    public function shipment($cart)
     {
         $this->shipment_cost = $cart->shipping_cost ?? 0;
         return $this->shipment_cost;
     }
-    public function voucherDiscounTotal($cart)
+    public function voucher($cart)
     {
         $this->voucher_discount = $cart->config->voucher_discount ?? 0;
         return $this->voucher_discount;
-    }
-
-    /**
-     * Get the discount of the items in the cart.
-     *
-     * @return float
-     */
-    public function discountFloat($cart)
-    {
-
-        return $cart->reduce(function ($discount, $cartItem) {
-            return $discount + $cartItem->discount_total;
-        }, 0);
     }
 
     /**
@@ -610,20 +584,11 @@ class Cart
      */
     public function discount($cart)
     {
-        return $this->discountFloat($cart);
-    }
-
-    /**
-     * Get the price of the items in the cart (not rounded).
-     *
-     * @return float
-     */
-    public function initialFloat()
-    {
-        return $this->getContent()->reduce(function ($initial, CartItem $cartItem) {
-            return $initial + ($cartItem->quantity * $cartItem->price);
+        return $cart->reduce(function ($discount, $cartItem) {
+            return $discount + $cartItem->discount_total;
         }, 0);
     }
+
 
     /**
      * Get the price of the items in the cart as formatted string.
@@ -636,20 +601,12 @@ class Cart
      */
     public function initial($decimals = null, $decimalPoint = null, $thousandSeperator = null)
     {
-        return $this->numberFormat($this->initialFloat(), $decimals, $decimalPoint, $thousandSeperator);
-    }
 
-    /**
-     * Get the price of the items in the cart (previously rounded).
-     *
-     * @return float
-     */
-    public function priceTotalFloat()
-    {
         return $this->getContent()->reduce(function ($initial, CartItem $cartItem) {
-            return $initial + $cartItem->priceTotal;
+            return $initial + ($cartItem->quantity * $cartItem->price);
         }, 0);
     }
+
 
     /**
      * Get the price of the items in the cart as formatted string.
@@ -662,20 +619,13 @@ class Cart
      */
     public function priceTotal($decimals = null, $decimalPoint = null, $thousandSeperator = null)
     {
-        return $this->numberFormat($this->priceTotalFloat(), $decimals, $decimalPoint, $thousandSeperator);
-    }
 
-    /**
-     * Get the total weight of the items in the cart.
-     *
-     * @return float
-     */
-    public function weightFloat()
-    {
-        return $this->getContent()->reduce(function ($total, CartItem $cartItem) {
-            return $total + ($cartItem->quantity * $cartItem->weight);
+        return $this->getContent()->reduce(function ($initial, CartItem $cartItem) {
+            return $initial + $cartItem->priceTotal;
         }, 0);
     }
+
+
 
     /**
      * Get the total weight of the items in the cart.
@@ -688,7 +638,9 @@ class Cart
      */
     public function weight($decimals = null, $decimalPoint = null, $thousandSeperator = null)
     {
-        return $this->numberFormat($this->weightFloat(), $decimals, $decimalPoint, $thousandSeperator);
+        return $this->getContent()->reduce(function ($total, CartItem $cartItem) {
+            return $total + ($cartItem->quantity * $cartItem->weight);
+        }, 0);
     }
 
     /**

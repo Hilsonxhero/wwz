@@ -7,13 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Modules\Cart\Facades\Cart;
 use Illuminate\Routing\Controller;
-use Modules\Cart\Entities\Cart as EntitiesCart;
-use Modules\Voucher\Entities\Voucherable;
-use Modules\Voucher\Http\Requests\Panel\VoucherRequest;
-use Modules\Voucher\Transformers\Panel\VoucherResource;
 use Modules\Voucher\Repository\VoucherRepositoryInterface;
-use Modules\Voucher\Transformers\Panel\VoucherableResource;
-use Modules\Voucher\Http\Requests\App\VoucherRequest as AppVoucherRequest;
+use Modules\Voucher\Http\Requests\App\VoucherRequest;
 
 class VoucherController extends Controller
 {
@@ -29,13 +24,17 @@ class VoucherController extends Controller
      * Display a listing of the resource.
      * @return Response
      */
-    public function check(AppVoucherRequest $request)
+    public function check(VoucherRequest $request)
     {
-        $cart = Cart::content();
-
         $user = auth()->user();
 
-        // return $cart;
+        $user->available_cart->update([
+            'config' => null
+        ]);
+
+        $cart = Cart::content();
+
+        $payable_price = $cart->summary_price;
 
         $voucher = $this->voucherRepo->check($request->code);
 
@@ -44,13 +43,18 @@ class VoucherController extends Controller
         }
 
         if ($voucher->is_percent) {
-            $discount = $cart->payable_price * ($voucher->value / 100);
+            $discount = $payable_price * ($voucher->value / 100);
         } else {
             $discount = $voucher->value;
         }
 
+        $exists_voucher = $user->available_cart->config;
 
-        $user->cart->update([
+        if (!is_null($exists_voucher)) {
+        }
+
+
+        $user->available_cart->update([
             'config' => json_decode(json_encode(array(
                 "voucher_id" => $voucher->id,
                 "voucher_code" => $voucher->code,
@@ -64,8 +68,7 @@ class VoucherController extends Controller
             "items_discount" => $cart->items_discount,
             "rrp_price" => $cart->rrp_price,
             "shipping_cost" => $cart->shipment_cost,
-            "payable_price" => $cart->payable_price - $discount,
-
+            "payable_price" => $payable_price - $discount + $cart->shipment_cost,
         );
 
         return ApiService::_success($data);
