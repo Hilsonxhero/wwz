@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Hilsonxhero\ElasticVision\Application\Explored;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Comment\Entities\Comment;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Product extends Model implements HasMedia, Explored
@@ -108,6 +109,12 @@ class Product extends Model implements HasMedia, Explored
     {
         return $this->hasMany(ProductVariant::class);
     }
+
+    public function comments()
+    {
+        return $this->morphMany(Comment::class, 'commentable');
+    }
+
 
     public function combinations()
     {
