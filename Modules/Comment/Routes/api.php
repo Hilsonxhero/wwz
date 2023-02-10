@@ -7,6 +7,7 @@ use Modules\Comment\Http\Controllers\v1\Panel\ScoreModelController;
 
 Route::prefix('v1/application')->group(function () {
     Route::post("/comments/product/{id}", [\Modules\Comment\Http\Controllers\v1\App\CommentController::class, 'store']);
+    Route::get("/comments/product/{id}", [\Modules\Comment\Http\Controllers\v1\App\CommentController::class, 'index']);
 });
 
 Route::prefix('v1/panel')->group(function () {

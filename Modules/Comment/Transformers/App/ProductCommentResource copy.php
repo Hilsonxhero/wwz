@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\Comment\Transformers\Panel;
+namespace Modules\Comment\Transformers\App;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CommentResource extends JsonResource
+class ProductCommentResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,9 +15,7 @@ class CommentResource extends JsonResource
     public function toArray($request)
     {
         return [
-            // 'comments' => parent::toArray($request),
-            'links' => $this->links,
-
+            'comments' => $this->comments
         ];
     }
 }

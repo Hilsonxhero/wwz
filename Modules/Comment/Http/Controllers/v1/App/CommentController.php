@@ -5,22 +5,29 @@ namespace Modules\Comment\Http\Controllers\v1\App;
 use App\Services\ApiService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Pagination\AbstractPaginator;
 use Illuminate\Routing\Controller;
 use Modules\Comment\Enums\CommentStatus;
 use Modules\Comment\Http\Requests\App\CommentRequest;
+use Modules\Comment\Transformers\App\CommentResource;
 use Modules\Comment\Repository\CommentRepositoryInterface;
-use Modules\Comment\Transformers\Panel\CommentResource;
 use Modules\Product\Repository\ProductRepositoryInterface;
+use Modules\Comment\Repository\ScoreModelRepositoryInterface;
 
 class CommentController extends Controller
 {
     private $commentRepo;
     private $productRepo;
+    private $scoreModelRepo;
 
-    public function __construct(CommentRepositoryInterface $commentRepo, ProductRepositoryInterface $productRepo)
-    {
+    public function __construct(
+        CommentRepositoryInterface $commentRepo,
+        ProductRepositoryInterface $productRepo,
+        ScoreModelRepositoryInterface $scoreModelRepo
+    ) {
         $this->commentRepo = $commentRepo;
         $this->productRepo = $productRepo;
+        $this->scoreModelRepo = $scoreModelRepo;
     }
 
     /**
@@ -29,8 +36,18 @@ class CommentController extends Controller
      */
     public function index()
     {
-        $states = $this->commentRepo->all();
-        return CommentResource::collection($states);
+        $comments_collection =  CommentResource::collection($this->commentRepo->all());
+        $data = [
+            'comments' => $comments_collection->items(),
+            'scores' => CommentResource::collection($this->scoreModelRepo->get()),
+            'meta' => array(
+                'pages' => $comments_collection->lastPage(),
+                'total' => $comments_collection->total(),
+                'current_Page' => $comments_collection->currentPage()
+            ),
+        ];
+
+        return $data;
     }
 
     /**

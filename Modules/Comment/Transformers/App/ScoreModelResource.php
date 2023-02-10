@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Comment\Transformers\Panel;
+namespace Modules\Comment\Transformers\App;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
