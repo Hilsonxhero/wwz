@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Modules\Product\Http\Controllers\v1\App\ProductQuestionController;
 use Modules\Product\Http\Controllers\v1\Panel\FeatureController;
 use Modules\Product\Http\Controllers\v1\Panel\FeatureValueController;
 use Modules\Product\Http\Controllers\v1\Panel\ProductController;
@@ -13,8 +14,13 @@ use Modules\Product\Http\Controllers\v1\Panel\VariantController;
 use Modules\Product\Http\Controllers\v1\Panel\VariantGroupController;
 
 Route::prefix('v1/application')->group(function () {
+
     // product page
     Route::get("/product/{id}", [Modules\Product\Http\Controllers\v1\App\ProductController::class, 'show']);
+
+    // product questions
+    Route::post("/questions/product/{id}", [ProductQuestionController::class, 'store'])->middleware('auth:api');
+    Route::get("/questions/product/{id}", [ProductQuestionController::class, 'index']);
 });
 
 

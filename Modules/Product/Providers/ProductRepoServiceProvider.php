@@ -11,6 +11,8 @@ use Modules\Product\Repository\IncredibleProductRepository;
 use Modules\Product\Repository\IncredibleProductRepositoryInterface;
 use Modules\Product\Repository\ProductFeatureRepository;
 use Modules\Product\Repository\ProductFeatureRepositoryInterface;
+use Modules\Product\Repository\ProductQuestionRepository;
+use Modules\Product\Repository\ProductQuestionRepositoryInterface;
 use Modules\Product\Repository\ProductRepository;
 use Modules\Product\Repository\ProductRepositoryInterface;
 use Modules\Product\Repository\ProductVariantRepository;
@@ -53,5 +55,6 @@ class ProductRepoServiceProvider extends ServiceProvider
         $this->app->bind(IncredibleProductRepositoryInterface::class, IncredibleProductRepository::class);
         $this->app->bind(RecommendationProductRepoInterface::class, RecommendationProductRepo::class);
         $this->app->bind(RecommendationRepoInterface::class, RecommendationRepo::class);
+        $this->app->bind(ProductQuestionRepositoryInterface::class, ProductQuestionRepository::class);
     }
 }

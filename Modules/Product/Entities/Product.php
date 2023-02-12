@@ -118,7 +118,7 @@ class Product extends Model implements HasMedia, Explored
 
     public function questions()
     {
-        return $this->morphMany(ProductQuestion::class, 'questionable');
+        return $this->hasMany(ProductQuestion::class);
     }
 
     public function combinations()

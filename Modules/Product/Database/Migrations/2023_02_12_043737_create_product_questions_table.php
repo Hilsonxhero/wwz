@@ -16,9 +16,8 @@ return new class extends Migration
         Schema::create('product_questions', function (Blueprint $table) {
             $table->id();
             $table->foreignId("user_id")->constrained('users')->onDelete('cascade');
+            $table->foreignId("product_id")->constrained('products')->onDelete('cascade');
             $table->foreignId("product_question_id")->nullable()->constrained('product_questions')->cascadeOnDelete();
-            $table->integer('commentable_id');
-            $table->string('commentable_type');
             $table->longText('content');
             $table->integer('like');
             $table->integer('dislike');

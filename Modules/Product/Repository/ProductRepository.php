@@ -6,8 +6,11 @@ use App\Services\ApiService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use League\Glide\Api\Api;
+use Modules\Comment\Enums\CommentStatus;
 use Modules\Product\Entities\Product;
+use Modules\Product\Entities\ProductQuestion;
 use Modules\Product\Entities\ProductVariant;
+use Modules\Product\Enums\ProductQuestionStatusStatus;
 
 class ProductRepository implements ProductRepositoryInterface
 {
@@ -191,8 +194,15 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function comments($id)
     {
-        $comments = $this->find($id)->comments()->with('user')->paginate(10);
+        $comments = $this->find($id)->comments()->where('status', CommentStatus::Approved)->with('user')->paginate(10);
         return $comments;
+    }
+
+
+    public function questions($id)
+    {
+        $questions = $this->find($id)->questions()->where('status', ProductQuestionStatusStatus::Approved)->with(['user', 'replies'])->paginate(10);
+        return $questions;
     }
 
 
