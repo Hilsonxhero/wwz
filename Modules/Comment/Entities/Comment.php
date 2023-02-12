@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\Comment\Casts\CommentableTitle;
 
 class Comment extends Model
 {
@@ -19,9 +20,12 @@ class Comment extends Model
     ];
 
     protected $casts = [
+        'commentable_title' => CommentableTitle::class,
         'advantages' => 'json',
         'disadvantages' => 'json'
     ];
+
+
 
     public function user()
     {

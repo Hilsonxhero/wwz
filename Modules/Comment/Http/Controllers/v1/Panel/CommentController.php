@@ -6,6 +6,7 @@ use App\Services\ApiService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Modules\Comment\Http\Requests\Panel\CommentRequest;
 use Modules\Comment\Repository\CommentRepositoryInterface;
 use Modules\Comment\Transformers\Panel\CommentResource;
 
@@ -35,19 +36,6 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
-        ApiService::Validator($request->all(), [
-            'name' => ['required'],
-            'zone_code' => ['required'],
-        ]);
-
-        $data = [
-            'name' => $request->name,
-            'zone_code' => $request->zone_code,
-        ];
-
-        $this->commentRepo->create($data);
-
-        ApiService::_success(trans('response.responses.200'));
     }
 
     /**
@@ -68,16 +56,13 @@ class CommentController extends Controller
      * @param int $id
      * @return Response
      */
-    public function update(Request $request, $id)
+    public function update(CommentRequest $request, $id)
     {
-        ApiService::Validator($request->all(), [
-            'name' => ['required'],
-            'zone_code' => ['required'],
-        ]);
 
         $data = [
-            'name' => $request->name,
-            'zone_code' => $request->zone_code,
+            'title' => $request->title,
+            'content' => $request->content,
+            'status' => $request->status,
         ];
 
         $this->commentRepo->update($id, $data);

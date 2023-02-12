@@ -15,8 +15,21 @@ class CommentResource extends JsonResource
     public function toArray($request)
     {
         return [
-            // 'comments' => parent::toArray($request),
-            'links' => $this->links,
+            'id' => $this->id,
+            'title' => $this->title,
+            'content' => $this->body,
+            'status' => $this->status,
+            'like' => $this->like,
+            'dislike' => $this->dislike,
+            'report' => $this->report,
+            'is_buyer' => $this->is_buyer,
+            'is_recommendation' => $this->is_recommendation,
+            'is_anonymous' => $this->is_anonymous,
+            'advantages' => $this->advantages,
+            'disadvantages' => $this->disadvantages,
+            'username' => $this->user->username,
+            'commentable_title' => $this->commentable_title,
+            'created_at' => formatGregorian($this->created_at, '%A, %d %B'),
 
         ];
     }

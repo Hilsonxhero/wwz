@@ -27,7 +27,12 @@ Route::prefix('v1/application')->group(function () {
 Route::prefix('v1/panel')->group(function () {
 
     // products
+
     Route::apiResource("/products", ProductController::class);
+
+    // questions
+
+    Route::apiResource("/questions", \Modules\Product\Http\Controllers\v1\Panel\ProductQuestionController::class);
 
     // recommendation
     Route::apiResource("/recommendations", RecommendationController::class);
