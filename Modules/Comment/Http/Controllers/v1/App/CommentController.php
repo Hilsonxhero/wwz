@@ -5,14 +5,18 @@ namespace Modules\Comment\Http\Controllers\v1\App;
 use App\Services\ApiService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Pagination\AbstractPaginator;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\DB;
 use Modules\Comment\Enums\CommentStatus;
+use Illuminate\Pagination\AbstractPaginator;
+use Modules\Comment\Entities\Comment;
 use Modules\Comment\Http\Requests\App\CommentRequest;
 use Modules\Comment\Transformers\App\CommentResource;
+use Modules\Comment\Transformers\App\ScoreModelResource;
 use Modules\Comment\Repository\CommentRepositoryInterface;
 use Modules\Product\Repository\ProductRepositoryInterface;
 use Modules\Comment\Repository\ScoreModelRepositoryInterface;
+use Modules\Product\Entities\Product;
 
 class CommentController extends Controller
 {
@@ -34,16 +38,21 @@ class CommentController extends Controller
      * Display a listing of the resource.
      * @return Response
      */
-    public function index()
+    public function index(Request $request, $id)
     {
-        $comments_collection =  CommentResource::collection($this->commentRepo->all());
+        $comments = $this->productRepo->comments($id);
+
+        $comments_collection =  CommentResource::collection($comments);
+
         $data = [
             'comments' => $comments_collection->items(),
-            'scores' => CommentResource::collection($this->scoreModelRepo->get()),
-            'meta' => array(
+            'scores' => ScoreModelResource::collection($this->scoreModelRepo->get()),
+            'pager' => array(
                 'pages' => $comments_collection->lastPage(),
                 'total' => $comments_collection->total(),
-                'current_Page' => $comments_collection->currentPage()
+                'current_Page' => $comments_collection->currentPage(),
+                'per_page' => $comments_collection->perPage(),
+
             ),
         ];
 
@@ -74,7 +83,19 @@ class CommentController extends Controller
             'status' => CommentStatus::Pending
         );
 
-        $this->commentRepo->create($product, $data);
+        $comment =  $this->commentRepo->create($product, $data);
+
+        if ($request->filled('scores')) {
+            $scores =  collect($request->input('scores'));
+
+            $data = collect([]);
+
+            $scores->each(function ($score, $i) use ($data) {
+                $data->push(array("value" => $score['value'], "score_model_id" => $score['id']));
+            });
+
+            $comment->scores()->createMany($data);
+        }
 
         ApiService::_success(trans('response.responses.200'));
     }

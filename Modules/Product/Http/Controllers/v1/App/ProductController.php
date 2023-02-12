@@ -6,9 +6,7 @@ use App\Services\ApiService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
-use Modules\Product\Entities\Feature;
 use Modules\Product\Repository\ProductRepositoryInterface;
-use Modules\Product\Transformers\App\ProductFeatureResource;
 use Modules\Product\Transformers\ProductResource;
 
 class ProductController extends Controller
@@ -45,7 +43,8 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        $product = $this->productRepo->find($id);
+        $product = $this->productRepo->show($id);
+        // return $product;
         return new ProductResource($product);
     }
 

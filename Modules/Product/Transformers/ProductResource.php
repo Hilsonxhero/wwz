@@ -47,6 +47,8 @@ class ProductResource extends JsonResource
                 'thumb' => $this->getFirstMediaUrl('main', 'thumb'),
                 'thumbs' => $this->getMedia('thumbs')->toArray()
             ],
+            'rating' => round($this->scores_avg_value),
+            'comments_count' => $this->comments_count
         ];
     }
 }

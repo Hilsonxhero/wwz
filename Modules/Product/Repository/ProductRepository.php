@@ -151,7 +151,6 @@ class ProductRepository implements ProductRepositoryInterface
         });
     }
 
-
     public function update($id, $data)
     {
         $product = $this->find($id);
@@ -179,7 +178,8 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function show($id)
     {
-        $product = $this->find($id)->load(['features.childs']);
+        // $product = $this->find($id)->with(['features.childs']);
+        $product = $this->find($id)->load(['variants', 'productFeatures', 'combinations', 'category', 'delivery'])->loadAvg('scores', 'value')->loadCount('comments');
         return $product;
     }
 
@@ -187,6 +187,12 @@ class ProductRepository implements ProductRepositoryInterface
     {
         $product = $this->find($id);
         return $product->values;
+    }
+
+    public function comments($id)
+    {
+        $comments = $this->find($id)->comments()->with('user')->paginate(10);
+        return $comments;
     }
 
 

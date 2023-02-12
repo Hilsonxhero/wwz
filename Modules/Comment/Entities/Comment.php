@@ -2,9 +2,10 @@
 
 namespace Modules\Comment\Entities;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\User\Entities\User;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Comment extends Model
 {
@@ -44,5 +45,19 @@ class Comment extends Model
     public function commentable()
     {
         return $this->morphTo();
+    }
+
+
+
+    /**
+     * Calculate discount percent.
+     *
+     * @return Attribute
+     */
+    protected function averageRating(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $this->scores->average('value')
+        );
     }
 }

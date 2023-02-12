@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Hilsonxhero\ElasticVision\Application\Explored;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Comment\Entities\Comment;
+use Modules\Comment\Entities\CommentScore;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Product extends Model implements HasMedia, Explored
@@ -115,10 +116,19 @@ class Product extends Model implements HasMedia, Explored
         return $this->morphMany(Comment::class, 'commentable');
     }
 
+    public function questions()
+    {
+        return $this->morphMany(ProductQuestion::class, 'questionable');
+    }
 
     public function combinations()
     {
         return $this->hasManyThrough(ProductVariantCombination::class, ProductVariant::class);
+    }
+
+    public function scores()
+    {
+        return $this->hasManyThrough(CommentScore::class, Comment::class, 'commentable_id', 'comment_id');
     }
 
 

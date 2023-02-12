@@ -5,6 +5,7 @@ namespace Modules\Product\Repository;
 interface ProductRepositoryInterface
 {
     public function find($id);
+    public function comments($id);
     public function all($query);
     public function select($query);
     public function variants($id);

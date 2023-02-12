@@ -13,6 +13,7 @@ class ScoreModelRepository implements ScoreModelRepositoryInterface
     public function get()
     {
         return ScoreModel::orderBy('created_at', 'desc')
+            ->withCount('comments')
             ->get();
     }
     public function all()

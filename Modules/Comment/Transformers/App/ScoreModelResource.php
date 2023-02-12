@@ -20,6 +20,8 @@ class ScoreModelResource extends JsonResource
             'title' => $this->title,
             'category' => $this->category,
             'status' => $this->status,
+            "average" => $this->average_rating,
+            "comments_count" => $this->comments_count,
         ];
     }
 }
