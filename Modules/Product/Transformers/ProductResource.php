@@ -4,6 +4,7 @@ namespace Modules\Product\Transformers;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use Modules\Category\Transformers\CategoryResource;
+use Modules\Product\Transformers\Panel\ProductGalleryResource;
 use Modules\Shipment\Transformers\Panel\DeliveryResource;
 
 class ProductResource extends JsonResource
@@ -45,7 +46,7 @@ class ProductResource extends JsonResource
             'media' => [
                 'main' => $this->getFirstMediaUrl('main'),
                 'thumb' => $this->getFirstMediaUrl('main', 'thumb'),
-                'thumbs' => $this->getMedia('thumbs')->toArray()
+                'galleries' => ProductGalleryResource::collection($this->images)
             ],
             'rating' => round($this->scores_avg_value),
             'comments_count' => $this->comments_count

@@ -121,6 +121,11 @@ class Product extends Model implements HasMedia, Explored
         return $this->hasMany(ProductQuestion::class);
     }
 
+    public function images()
+    {
+        return $this->hasMany(ProductGallery::class)->whereIn('mime_type', ["image/png", "image/jpeg", "image/jpg", "image/webp"]);
+    }
+
     public function combinations()
     {
         return $this->hasManyThrough(ProductVariantCombination::class, ProductVariant::class);

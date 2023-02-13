@@ -7,6 +7,7 @@ use Modules\Product\Http\Controllers\v1\Panel\FeatureController;
 use Modules\Product\Http\Controllers\v1\Panel\FeatureValueController;
 use Modules\Product\Http\Controllers\v1\Panel\ProductController;
 use Modules\Product\Http\Controllers\v1\Panel\ProductFeatureController;
+use Modules\Product\Http\Controllers\v1\Panel\ProductGalleryController;
 use Modules\Product\Http\Controllers\v1\Panel\ProductVariantController;
 use Modules\Product\Http\Controllers\v1\Panel\RecommendationController;
 use Modules\Product\Http\Controllers\v1\Panel\RecommendationProductController;
@@ -54,6 +55,9 @@ Route::prefix('v1/panel')->group(function () {
 
     // product variants
     Route::apiResource("/products/{id}/variants", ProductVariantController::class);
+
+    // product gallery
+    Route::apiResource("/products/{id}/gallery", ProductGalleryController::class);
 
     // product select
     Route::get("/product/select", [ProductController::class, 'select']);
