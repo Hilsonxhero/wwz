@@ -17,6 +17,8 @@ use Modules\Product\Repository\ProductQuestionRepository;
 use Modules\Product\Repository\ProductQuestionRepositoryInterface;
 use Modules\Product\Repository\ProductRepository;
 use Modules\Product\Repository\ProductRepositoryInterface;
+use Modules\Product\Repository\ProductReviewRepository;
+use Modules\Product\Repository\ProductReviewRepositoryInterface;
 use Modules\Product\Repository\ProductVariantRepository;
 use Modules\Product\Repository\ProductVariantRepositoryInterface;
 use Modules\Product\Repository\RecommendationProductRepo;
@@ -59,5 +61,6 @@ class ProductRepoServiceProvider extends ServiceProvider
         $this->app->bind(RecommendationRepoInterface::class, RecommendationRepo::class);
         $this->app->bind(ProductQuestionRepositoryInterface::class, ProductQuestionRepository::class);
         $this->app->bind(ProductGalleryRepositoryInterface::class, ProductGalleryRepository::class);
+        $this->app->bind(ProductReviewRepositoryInterface::class, ProductReviewRepository::class);
     }
 }

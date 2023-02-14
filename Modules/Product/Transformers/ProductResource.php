@@ -4,6 +4,7 @@ namespace Modules\Product\Transformers;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use Modules\Category\Transformers\CategoryResource;
+use Modules\Product\Transformers\App\ProductReviewResource;
 use Modules\Product\Transformers\Panel\ProductGalleryResource;
 use Modules\Shipment\Transformers\Panel\DeliveryResource;
 
@@ -40,7 +41,10 @@ class ProductResource extends JsonResource
             })->all() : null,
             'default_variant' => new ProductVariantResource($this->default_variant),
             'variants' =>  ProductVariantResource::collection($this->variants),
-            'review' => $this->review,
+            'review' => array(
+                'content' => $this->review,
+                'items' => ProductReviewResource::collection($this->reviews),
+            ),
             'short_review' => truncate($this->review, 25),
             'status' => $this->status,
             'media' => [

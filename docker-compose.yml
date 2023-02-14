@@ -85,8 +85,8 @@ services:
             - "discovery.type=single-node"
         networks:
             - sail
-        #    volumes:
-        #      - data01:/usr/share/elasticsearch/data
+           volumes:
+             - data01:/usr/share/elasticsearch/data
         ports:
             - "9200:9200"
         deploy:
