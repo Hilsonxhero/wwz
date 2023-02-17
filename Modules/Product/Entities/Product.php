@@ -19,6 +19,7 @@ use Hilsonxhero\ElasticVision\Application\Explored;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Comment\Entities\Comment;
 use Modules\Comment\Entities\CommentScore;
+use Modules\User\Entities\User;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Product extends Model implements HasMedia, Explored
@@ -121,6 +122,13 @@ class Product extends Model implements HasMedia, Explored
         return $this->hasMany(ProductQuestion::class);
     }
 
+    public function wishes()
+    {
+        return $this->belongsToMany(User::class, 'wishes');
+    }
+
+
+
     public function reviews()
     {
         return $this->hasMany(ProductReview::class);
@@ -177,6 +185,22 @@ class Product extends Model implements HasMedia, Explored
             get: fn ($value) => Shipment::query()->where('is_default', true)->where('delivery_id', $this->delivery->id)->first()
         );
     }
+
+
+    /**
+     * If the user has liked the product
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    protected function isWish(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $this->wishes()
+                ->where('user_id', optional(request()->user())->id)
+                ->exists(),
+        );
+    }
+
 
     /**
      * Calculate discount percent.

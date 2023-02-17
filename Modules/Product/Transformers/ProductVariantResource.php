@@ -17,6 +17,8 @@ class ProductVariantResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'is_announcemented_promotion' => $this->is_announcemented_promotion,
+            'is_announcemented_availability' => $this->is_announcemented_availability,
             'product' => $this->product->id,
             'warranty' => [
                 'id' => $this->warranty->id,

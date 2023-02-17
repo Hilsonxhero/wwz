@@ -2,7 +2,9 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Modules\Product\Http\Controllers\v1\App\ProductAnnouncementController;
 use Modules\Product\Http\Controllers\v1\App\ProductQuestionController;
+use Modules\Product\Http\Controllers\v1\App\ProductWishController;
 use Modules\Product\Http\Controllers\v1\Panel\FeatureController;
 use Modules\Product\Http\Controllers\v1\Panel\FeatureValueController;
 use Modules\Product\Http\Controllers\v1\Panel\ProductController;
@@ -18,11 +20,23 @@ use Modules\Product\Http\Controllers\v1\Panel\VariantGroupController;
 Route::prefix('v1/application')->group(function () {
 
     // product page
+
     Route::get("/product/{id}", [Modules\Product\Http\Controllers\v1\App\ProductController::class, 'show']);
 
     // product questions
+
     Route::post("/questions/product/{id}", [ProductQuestionController::class, 'store'])->middleware('auth:api');
     Route::get("/questions/product/{id}", [ProductQuestionController::class, 'index']);
+
+    // wishes
+
+    Route::post("/wishes/{id}", [ProductWishController::class, 'store'])->middleware('auth:api');
+    Route::delete("/wishes/{id}", [ProductWishController::class, 'destroy'])->middleware('auth:api');
+
+    // announcements
+
+    Route::post("/announcements/{id}", [ProductAnnouncementController::class, 'store'])->middleware('auth:api');
+    Route::delete("/announcements/{id}", [ProductAnnouncementController::class, 'destroy'])->middleware('auth:api');
 });
 
 

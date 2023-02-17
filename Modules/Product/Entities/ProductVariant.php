@@ -2,13 +2,15 @@
 
 namespace Modules\Product\Entities;
 
+use Modules\User\Entities\User;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\Shipment\Entities\Shipment;
 
 use Modules\Warranty\Entities\Warranty;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Modules\Shipment\Entities\Shipment;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Product\Enums\ProductAnnouncementType;
 
 class ProductVariant extends Model
 {
@@ -60,6 +62,41 @@ class ProductVariant extends Model
     {
         return $this->hasMany(ProductVariantCombination::class);
     }
+
+    public function announcements()
+    {
+        return $this->belongsToMany(User::class, 'product_announcements');
+    }
+
+
+    /**
+     * If the user has announcemented promotion the product
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    protected function isAnnouncementedPromotion(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $this->announcements()
+                ->where('user_id', optional(request()->user())->id)->where('type', ProductAnnouncementType::Promotion->value)
+                ->exists(),
+        );
+    }
+
+    /**
+     * If the user has announcemented availability the product
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    protected function isAnnouncementedAvailability(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $this->announcements()
+                ->where('user_id', optional(request()->user())->id)->where('type', ProductAnnouncementType::Availability->value)
+                ->exists(),
+        );
+    }
+
 
     /**
      * Calculate discount percent.
