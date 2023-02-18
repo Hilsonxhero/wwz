@@ -19,7 +19,8 @@ return [
      * of the mapping possibilities can be found in the documentation of Explorer's repository.
      */
     'indexes' => [
-        \Modules\Product\Entities\Product::class
+        \Modules\Product\Entities\Product::class,
+        \Modules\Category\Entities\Category::class
     ],
 
     /**

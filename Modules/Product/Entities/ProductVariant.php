@@ -5,7 +5,6 @@ namespace Modules\Product\Entities;
 use Modules\User\Entities\User;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Shipment\Entities\Shipment;
-
 use Modules\Warranty\Entities\Warranty;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
