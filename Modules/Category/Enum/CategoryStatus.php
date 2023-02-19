@@ -2,7 +2,7 @@
 
 namespace Modules\Category\Enum;
 
-enum CategoryEnum: string
+enum CategoryStatus: string
 {
     case ENABLE = "enable";
     case DISABLE = "disable";

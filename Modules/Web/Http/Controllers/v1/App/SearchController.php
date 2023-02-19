@@ -5,38 +5,40 @@ namespace Modules\Web\Http\Controllers\v1\App;
 use App\Services\ApiService;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Modules\Product\Entities\Product;
-use Modules\Product\Repository\RecommendationRepo;
-use Hilsonxhero\ElasticVision\Domain\Syntax\Matching;
-use Hilsonxhero\ElasticVision\Domain\Syntax\MatchPhrase;
-use Modules\Category\Entities\Category;
-use Modules\Product\Transformers\App\RecommendationResource;
+
+use Modules\Category\Transformers\App\CategoryResource;
+use Modules\Category\Repository\CategoryRepositoryInterface;
+use Modules\Product\Repository\ProductRepositoryInterface;
+use Modules\Product\Transformers\App\ProductSearchResource;
 
 class SearchController extends Controller
 {
-    private $recommendationRepo;
-
-    public function __construct(RecommendationRepo $recommendationRepo)
-    {
-        $this->recommendationRepo = $recommendationRepo;
+    private $productRepo;
+    private $categoryRepo;
+    public function __construct(
+        ProductRepositoryInterface $productRepo,
+        CategoryRepositoryInterface $categoryRepo
+    ) {
+        $this->productRepo = $productRepo;
+        $this->categoryRepo = $categoryRepo;
     }
 
     /**
-     * Display recommendation categories .
+     * Display search results .
      *
      * @return \Illuminate\Http\Response
      */
     public function search(Request $request)
     {
+        $categories = $this->categoryRepo->search($request->q);
 
-        $categories = Category::search()->must(new MatchPhrase('title', $request->q))->get();
+        $products = $this->productRepo->search($request->q);
 
-        // $categories = Category::search($request->q)
-        //     ->field('title')
-        //     ->field('title_en')
-        //     ->get();
-
-        // $search = Product::search()->must(new Matching('title_fa', $request->q))->get();
-        ApiService::_success($categories);
+        ApiService::_success(
+            array(
+                'categories' => CategoryResource::collection($categories),
+                'products' => ProductSearchResource::collection($products)
+            )
+        );
     }
 }

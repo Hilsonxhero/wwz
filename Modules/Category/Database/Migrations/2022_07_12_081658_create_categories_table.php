@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use Modules\Category\Entities\Category;
+use Modules\Category\Enum\CategoryStatus;
 
 return new class extends Migration
 {
@@ -22,7 +23,7 @@ return new class extends Migration
             $table->string('link')->nullable();
             $table->text('description')->nullable();
             $table->foreignId('parent_id')->nullable()->constrained('categories')->onDelete('cascade');
-            $table->enum('status', Category::$statuses)->default(Category::ENABLE_STATUS);
+            $table->string('status');
             $table->softDeletes();
             $table->timestamps();
         });

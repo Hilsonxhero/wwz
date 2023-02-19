@@ -6,6 +6,7 @@ interface CategoryRepositoryInterface
 {
     public function find($id);
     public function select($query);
+    public function search($query);
     public function all();
     public function group();
     public function mainCategories();

@@ -3,14 +3,13 @@
 namespace Modules\Product\Repository;
 
 use App\Services\ApiService;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
-use League\Glide\Api\Api;
-use Modules\Comment\Enums\CommentStatus;
 use Modules\Product\Entities\Product;
-use Modules\Product\Entities\ProductQuestion;
-use Modules\Product\Entities\ProductVariant;
+use Modules\Comment\Enums\CommentStatus;
 use Modules\Product\Enums\ProductQuestionStatusStatus;
+use Hilsonxhero\ElasticVision\Domain\Syntax\MatchPhrase;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Modules\Product\Enums\ProductStatus;
 
 class ProductRepository implements ProductRepositoryInterface
 {
@@ -24,6 +23,19 @@ class ProductRepository implements ProductRepositoryInterface
 
         return $query->paginate();
     }
+
+
+
+    public function search($query)
+    {
+        $categories = Product::search($query)
+            ->field('title_fa')
+            ->field('title_en')
+            ->filter(new MatchPhrase('status', ProductStatus::ENABLE->value))->get();
+        return $categories;
+    }
+
+
     public function incredibles()
     {
         $query = Product::query()->orderBy('created_at', 'desc');
@@ -69,7 +81,7 @@ class ProductRepository implements ProductRepositoryInterface
     public function allActive()
     {
         return Product::orderBy('created_at', 'desc')
-            ->where('status', Product::ENABLE_STATUS)
+            ->where('status', ProductStatus::ENABLE->value)
             ->with('parent')
             ->paginate();
     }

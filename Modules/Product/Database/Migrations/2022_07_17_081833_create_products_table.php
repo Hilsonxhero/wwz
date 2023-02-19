@@ -22,7 +22,7 @@ return new class extends Migration
             $table->longText("review");
             $table->foreignId("category_id")->constrained('categories')->onDelete('cascade');
             $table->foreignId("brand_id")->constrained('brands')->onDelete('cascade');
-            $table->enum('status', Product::$statuses)->default(Product::ENABLE_STATUS);
+            $table->string('status');
             $table->softDeletes();
             $table->timestamps();
         });

@@ -16,7 +16,7 @@ class ProductRequest extends FormRequest
      */
     public function rules()
     {
-        if (request()->getMethod() == "PUT"){
+        if (request()->getMethod() == "PUT") {
             return [
                 'title_fa' => ['required', 'min:4'],
                 'title_en' => ['required', 'min:4'],
@@ -24,7 +24,7 @@ class ProductRequest extends FormRequest
                 'image' => ['nullable'],
                 'category_id' => ['required', 'exists:categories,id'],
                 'brand_id' => ['required', 'exists:brands,id'],
-                'status' => ['required', Rule::in(Product::$statuses)],
+                'status' => ['required'],
             ];
         }
 
@@ -35,16 +35,16 @@ class ProductRequest extends FormRequest
             'image' => ['required'],
             'category_id' => ['required', 'exists:categories,id'],
             'brand_id' => ['required', 'exists:brands,id'],
-            'status' => ['required', Rule::in(Product::$statuses)],
+            'status' => ['required'],
         ];
     }
 
-    public function failedValidation( $validator)
+    public function failedValidation($validator)
     {
         throw new HttpResponseException(response()->json([
             'success'   => false,
             'message'   => 'Validation errors',
             'data'      => $validator->errors()
-        ],422));
+        ], 422));
     }
 }

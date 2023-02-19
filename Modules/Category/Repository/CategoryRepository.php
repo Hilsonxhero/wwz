@@ -3,8 +3,10 @@
 namespace Modules\Category\Repository;
 
 use App\Services\ApiService;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Modules\Category\Entities\Category;
+use Modules\Category\Enum\CategoryStatus;
+use Hilsonxhero\ElasticVision\Domain\Syntax\MatchPhrase;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CategoryRepository implements CategoryRepositoryInterface
 {
@@ -23,6 +25,15 @@ class CategoryRepository implements CategoryRepositoryInterface
             ->with(['children'])
             ->withCount(['products'])
             ->get();
+    }
+
+    public function search($query)
+    {
+        $categories = Category::search($query)
+            ->field('title')
+            ->field('title_en')
+            ->filter(new MatchPhrase('status', CategoryStatus::ENABLE->value))->get();
+        return $categories;
     }
 
 
@@ -47,7 +58,7 @@ class CategoryRepository implements CategoryRepositoryInterface
     public function allActive()
     {
         return Category::orderBy('created_at', 'desc')
-            ->where('status', Category::ENABLE_STATUS)
+            ->where('status', CategoryStatus::ENABLE->value)
             ->with('parent')
             ->paginate();
     }

@@ -3,6 +3,7 @@
 namespace Modules\Category\Entities;
 
 use Illuminate\Support\Str;
+use Laravel\Scout\Searchable;
 use Spatie\Image\Manipulations;
 use Modules\Slide\Entities\Slide;
 use Spatie\MediaLibrary\HasMedia;
@@ -13,13 +14,13 @@ use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Hilsonxhero\ElasticVision\Application\Explored;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
-use Laravel\Scout\Searchable;
-use Hilsonxhero\ElasticVision\Application\Explored;
+use Hilsonxhero\ElasticVision\Application\IndexSettings;
 
 
-class Category extends Model implements HasMedia, Explored
+class Category extends Model implements HasMedia, Explored, IndexSettings
 {
     use HasFactory, SoftDeletes, Sluggable, InteractsWithMedia, Searchable;
 
@@ -33,27 +34,17 @@ class Category extends Model implements HasMedia, Explored
         'status',
     ];
 
-
-
-    const DISABLE_STATUS = 'disable';
-    const ENABLE_STATUS = 'enable';
-    const PENDING_STATUS = 'pending';
-    const REJECTED_STATUS = 'rejected';
-
-    static $statuses = [self::DISABLE_STATUS, self::ENABLE_STATUS, self::PENDING_STATUS, self::REJECTED_STATUS];
-
-
     public function mappableAs(): array
     {
         return [
             'id' => 'keyword',
             'title_en' => [
                 'type' => 'text',
-                // 'analyzer' => 'synonym',
+                'analyzer' => 'my_analyzer',
             ],
             'title' => [
                 'type' => 'text',
-                'analyzer' => 'whitespace',
+                'analyzer' => 'my_analyzer',
             ],
             'status' => [
                 'type' => 'text',
@@ -70,6 +61,30 @@ class Category extends Model implements HasMedia, Explored
             'title_en' => $this->title_en,
             'status' => $this->status,
 
+        ];
+    }
+
+    public function indexSettings(): array
+    {
+        return [
+            "analysis" => [
+                "analyzer" => [
+                    "my_analyzer" => [
+                        "type" => "custom",
+                        "tokenizer" => "standard",
+                        "filter" => ["lowercase", "my_filter"]
+                    ]
+                ],
+                "filter" => [
+                    "my_filter" => [
+                        "type" => "ngram",
+                        "min_gram" => 2,
+                    ]
+                ]
+            ],
+            "index" => [
+                "max_ngram_diff" => 13
+            ]
         ];
     }
 

@@ -3,26 +3,27 @@
 namespace Modules\Product\Entities;
 
 use Laravel\Scout\Searchable;
+use Modules\User\Entities\User;
 use Spatie\Image\Manipulations;
 use Modules\Brand\Entities\Brand;
 use Spatie\MediaLibrary\HasMedia;
+use Modules\Comment\Entities\Comment;
 use Modules\Voucher\Entities\Voucher;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Category\Entities\Category;
 use Modules\Shipment\Entities\Delivery;
 use Modules\Shipment\Entities\Shipment;
 use Cviebrock\EloquentSluggable\Sluggable;
+use Modules\Comment\Entities\CommentScore;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Hilsonxhero\ElasticVision\Application\Explored;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\Comment\Entities\Comment;
-use Modules\Comment\Entities\CommentScore;
-use Modules\User\Entities\User;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Hilsonxhero\ElasticVision\Application\IndexSettings;
 
-class Product extends Model implements HasMedia, Explored
+class Product extends Model implements HasMedia, Explored, IndexSettings
 {
     use HasFactory, Sluggable, SoftDeletes, InteractsWithMedia, Searchable;
 
@@ -37,12 +38,6 @@ class Product extends Model implements HasMedia, Explored
         'delivery_id',
     ];
 
-    const DISABLE_STATUS = 'disable';
-    const ENABLE_STATUS = 'enable';
-    const PENDING_STATUS = 'pending';
-    const REJECTED_STATUS = 'rejected';
-
-    static $statuses = [self::DISABLE_STATUS, self::ENABLE_STATUS, self::PENDING_STATUS, self::REJECTED_STATUS];
 
     public function mappableAs(): array
     {
@@ -50,11 +45,11 @@ class Product extends Model implements HasMedia, Explored
             'id' => 'keyword',
             'title_fa' => [
                 'type' => 'text',
-                // 'analyzer' => 'synonym',
+                'analyzer' => 'my_analyzer',
             ],
             'status' => [
                 'type' => 'text',
-                // 'analyzer' => 'synonym',
+                'analyzer' => 'my_analyzer',
             ],
             'category' => 'nested',
         ];
@@ -67,6 +62,30 @@ class Product extends Model implements HasMedia, Explored
             'title_fa' => $this->title_fa,
             'status' => $this->status,
             'category' => $this->category
+        ];
+    }
+
+    public function indexSettings(): array
+    {
+        return [
+            "analysis" => [
+                "analyzer" => [
+                    "my_analyzer" => [
+                        "type" => "custom",
+                        "tokenizer" => "standard",
+                        "filter" => ["lowercase", "my_filter"]
+                    ]
+                ],
+                "filter" => [
+                    "my_filter" => [
+                        "type" => "ngram",
+                        "min_gram" => 2,
+                    ]
+                ]
+            ],
+            "index" => [
+                "max_ngram_diff" => 13
+            ]
         ];
     }
 
