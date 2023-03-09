@@ -19,11 +19,13 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Hilsonxhero\ElasticVision\Application\Explored;
+use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Hilsonxhero\ElasticVision\Application\IndexSettings;
+use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 
-class Product extends Model implements HasMedia, Explored, IndexSettings
+class Product extends Model implements HasMedia, Explored
 {
     use HasFactory, Sluggable, SoftDeletes, InteractsWithMedia, Searchable;
 
@@ -38,20 +40,23 @@ class Product extends Model implements HasMedia, Explored, IndexSettings
         'delivery_id',
     ];
 
-
     public function mappableAs(): array
     {
         return [
             'id' => 'keyword',
             'title_fa' => [
                 'type' => 'text',
-                'analyzer' => 'my_analyzer',
+                // 'analyzer' => 'my_analyzer',
+            ],
+            'title_en' => [
+                'type' => 'text',
             ],
             'status' => [
                 'type' => 'text',
-                'analyzer' => 'my_analyzer',
             ],
             'category' => 'nested',
+            'features' => 'nested',
+            'variants' => 'nested',
         ];
     }
 
@@ -60,8 +65,11 @@ class Product extends Model implements HasMedia, Explored, IndexSettings
         return [
             'id' => $this->id,
             'title_fa' => $this->title_fa,
+            'title_en' => $this->title_en,
             'status' => $this->status,
-            'category' => $this->category
+            'category' => $this->category,
+            'features' => $this->productFeatures,
+            'variants' => $this->variants
         ];
     }
 
@@ -121,11 +129,6 @@ class Product extends Model implements HasMedia, Explored, IndexSettings
         return $this->hasMany(IncredibleProduct::class);
     }
 
-    public function featureValues()
-    {
-        return $this->hasMany(ProductFeature::class);
-    }
-
     public function variants()
     {
         return $this->hasMany(ProductVariant::class);
@@ -145,8 +148,6 @@ class Product extends Model implements HasMedia, Explored, IndexSettings
     {
         return $this->belongsToMany(User::class, 'wishes');
     }
-
-
 
     public function reviews()
     {
@@ -193,6 +194,35 @@ class Product extends Model implements HasMedia, Explored, IndexSettings
             ->height(300)
             ->format(Manipulations::FORMAT_PNG);
     }
+
+    /**
+     * Calculate total stock.
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+
+    protected function totalStock(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $this->variants()->sum('stock')
+        );
+    }
+
+    /**
+     * check inventory of product variations
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+
+    protected function hasStock(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $this->variants()->sum('stock') > 0 ? true : false,
+            set: fn (string $value) =>  ['has_stock' => $value],
+        );
+    }
+
+
     /**
      * Calculate default delivery.
      *

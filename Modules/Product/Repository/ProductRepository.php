@@ -6,10 +6,15 @@ use App\Services\ApiService;
 use Illuminate\Support\Facades\DB;
 use Modules\Product\Entities\Product;
 use Modules\Comment\Enums\CommentStatus;
+use Modules\Product\Enums\ProductStatus;
+use Hilsonxhero\ElasticVision\Domain\Syntax\Terms;
+use Hilsonxhero\ElasticVision\Domain\Syntax\Nested;
+use Hilsonxhero\ElasticVision\Domain\Syntax\Matching;
 use Modules\Product\Enums\ProductQuestionStatusStatus;
 use Hilsonxhero\ElasticVision\Domain\Syntax\MatchPhrase;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Modules\Product\Enums\ProductStatus;
+use Hilsonxhero\ElasticVision\Domain\Syntax\Compound\BoolQuery;
+use Hilsonxhero\ElasticVision\Infrastructure\Scout\ElasticEngine;
 
 class ProductRepository implements ProductRepositoryInterface
 {
@@ -28,11 +33,44 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function search($query)
     {
-        $categories = Product::search($query)
+        $products = Product::search($query)
             ->field('title_fa')
             ->field('title_en')
-            ->filter(new MatchPhrase('status', ProductStatus::ENABLE->value))->get();
-        return $categories;
+            ->filter(new MatchPhrase('status', ProductStatus::ENABLE->value))->take(6)->get();
+        return $products;
+    }
+
+    public function filters($query, $category)
+    {
+        $search = Product::search($query)
+            ->where('delivery_id', 22)
+            ->field('title_fa')
+            ->field('title_en')
+            ->filter(new MatchPhrase('status', ProductStatus::ENABLE->value))
+            ->must(new Nested('category', new MatchPhrase('category.id', $category->id)));
+
+        if (request()->filled('available_stock')) {
+        }
+
+        if (request()->filled('feature_id')) {
+            $boolQuery = new BoolQuery();
+            foreach (request()->feature_id as $key => $value) {
+                $query = new BoolQuery();
+                $query->must(new MatchPhrase('features.feature_id', $key));
+                $query->must(new Terms('features.feature_value_id', $value));
+                $boolQuery->add('must', new Nested('features', $query));
+            }
+            $search->newCompound($boolQuery);
+        }
+
+
+
+        $products = $search->take(15)
+            ->get();
+
+        return ElasticEngine::debug()->json();
+
+        return $products;
     }
 
 

@@ -32,7 +32,7 @@ class CategoryRepository implements CategoryRepositoryInterface
         $categories = Category::search($query)
             ->field('title')
             ->field('title_en')
-            ->filter(new MatchPhrase('status', CategoryStatus::ENABLE->value))->get();
+            ->filter(new MatchPhrase('status', CategoryStatus::ENABLE->value))->take(15)->get();
         return $categories;
     }
 
@@ -85,6 +85,15 @@ class CategoryRepository implements CategoryRepositoryInterface
     {
         try {
             $category = Category::query()->where('id', $id)->firstOrFail();
+            return $category;
+        } catch (ModelNotFoundException $e) {
+            return  ApiService::_response(trans('response.responses.404'), 404);
+        }
+    }
+    public function findBySlug($slug)
+    {
+        try {
+            $category = Category::query()->where('slug', $slug)->firstOrFail();
             return $category;
         } catch (ModelNotFoundException $e) {
             return  ApiService::_response(trans('response.responses.404'), 404);

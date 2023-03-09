@@ -27,5 +27,5 @@ return [
      * You may opt to keep the old indices after the alias is pointed to a new index.
      * A model is only using index aliases if it implements the Aliased interface.
      */
-    'prune_old_aliases' => true,
+    'prune_old_aliases' => false,
 ];

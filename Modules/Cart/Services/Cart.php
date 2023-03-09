@@ -423,6 +423,7 @@ class Cart
             'items_discount' => 0,
             'shipment_cost' => 0,
             'shipment_discount' => 0,
+            'total_discount' => 0,
         ])->toArray();
 
         if (auth()->check()) {
@@ -444,6 +445,7 @@ class Cart
                 return $cart_collection;
             }
         } else {
+            $cart = null;
             $cart_items = $this->storage->get($this->instance);
             if (is_null($cart_items)) {
                 return $cart_collection;
@@ -455,7 +457,7 @@ class Cart
 
         $content = (object) [
             'id' => $cart->id ?? random_int(1000000, 10000000),
-            'items' => $cart_items,
+            'items' => $cart_items->toArray(),
             'items_count' => $this->count($cart_items),
             'rrp_price' => $this->total($cart_items),
             "voucher_discount" => $this->voucher($cart),

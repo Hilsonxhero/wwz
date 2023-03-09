@@ -5,6 +5,7 @@ namespace Modules\Category\Repository;
 interface CategoryRepositoryInterface
 {
     public function find($id);
+    public function findBySlug($id);
     public function select($query);
     public function search($query);
     public function all();

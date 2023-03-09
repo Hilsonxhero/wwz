@@ -21,6 +21,7 @@ class ProductSearchResource extends JsonResource
         return [
             'id' => $this->id,
             'is_wish' => $this->is_wish,
+            'has_stock' => $this->has_stock,
             'title_fa' => $this->title_fa,
             'title_en' => $this->title_en,
             'slug' => $this->slug,

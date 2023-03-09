@@ -9,4 +9,5 @@ Route::prefix('v1/application')->group(function () {
     Route::get('landing', [LandingController::class, 'index']);
     Route::get('recommendation', [\Modules\Web\Http\Controllers\v1\App\RecommendationController::class, 'index']);
     Route::get('search', [\Modules\Web\Http\Controllers\v1\App\SearchController::class, 'search']);
+    Route::get('search/products', [\Modules\Web\Http\Controllers\v1\App\SearchController::class, 'products']);
 });

@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Product\Transformers;
+namespace Modules\Product\Transformers\App;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -17,10 +17,6 @@ class FeatureResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'parent' => $this->parent,
-            'category' => $this->category,
-            'status' => $this->status,
-            'position' => $this->position,
             'values' => FeatureValueResource::collection($this->values),
         ];
     }

@@ -6,6 +6,7 @@ interface ProductRepositoryInterface
 {
     public function find($id);
     public function search($query);
+    public function filters($query, $category);
     public function comments($id);
     public function questions($id);
     public function all($query);

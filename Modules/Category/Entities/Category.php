@@ -5,20 +5,23 @@ namespace Modules\Category\Entities;
 use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
 use Spatie\Image\Manipulations;
+use Modules\Brand\Entities\Brand;
 use Modules\Slide\Entities\Slide;
 use Spatie\MediaLibrary\HasMedia;
 use Modules\Banner\Entities\Banner;
+use Modules\Product\Entities\Feature;
 use Modules\Product\Entities\Product;
 use Modules\Voucher\Entities\Voucher;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Hilsonxhero\ElasticVision\Application\Aliased;
 use Hilsonxhero\ElasticVision\Application\Explored;
+use Hilsonxhero\ElasticVision\Application\BePrepared;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Hilsonxhero\ElasticVision\Application\IndexSettings;
-
 
 class Category extends Model implements HasMedia, Explored, IndexSettings
 {
@@ -145,9 +148,20 @@ class Category extends Model implements HasMedia, Explored, IndexSettings
     {
         return $this->morphMany(Banner::class, 'bannerable');
     }
+
     public function products()
     {
         return $this->hasMany(Product::class);
+    }
+
+    public function features()
+    {
+        return $this->hasMany(Feature::class)->whereNotNull('parent_id');
+    }
+
+    public function brands()
+    {
+        return $this->hasMany(Brand::class);
     }
 
     /**
