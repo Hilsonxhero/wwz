@@ -1,12 +1,77 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# Modular blog
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## About WWZ
 
-## License
+wwz is built with php and laravel. wwz is a ecommerce. wwz is suitable for developers who want to learn more about Laravel and know how to use technologies.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Installation With Docker
+
+```sh
+git clone https://github.com/Hilsonxhero/wwz
+
+# set environment
+copy .env.example .env
+
+# install composer
+composer install
+
+# Start docker in os
+./vendor/bin/sail up -d
+```
+
+## Tests
+
+```sh
+./vendor/bin/sail artisan test
+```
+
+## Fake data
+
+```sh
+./vendor/bin/sail artisan migrate:fresh --seed
+```
+
+## Elasticsearch
+
+If you use elasticsearch,you must create index.
+
+```sh
+./vendor/bin/sail artisan scout:index products
+```
+
+and then you can see other information in kibana
+
+```sh
+http://localhost:5601
+```
+
+### Infrastructure Description
+
+-   This project is built with laravel and php
+-   This project offers a special api for shop
+-   [laravel 10 with php 8.1]
+-   Docker is used for containers
+-   Rabbitmq is used for queues
+-   Redis is used for several features
+-   Octane is used for optimizing
+
+## Database Description
+
+#### Laravel is flexible in determining database but i performed
+
+-   Mysql for main database
+-   Redis for cache database
+-   Elasticsearch for search engine
+
+## Webserver Description
+
+-   Octane
+
+## Other Description
+
+-   Use Kibana for dashboard and management elastic
+-   Has continuous integration(GitHub actions)
+
+## Pull Requests
+
+Thank you for investing your time in contributing to our project.
