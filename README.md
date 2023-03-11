@@ -1,4 +1,4 @@
-# Modular blog
+# wwz shop
 
 ## About WWZ
 
