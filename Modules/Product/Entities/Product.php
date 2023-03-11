@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Modules\Category\Entities\Category;
 use Modules\Shipment\Entities\Delivery;
 use Modules\Shipment\Entities\Shipment;
+use Illuminate\Database\Eloquent\Builder;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Modules\Comment\Entities\CommentScore;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -24,6 +25,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Hilsonxhero\ElasticVision\Application\IndexSettings;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use Modules\Product\Transformers\ProductVariantResource;
 
 class Product extends Model implements HasMedia, Explored
 {
@@ -57,6 +59,7 @@ class Product extends Model implements HasMedia, Explored
             'category' => 'nested',
             'features' => 'nested',
             'variants' => 'nested',
+            'has_stock' => 'boolean',
         ];
     }
 
@@ -69,7 +72,8 @@ class Product extends Model implements HasMedia, Explored
             'status' => $this->status,
             'category' => $this->category,
             'features' => $this->productFeatures,
-            'variants' => $this->variants
+            'variants' => ProductVariantResource::collection($this->variants)->toArray(true),
+            'has_stock' => $this->has_stock,
         ];
     }
 
@@ -186,6 +190,11 @@ class Product extends Model implements HasMedia, Explored
         return static::all()->last();
     }
 
+    public function largestVariant()
+    {
+        return $this->hasOne(ProductVariant::class)->ofMany('price', 'max');
+    }
+
     public function registerMediaConversions(Media $media = null): void
     {
         $this->addMediaConversion('thumb')
@@ -283,5 +292,13 @@ class Product extends Model implements HasMedia, Explored
     public function vouchers()
     {
         return $this->morphToMany(Voucher::class, 'voucherable');
+    }
+
+    /**
+     * Modify the query used to retrieve models when making all of the models searchable.
+     */
+    protected function makeAllSearchableUsing(Builder $query): Builder
+    {
+        return $query->with('variants');
     }
 }

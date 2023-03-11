@@ -67,12 +67,14 @@ class CategoryRepository implements CategoryRepositoryInterface
     public function create($data)
     {
         $category =  Category::query()->create($data);
+        // $category->save();
         return $category;
     }
     public function update($id, $data)
     {
         $category = $this->find($id);
         $category->update($data);
+
         return $category;
     }
     public function show($id)

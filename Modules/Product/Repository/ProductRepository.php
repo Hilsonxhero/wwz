@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Modules\Product\Entities\Product;
 use Modules\Comment\Enums\CommentStatus;
 use Modules\Product\Enums\ProductStatus;
+use Illuminate\Database\Eloquent\Builder;
 use Hilsonxhero\ElasticVision\Domain\Syntax\Terms;
 use Hilsonxhero\ElasticVision\Domain\Syntax\Nested;
 use Hilsonxhero\ElasticVision\Domain\Syntax\Matching;
@@ -14,6 +15,8 @@ use Modules\Product\Enums\ProductQuestionStatusStatus;
 use Hilsonxhero\ElasticVision\Domain\Syntax\MatchPhrase;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Hilsonxhero\ElasticVision\Domain\Syntax\Compound\BoolQuery;
+use Hilsonxhero\ElasticVision\Domain\Syntax\Range;
+use Hilsonxhero\ElasticVision\Domain\Syntax\Term;
 use Hilsonxhero\ElasticVision\Infrastructure\Scout\ElasticEngine;
 
 class ProductRepository implements ProductRepositoryInterface
@@ -34,9 +37,13 @@ class ProductRepository implements ProductRepositoryInterface
     public function search($query)
     {
         $products = Product::search($query)
+            // ->whereHas('variants', function (Builder $query) {
+            //     $query->sum('stock') > 0;
+            // })
             ->field('title_fa')
             ->field('title_en')
-            ->filter(new MatchPhrase('status', ProductStatus::ENABLE->value))->take(6)->get();
+            ->filter(new MatchPhrase('status', ProductStatus::ENABLE->value))->take(6)
+            ->get();
         return $products;
     }
 
@@ -50,6 +57,14 @@ class ProductRepository implements ProductRepositoryInterface
             ->must(new Nested('category', new MatchPhrase('category.id', $category->id)));
 
         if (request()->filled('available_stock')) {
+            $search->filter(new Term('has_stock', true));
+        }
+
+        if (request()->filled('max_price')) {
+            $boolQuery = new BoolQuery();
+            // $boolQuery->must(new Range('variants.selling_price', ['gte' => request()->min_price, 'lte' => request()->max_price]));
+            $boolQuery->add('must', new Nested('variants', new Range('variants.selling_price', ['gte' => request()->min_price, 'lte' => request()->max_price])));
+            $search->newCompound($boolQuery);
         }
 
         if (request()->filled('feature_id')) {
@@ -68,7 +83,7 @@ class ProductRepository implements ProductRepositoryInterface
         $products = $search->take(15)
             ->get();
 
-        return ElasticEngine::debug()->json();
+        // return ElasticEngine::debug()->json();
 
         return $products;
     }
@@ -127,7 +142,7 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function create($data)
     {
-        $product = Product::query()->create([
+        $product = Product::query()->with('variants')->create([
             'title_fa' => $data->title_fa,
             'title_en' => $data->title_en,
             'review' => $data->review,
@@ -208,6 +223,8 @@ class ProductRepository implements ProductRepositoryInterface
     {
         $product = $this->find($id);
 
+        $this->updateVariants($product, $data->input('variants'));
+
         $product->update([
             'title_fa' => $data->title_fa,
             'title_en' => $data->title_en,
@@ -218,7 +235,6 @@ class ProductRepository implements ProductRepositoryInterface
             'delivery_id' => $data->delivery
         ]);
 
-        $this->updateVariants($product, $data->input('variants'));
 
         if ($data->image) {
             $product->clearMediaCollectionExcept('main');

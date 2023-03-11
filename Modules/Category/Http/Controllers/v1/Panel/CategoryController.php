@@ -67,6 +67,7 @@ class CategoryController extends Controller
             'description' => $request->description,
             'link' => $request->link,
             'parent_id' => $request->parent,
+            'status' => "enable"
         ];
         $category = $this->categoryRepo->create($data);
 

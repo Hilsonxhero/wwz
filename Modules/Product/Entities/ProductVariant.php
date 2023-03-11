@@ -29,6 +29,16 @@ class ProductVariant extends Model
         'discount_expire_at' => 'datetime',
     ];
 
+    public static function booted()
+    {
+        static::saved(function ($model) {
+            $model->product()->searchable();
+        });
+        static::deleted(function ($model) {
+            $model->product()->searchable();
+        });
+    }
+
 
     public function product()
     {

@@ -1428,21 +1428,21 @@
         },
         {
             "name": "hilsonxhero/elasticvision",
-            "version": "1.0.2",
+            "version": "1.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Hilsonxhero/laravel-elastic-vision.git",
-                "reference": "5522dd9f00b5635bdabb6e22bf07e8bb806049ac"
+                "reference": "546e7472f7b3efac9868f3bbe3adfca7956cf2b8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Hilsonxhero/laravel-elastic-vision/zipball/5522dd9f00b5635bdabb6e22bf07e8bb806049ac",
-                "reference": "5522dd9f00b5635bdabb6e22bf07e8bb806049ac",
+                "url": "https://api.github.com/repos/Hilsonxhero/laravel-elastic-vision/zipball/546e7472f7b3efac9868f3bbe3adfca7956cf2b8",
+                "reference": "546e7472f7b3efac9868f3bbe3adfca7956cf2b8",
                 "shasum": ""
             },
             "require": {
                 "elasticsearch/elasticsearch": "^8.6",
-                "illuminate/support": "^9.0",
+                "illuminate/support": "^9.0||^10.0",
                 "laravel/scout": "^9.0",
                 "php": "8.0.*||8.1.*||8.2.*",
                 "webmozart/assert": "^1.10"
@@ -1455,10 +1455,7 @@
                 "laravel": {
                     "providers": [
                         "Hilsonxhero\\ElasticVision\\Providers\\ServiceProvider"
-                    ],
-                    "aliases": {
-                        "ElasticVision": "Hilsonxhero\\ElasticVision\\Facade\\ElasticVisionFacade"
-                    }
+                    ]
                 }
             },
             "autoload": {
@@ -1488,9 +1485,9 @@
             ],
             "support": {
                 "issues": "https://github.com/Hilsonxhero/laravel-elastic-vision/issues",
-                "source": "https://github.com/Hilsonxhero/laravel-elastic-vision/tree/1.0.2"
+                "source": "https://github.com/Hilsonxhero/laravel-elastic-vision/tree/1.0.3"
             },
-            "time": "2023-02-18T16:53:57+00:00"
+            "time": "2023-03-10T14:44:13+00:00"
         },
         {
             "name": "intervention/image",

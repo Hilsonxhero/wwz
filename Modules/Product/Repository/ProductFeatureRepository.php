@@ -19,6 +19,7 @@ class ProductFeatureRepository implements ProductFeatureRepositoryInterface
     public function create($data)
     {
         $feature =  ProductFeature::query()->create($data);
+        // Product::query()->where('id', 2)->first()->searchable();
         return $feature;
     }
     public function update($id, $data)

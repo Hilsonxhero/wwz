@@ -5,7 +5,7 @@ namespace Modules\Product\Entities;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-
+use Laravel\Scout\Searchable;
 
 class ProductFeature extends Model
 {
@@ -16,6 +16,16 @@ class ProductFeature extends Model
     public $timestamps = false;
 
     public $incrementing = false;
+
+    public static function booted()
+    {
+        static::saved(function ($model) {
+            $model->product()->searchable();
+        });
+        static::deleted(function ($model) {
+            $model->product()->searchable();
+        });
+    }
 
     // protected static function newFactory()
     // {

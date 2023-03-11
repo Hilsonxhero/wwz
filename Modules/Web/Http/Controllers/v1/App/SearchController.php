@@ -5,14 +5,17 @@ namespace Modules\Web\Http\Controllers\v1\App;
 use App\Services\ApiService;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Modules\Product\Entities\Product;
+use Modules\Product\Entities\ProductVariant;
 use Modules\Brand\Transformers\BrandResource;
 use Modules\Product\Transformers\App\FeatureResource;
 use Modules\Category\Transformers\App\CategoryResource;
 use Modules\Product\Repository\ProductRepositoryInterface;
 use Modules\Product\Transformers\App\ProductSearchResource;
 use Modules\Category\Repository\CategoryRepositoryInterface;
-use Modules\Product\Entities\Product;
-use Modules\Product\Entities\ProductVariant;
+use Hilsonxhero\ElasticVision\Infrastructure\Scout\ElasticEngine;
+use Hilsonxhero\ElasticVision\Infrastructure\Elastic\ElasticIndexAdapter;
+use Hilsonxhero\ElasticVision\Infrastructure\Elastic\ElasticDocumentAdapter;
 
 class SearchController extends Controller
 {
@@ -39,7 +42,7 @@ class SearchController extends Controller
 
         ApiService::_success(
             array(
-                'categories' => CategoryResource::collection($categories),
+                // 'categories' => CategoryResource::collection($categories),
                 'products' => ProductSearchResource::collection($products)
             )
         );
@@ -54,11 +57,10 @@ class SearchController extends Controller
     {
         // return Product::query()->where('has_stock', true)->get();
         // $product =  Product::query()->where('id', 3)->first();
-
-        ProductVariant::query()->where('id', 1)->update(['stock' => 11]);
+        // return $product->largestVariant;
 
         $category = $this->categoryRepo->findBySlug($request->category_slug);
-        return $this->productRepo->filters($request->q, $category);
+        // return $this->productRepo->filters($request->q, $category);
         $products = $this->productRepo->filters($request->q, $category);
 
 
