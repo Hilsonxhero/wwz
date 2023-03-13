@@ -55,21 +55,25 @@ class SearchController extends Controller
      */
     public function products(Request $request)
     {
-        // return Product::query()->where('has_stock', true)->get();
-        // $product =  Product::query()->where('id', 3)->first();
-        // return $product->largestVariant;
 
         $category = $this->categoryRepo->findBySlug($request->category_slug);
         // return $this->productRepo->filters($request->q, $category);
         $products = $this->productRepo->filters($request->q, $category);
-
+        $products_collection =  ProductSearchResource::collection($products);
 
         ApiService::_success(
             array(
-                'products' => ProductSearchResource::collection($products),
+                'products' => $products_collection->items(),
                 'features' => FeatureResource::collection($category->features),
                 'brands' =>  BrandResource::collection($category->brands),
                 'category' => new CategoryResource($category),
+                'pager' => array(
+                    'pages' => $products_collection->lastPage(),
+                    'total' => $products_collection->total(),
+                    'current_Page' => $products_collection->currentPage(),
+                    'per_page' => $products_collection->perPage(),
+
+                ),
             )
         );
     }

@@ -32,14 +32,9 @@ class ProductRepository implements ProductRepositoryInterface
         return $query->paginate();
     }
 
-
-
     public function search($query)
     {
         $products = Product::search($query)
-            // ->whereHas('variants', function (Builder $query) {
-            //     $query->sum('stock') > 0;
-            // })
             ->field('title_fa')
             ->field('title_en')
             ->filter(new MatchPhrase('status', ProductStatus::ENABLE->value))->take(6)
@@ -49,8 +44,9 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function filters($query, $category)
     {
+        $boolQuery = new BoolQuery();
+
         $search = Product::search($query)
-            ->where('delivery_id', 22)
             ->field('title_fa')
             ->field('title_en')
             ->filter(new MatchPhrase('status', ProductStatus::ENABLE->value))
@@ -60,28 +56,39 @@ class ProductRepository implements ProductRepositoryInterface
             $search->filter(new Term('has_stock', true));
         }
 
-        if (request()->filled('max_price')) {
-            $boolQuery = new BoolQuery();
-            // $boolQuery->must(new Range('variants.selling_price', ['gte' => request()->min_price, 'lte' => request()->max_price]));
-            $boolQuery->add('must', new Nested('variants', new Range('variants.selling_price', ['gte' => request()->min_price, 'lte' => request()->max_price])));
-            $search->newCompound($boolQuery);
-        }
-
         if (request()->filled('feature_id')) {
-            $boolQuery = new BoolQuery();
             foreach (request()->feature_id as $key => $value) {
                 $query = new BoolQuery();
                 $query->must(new MatchPhrase('features.feature_id', $key));
                 $query->must(new Terms('features.feature_value_id', $value));
                 $boolQuery->add('must', new Nested('features', $query));
             }
-            $search->newCompound($boolQuery);
         }
 
+        if (request()->filled('max_price') && request()->filled('min_price')) {
 
 
-        $products = $search->take(15)
-            ->get();
+            $boolQuery->add('must', new Nested('variants', new Range(
+                'variants.selling_price',
+                ['gte' => request()->min_price]
+            )));
+            $boolQuery->add('must', new Nested('variants', new Range(
+                'variants.selling_price',
+                ['lte' => request()->max_price]
+            )));
+            $boolQuery->add('must_not', new Nested('variants', new Range(
+                'variants.selling_price',
+                ['lt' => request()->min_price]
+            )));
+            $boolQuery->add('must_not', new Nested('variants', new Range(
+                'variants.selling_price',
+                ['gt' => request()->max_price]
+            )));
+        }
+
+        $search->newCompound($boolQuery);
+
+        $products = $search->paginate(15);
 
         // return ElasticEngine::debug()->json();
 
