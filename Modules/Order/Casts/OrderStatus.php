@@ -46,6 +46,9 @@ class OrderStatus implements CastsAttributes
             case EnumsOrderStatus::CanceledSystem->value:
                 return "سفارش لغو شده";
                 break;
+            case EnumsOrderStatus::Sent->value:
+                return "تحویل  شده";
+                break;
 
             default:
                 return "سفارش لغو شده";

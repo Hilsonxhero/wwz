@@ -6,6 +6,8 @@ enum OrderStatus: string
 {
     case WaitPayment  = 'wait_payment';
     case Accepted = 'accepted';
+    case Sent = 'sent';
+    case Returned = 'returned';
     case Confirmation = 'confirmation';
     case Processed = 'processed';
     case LeavingCenter = 'leaving_center';

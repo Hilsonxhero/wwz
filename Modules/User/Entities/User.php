@@ -22,6 +22,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Modules\Cart\Entities\Cart as EntitiesCart;
 use Modules\Cart\Entities\Shipping;
 use Modules\Cart\Enums\CartStatus;
+use Modules\Order\Entities\Order;
 use Modules\Voucher\Entities\Voucher;
 
 class User extends Authenticatable implements HasMedia
@@ -99,6 +100,11 @@ class User extends Authenticatable implements HasMedia
     public function carts()
     {
         return $this->hasMany(EntitiesCart::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
     }
 
     public function addresses()

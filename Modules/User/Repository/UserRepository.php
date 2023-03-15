@@ -8,6 +8,7 @@ use Modules\User\Entities\User;
 
 use Modules\State\Entities\State;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Modules\Order\Enums\OrderStatus;
 
 class UserRepository implements UserRepositoryInterface
 {
@@ -18,6 +19,33 @@ class UserRepository implements UserRepositoryInterface
             ->with(['city'])
             ->paginate();
     }
+
+    public function orders($user)
+    {
+        $query = $user->orders()->orderBy('created_at', 'desc');
+
+        if (request()->has('status')) {
+            if (request()->status == "sent") {
+                $query->where('status', OrderStatus::Sent->value);
+            }
+            if (request()->status == "canceled") {
+                $query->where('status', OrderStatus::CanceledSystem->value);
+            }
+            if (request()->status == "returned") {
+                $query->where('status', OrderStatus::Returned->value);
+            }
+            if (request()->status == "progress") {
+                $query->whereIn('status', [
+                    OrderStatus::WaitPayment->value, OrderStatus::Processed->value,
+                    OrderStatus::DeliveryDispatcher->value, OrderStatus::DeliveryCustomer->value,
+                    OrderStatus::LeavingCenter->value, OrderStatus::ReceivedCenter->value
+                ]);
+            }
+        }
+
+        return $query->paginate(15);
+    }
+
 
     public function select($q)
     {

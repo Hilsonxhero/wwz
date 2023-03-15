@@ -18,7 +18,6 @@ class LoginController extends Controller
 
     public function otp(Request $request)
     {
-
         $phone = $request->input('username');
 
         $code = $request->input('code');

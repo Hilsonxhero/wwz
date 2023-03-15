@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Order\Casts\OrderStatus;
+use Modules\Order\Enums\OrderStatus as OrderStatusEnum;
 
 class Order extends Model
 {
@@ -64,7 +65,22 @@ class Order extends Model
     {
         return $this->hasMany(OrderShipping::class)->with('items');
     }
+    /**
+     * Calculate the order status fa
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    protected function progressStatuses(): Attribute
+    {
+        return Attribute::make(
 
+            get: fn ($value) => [
+                OrderStatusEnum::WaitPayment->value, OrderStatusEnum::Processed->value,
+                OrderStatusEnum::DeliveryDispatcher->value, OrderStatusEnum::DeliveryCustomer->value,
+                OrderStatusEnum::LeavingCenter->value, OrderStatusEnum::ReceivedCenter->value
+            ]
+        );
+    }
 
     /**
      * Calculate the order status fa
