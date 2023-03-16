@@ -16,6 +16,7 @@ class Shipment extends Model implements HasMedia
 
     protected $fillable = [
         'delivery_id',
+        'delivery_date',
         'title',
         'description',
         'shipping_cost',

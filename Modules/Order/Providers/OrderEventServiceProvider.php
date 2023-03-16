@@ -5,6 +5,7 @@ namespace Modules\Order\Providers;
 
 use Modules\Order\Events\App\OrderCreated;
 use Modules\Order\Listeners\App\ProcesseOrder;
+use Modules\Order\Listeners\App\InventoryReduction;
 use Modules\Voucher\Listeners\App\IncreaseVoucherUsed;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -19,6 +20,7 @@ class OrderEventServiceProvider extends ServiceProvider
         OrderCreated::class => [
             IncreaseVoucherUsed::class,
             ProcesseOrder::class,
+            InventoryReduction::class,
         ],
     ];
 

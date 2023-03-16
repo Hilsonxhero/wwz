@@ -20,7 +20,7 @@ class OrderShippingResource extends JsonResource
             'shipment' => new ShipmentResource($this->shipment),
             'order_items_cost' => $this->total_price,
             'order_items' => OrderShippingItemResource::collection($this->items),
-            'date' => formatGregorian($this->date, '%A, %d %B'),
+            'date' => !is_null($this->date) ? formatGregorian($this->date, '%A, %d %B') : $this->shipment->delivery_date,
 
         ];
     }

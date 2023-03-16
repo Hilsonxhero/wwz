@@ -28,10 +28,12 @@ class IncreaseVoucherUsed
     public function handle($event)
     {
         $user = auth()->user();
-        $exists_voucher = $user->available_cart->config->voucher_id;
-        if ($exists_voucher) {
-            $voucher = resolve(VoucherRepositoryInterface::class)->find($exists_voucher);
-            $voucher->increment('used');
+        if (isset($user->available_cart->config->voucher_id)) {
+            $exists_voucher = $user->available_cart->config->voucher_id;
+            if ($exists_voucher) {
+                $voucher = resolve(VoucherRepositoryInterface::class)->find($exists_voucher);
+                $voucher->increment('used');
+            }
         }
     }
 }

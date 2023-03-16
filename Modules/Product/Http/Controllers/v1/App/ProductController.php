@@ -8,6 +8,7 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Modules\Product\Repository\ProductRepositoryInterface;
 use Modules\Product\Transformers\ProductResource;
+use Illuminate\Support\Facades\Cache;
 
 class ProductController extends Controller
 {
@@ -44,6 +45,11 @@ class ProductController extends Controller
     public function show($id)
     {
         $product = $this->productRepo->show($id);
+        // return config('database.connections');
+
+
+        // visits($product)->increment(4);
+        // return   visits($product)->count();
         // return $product;
         return new ProductResource($product);
     }

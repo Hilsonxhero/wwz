@@ -18,5 +18,7 @@
     "Article": true,
     "Cart": true,
     "Order": true,
-    "Voucher": true
+    "Voucher": true,
+    "Migration": true,
+    "AddDeliveryDateToShipmentsTable": true
 }

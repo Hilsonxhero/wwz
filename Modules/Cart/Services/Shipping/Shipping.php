@@ -40,6 +40,7 @@ class Shipping
                 'title' => $shipping->title,
                 'description' => $shipping->description,
                 'shipping_cost' => $shipping->shipping_cost,
+                'delivery_date' => $shipping->delivery_date,
                 'has_interval_scope' => false,
                 'time_scopes' => array(),
             );

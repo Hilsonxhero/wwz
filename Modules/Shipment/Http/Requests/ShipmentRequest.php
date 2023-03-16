@@ -21,6 +21,7 @@ class ShipmentRequest extends FormRequest
                 'shipping_cost' => ['required'],
                 'description' => ['required'],
                 'delivery' => ['required'],
+                'delivery_date' => ['required'],
             ];
         }
 
@@ -30,7 +31,7 @@ class ShipmentRequest extends FormRequest
             'shipping_cost' => ['required'],
             'description' => ['required'],
             'delivery' => ['required'],
-
+            'delivery_date' => ['required'],
         ];
     }
 

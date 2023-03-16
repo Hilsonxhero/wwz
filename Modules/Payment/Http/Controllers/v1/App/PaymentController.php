@@ -68,28 +68,13 @@ class PaymentController extends Controller
      */
     public function store(Request $request)
     {
-        // return url('api/v1/application/payment/zarinpal/callback');
-        // return route('payment.callback', 'zarinpal');
+        // TODO:REFACTOR ACTIONS
 
         $user = auth()->user();
 
         $cart = $user->cart;
 
-        // $shipment_costs = collect(array());
-
-        // foreach ($cart->shippings as $key => $item) {
-        //     $shipment_costs->push($item->shipment->shipping_cost);
-        // }
-
-        // $total_shipment_cost = $shipment_costs->sum();
-
-        // Cart::setShipment($total_shipment_cost);
-
         $cart_content = Cart::content();
-
-        // return $cart_content->payable_price;
-
-        // return $cart_content;
 
         $data = [
             'user_id' => $user->id,
@@ -107,17 +92,24 @@ class PaymentController extends Controller
 
         $order = $this->orderRepo->create($data);
 
-
-
         foreach ($cart->shippings as $key => $shipping) {
-            $order_shipping = $order->shippings()->create([
+
+            $shipment_date = ($shipping->shipment_interval_id) ? $shipping->interval->shipment_date->date : null;
+
+            $shipment_data = [
                 'shipment_id' => $shipping->shipment_id,
                 'order_id' => $order->id,
-                'date' => "test",
-                'start_date' => null,
-                'end_date' => null,
+                'date' => $shipment_date,
                 'status' => OrderStatus::WaitPayment,
-            ]);
+            ];
+
+            if (!is_null($shipping->shipment_interval_id)) {
+                $shipment_data['start_date'] = $shipping->interval->start_at;
+                $shipment_data['end_date'] = $shipping->interval->end_at;
+            }
+
+            $order_shipping = $order->shippings()->create($shipment_data);
+
 
             $order_shipping_items = array();
 
@@ -136,9 +128,8 @@ class PaymentController extends Controller
             $order_shipping->items()->createMany($order_shipping_items);
         }
 
-        event(new OrderCreated($order));
+        event(new OrderCreated($order, $order_shipping));
 
-        // ApiService::_success(trans('response.responses.200'));
 
         $callback = PaymentService::generate((int) $cart_content->payable_price / 10, $order, $request->payment_method);
 
