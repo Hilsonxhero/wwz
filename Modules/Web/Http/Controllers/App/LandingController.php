@@ -15,6 +15,7 @@ use Modules\Category\Repository\CategoryRepositoryInterface;
 use Modules\Category\Repository\RecommendationCategoryRepoInterface;
 use Modules\Category\Transformers\CategoryResource;
 use Modules\Product\Repository\IncredibleProductRepositoryInterface;
+use Modules\Product\Transformers\ProductResource;
 
 class LandingController extends Controller
 {
@@ -42,8 +43,10 @@ class LandingController extends Controller
         $main_categories = $this->categoryRepo->mainCategories();
         $landing_page = Page::query()->where('title_en', 'landing')->first();
         $articles = $this->articleRepo->take();
+        $best_selling_products = ProductResource::collection($this->productRepo->getBestSelling());
         $data = [
             'incredible_products' => IncredibleProductResource::collection($incredible_products),
+            'best_selling_products' => $best_selling_products,
             'main_categories' => CategoryResource::collection($main_categories),
             'middle_banners' => array(),
             'articles' => ArticleResource::collection($articles),

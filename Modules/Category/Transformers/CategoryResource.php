@@ -22,7 +22,7 @@ class CategoryResource extends JsonResource
             'link' => $this->link,
             'description' => $this->description,
             'short_review' => truncate($this->description, 25),
-            'parent' => $this->parent,
+            'main_parent' => $this->main_parent,
             'status' => $this->status,
             'media' => [
                 'main' => $this->getFirstMediaUrl(),

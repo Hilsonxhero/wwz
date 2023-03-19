@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Hilsonxhero\ElasticVision\Application\Aliased;
 use Hilsonxhero\ElasticVision\Application\Explored;
 use Hilsonxhero\ElasticVision\Application\BePrepared;
@@ -139,6 +140,7 @@ class Category extends Model implements HasMedia, Explored, IndexSettings
         return $this->belongsTo(Category::class, 'parent_id');
     }
 
+
     public function slides()
     {
         return $this->morphMany(Slide::class, 'slideable');
@@ -170,5 +172,18 @@ class Category extends Model implements HasMedia, Explored, IndexSettings
     public function vouchers()
     {
         return $this->morphToMany(Voucher::class, 'voucherable');
+    }
+
+    /**
+     * Get sub parent
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+
+    protected function mainParent(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $this->parent ?   $this->parent->main_parent : $this
+        );
     }
 }

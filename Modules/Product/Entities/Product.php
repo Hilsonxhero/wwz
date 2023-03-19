@@ -25,6 +25,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Hilsonxhero\ElasticVision\Application\IndexSettings;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use Modules\Order\Entities\OrderShippingItem;
 use Modules\Product\Transformers\ProductVariantResource;
 
 class Product extends Model implements HasMedia, Explored
@@ -128,6 +129,11 @@ class Product extends Model implements HasMedia, Explored
         return $this->hasMany(ProductFeature::class);
     }
 
+    public function orders()
+    {
+        return $this->hasMany(OrderShippingItem::class);
+    }
+
     public function incredibles()
     {
         return $this->hasMany(IncredibleProduct::class);
@@ -198,7 +204,7 @@ class Product extends Model implements HasMedia, Explored
     public function registerMediaConversions(Media $media = null): void
     {
         $this->addMediaConversion('thumb')
-            ->keepOriginalImageFormat()
+            // ->keepOriginalImageFormat()
             ->width(300)
             ->height(300)
             ->format(Manipulations::FORMAT_PNG);

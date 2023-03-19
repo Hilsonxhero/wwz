@@ -20,7 +20,8 @@ return [
      */
     'indexes' => [
         \Modules\Product\Entities\Product::class,
-        \Modules\Category\Entities\Category::class
+        \Modules\Product\Entities\IncredibleProduct::class,
+        \Modules\Category\Entities\Category::class,
     ],
 
     /**

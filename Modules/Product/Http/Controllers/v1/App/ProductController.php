@@ -28,6 +28,17 @@ class ProductController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     * @return Response
+     */
+    public function getBestSelling()
+    {
+        $products = $this->productRepo->getBestSelling();
+        return ProductResource::collection($products);
+    }
+
+
+    /**
      * Store a newly created resource in storage.
      * @param Request $request
      * @return Response
@@ -42,15 +53,15 @@ class ProductController extends Controller
      * @param int $id
      * @return Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
+        // return  visits('Modules\Product\Entities\Product')->topIds(10);
+
         $product = $this->productRepo->show($id);
-        // return config('database.connections');
+        visits($product)->increment();
 
-
-        // visits($product)->increment(4);
         // return   visits($product)->count();
-        // return $product;
+
         return new ProductResource($product);
     }
 

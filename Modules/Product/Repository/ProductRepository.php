@@ -8,6 +8,9 @@ use Modules\Product\Entities\Product;
 use Modules\Comment\Enums\CommentStatus;
 use Modules\Product\Enums\ProductStatus;
 use Illuminate\Database\Eloquent\Builder;
+use Modules\Product\Entities\IncredibleProduct;
+use Hilsonxhero\ElasticVision\Domain\Syntax\Term;
+use Hilsonxhero\ElasticVision\Domain\Syntax\Range;
 use Hilsonxhero\ElasticVision\Domain\Syntax\Terms;
 use Hilsonxhero\ElasticVision\Domain\Syntax\Nested;
 use Hilsonxhero\ElasticVision\Domain\Syntax\Matching;
@@ -15,8 +18,6 @@ use Modules\Product\Enums\ProductQuestionStatusStatus;
 use Hilsonxhero\ElasticVision\Domain\Syntax\MatchPhrase;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Hilsonxhero\ElasticVision\Domain\Syntax\Compound\BoolQuery;
-use Hilsonxhero\ElasticVision\Domain\Syntax\Range;
-use Hilsonxhero\ElasticVision\Domain\Syntax\Term;
 use Hilsonxhero\ElasticVision\Infrastructure\Scout\ElasticEngine;
 
 class ProductRepository implements ProductRepositoryInterface
@@ -30,6 +31,19 @@ class ProductRepository implements ProductRepositoryInterface
         }
 
         return $query->paginate();
+    }
+
+    public function promotions()
+    {
+        $query = IncredibleProduct::query()->with('variant')->orderBy('created_at', 'desc')->groupBy('product_id');
+
+        return $query->paginate(20);
+    }
+
+    public function getBestSelling()
+    {
+        $query = Product::query()->withCount('orders')->orderBy('orders_count', 'desc')->whereHas('orders');
+        return $query->take(20)->get();
     }
 
     public function search($query)
@@ -294,7 +308,7 @@ class ProductRepository implements ProductRepositoryInterface
         // ],
         // ]
         try {
-            $product = Product::query()->where('id', $id)->with($relationships)->firstOrFail();
+            $product = Product::query()->where('id', $id)->with($relationships)->withCount('orders')->firstOrFail();
             return $product;
         } catch (ModelNotFoundException $e) {
             return ApiService::_response(trans('response.responses.404'), 404);

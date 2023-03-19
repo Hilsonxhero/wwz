@@ -39,7 +39,7 @@ class CategoryRepository implements CategoryRepositoryInterface
 
     public function mainCategories()
     {
-        return Category::query()->whereNull('parent_id')->orderBy('created_at', 'desc')
+        return Category::query()->whereNull('parent_id')->where('status', CategoryStatus::ENABLE->value)->orderBy('created_at', 'desc')
             ->get();
     }
 

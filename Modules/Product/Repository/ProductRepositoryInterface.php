@@ -5,6 +5,8 @@ namespace Modules\Product\Repository;
 interface ProductRepositoryInterface
 {
     public function find($id);
+    public function getBestSelling();
+    public function promotions();
     public function search($query);
     public function filters($query, $category);
     public function comments($id);

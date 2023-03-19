@@ -6,6 +6,8 @@ use App\Services\ApiService;
 use Illuminate\Support\Facades\DB;
 use Modules\Product\Entities\Feature;
 use Modules\Product\Entities\IncredibleProduct;
+use Hilsonxhero\ElasticVision\Domain\Syntax\Nested;
+use Hilsonxhero\ElasticVision\Domain\Syntax\MatchPhrase;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class IncredibleProductRepository implements IncredibleProductRepositoryInterface
@@ -26,7 +28,17 @@ class IncredibleProductRepository implements IncredibleProductRepositoryInterfac
             ->take(15)
             ->get();
     }
+    public function promotions()
+    {
+        // $query = IncredibleProduct::query()->with('variant')->orderBy('created_at', 'desc')->groupBy('product_id');
+        $search = IncredibleProduct::search();
 
+        if (request()->filled('category_id')) {
+            $search->must(new Nested('category', new MatchPhrase('category.main_parent.id', request()->category_id)));
+        }
+
+        return $search->paginate(20);
+    }
 
 
     public function create($data)
