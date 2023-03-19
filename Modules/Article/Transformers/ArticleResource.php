@@ -26,6 +26,7 @@ class ArticleResource extends JsonResource
             'description' => $this->description,
             'short_link' => $this->short_link,
             'status' => $this->status,
+            'created_at' => formatGregorian($this->created_at, '%A, %d %B'),
             'media' => [
                 'main' => $this->getFirstMediaUrl('main'),
                 'thumb' => $this->getFirstMediaUrl('main', 'thumb'),

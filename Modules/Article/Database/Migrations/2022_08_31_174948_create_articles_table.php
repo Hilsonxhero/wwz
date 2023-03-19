@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string("slug");
             $table->longText("content");
             $table->text("description");
-            $table->enum("status", Article::$statuses)->default(Article::ENABLE_STATUS);
+            $table->string("status");
             $table->string("short_link")->nullable();
             $table->string("min_read")->nullable();
             $table->softDeletes();
