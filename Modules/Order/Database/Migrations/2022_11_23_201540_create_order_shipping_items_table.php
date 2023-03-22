@@ -21,7 +21,7 @@ return new class extends Migration
             $table->unsignedBigInteger('quantity');
             $table->unsignedBigInteger('returned_quantity')->default(0);
             $table->unsignedBigInteger('cancelled_quantity')->default(0);
-            $table->text('price');
+            $table->json('price');
             $table->softDeletes();
             $table->timestamps();
         });

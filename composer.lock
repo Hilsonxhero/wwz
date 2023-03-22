@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "36fe4e28b842ccd90b162f2227128a79",
+    "content-hash": "6686e9adc97b7a4adbbf273f656672d9",
     "packages": [
         {
             "name": "awssat/laravel-visits",
@@ -3356,6 +3356,60 @@
                 }
             ],
             "time": "2022-12-08T12:29:14+00:00"
+        },
+        {
+            "name": "melipayamak/php",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Melipayamak/melipayamak-php.git",
+                "reference": "b8f7db07eef1fa57f8a23d379949e3f04cb923b8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Melipayamak/melipayamak-php/zipball/b8f7db07eef1fa57f8a23d379949e3f04cb923b8",
+                "reference": "b8f7db07eef1fa57f8a23d379949e3f04cb923b8",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Melipayamak\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Melipayamak Team",
+                    "email": "melipayamak.ir@gmail.com"
+                },
+                {
+                    "name": "Ara Code It",
+                    "email": "ahnara92@gmail.com"
+                },
+                {
+                    "name": "Amirhossein Mehrvarzi",
+                    "email": "info@trigger.ir"
+                }
+            ],
+            "description": "A PHP wrapper for melipayamak's web services",
+            "homepage": "http://github.com/Melipayamak/melipayamak-php",
+            "keywords": [
+                "api",
+                "melipayamak",
+                "sms"
+            ],
+            "support": {
+                "issues": "https://github.com/Melipayamak/melipayamak-php/issues",
+                "source": "https://github.com/Melipayamak/melipayamak-php/tree/1.0.0"
+            },
+            "time": "2019-12-23T13:19:36+00:00"
         },
         {
             "name": "mobiledetect/mobiledetectlib",

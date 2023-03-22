@@ -9,10 +9,51 @@ use Morilog\Jalali\Jalalian;
 use Modules\Order\Entities\Order;
 use Modules\Order\Entities\OrderShippingItem;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Modules\Order\Enums\OrderStatus;
 
 class DashboardRepository implements DashboardRepositoryInterface
 {
 
+    public function totalSales()
+    {
+        return Order::select('payable_price')->where('status', OrderStatus::Sent->value)->get()->sum('payable_price');
+    }
+
+    public function monthlySales()
+    {
+        $now_jalali = \Morilog\Jalali\Jalalian::now();
+
+        $sub_months_jalali = $now_jalali->subMonths(1);
+
+        $start_date = \Morilog\Jalali\Jalalian::fromFormat('Y-m-d', $sub_months_jalali->format('Y-m-d'))->toCarbon();
+
+        return Order::query()->where('status', OrderStatus::Sent->value)->whereBetween('created_at', [$start_date, now()])
+            ->get()->sum('payable_price');
+    }
+
+    public function yearlySales()
+    {
+        $now_jalali = \Morilog\Jalali\Jalalian::now();
+
+        $sub_months_jalali = $now_jalali->subYears(1);
+
+        $start_date = \Morilog\Jalali\Jalalian::fromFormat('Y-m-d', $sub_months_jalali->format('Y-m-d'))->toCarbon();
+
+        return Order::query()->where('status', OrderStatus::Sent->value)->whereBetween('created_at', [$start_date, now()])
+            ->get()->sum('payable_price');
+    }
+
+    public function dailySales()
+    {
+        $now_jalali = \Morilog\Jalali\Jalalian::now();
+
+        $sub_months_jalali = $now_jalali->subDays(1);
+
+        $start_date = \Morilog\Jalali\Jalalian::fromFormat('Y-m-d', $sub_months_jalali->format('Y-m-d'))->toCarbon();
+
+        return Order::query()->where('status', OrderStatus::Sent->value)->whereBetween('created_at', [$start_date, now()])
+            ->get()->sum('payable_price');
+    }
     public function severalMonthsCategories()
     {
         $now_jalali = \Morilog\Jalali\Jalalian::now();
@@ -21,21 +62,15 @@ class DashboardRepository implements DashboardRepositoryInterface
 
         $start_date = \Morilog\Jalali\Jalalian::fromFormat('Y-m-d', $sub_months_jalali->format('Y-m-d'))->toCarbon();
 
-        $results = collect(CarbonPeriod::create($start_date, '1 month', now()->addMonth(1)))->flatMap(function ($period_item) {
-            $jDate = Jalalian::fromDateTime($period_item);
-            [$first_month, $end_month] = $this->getFirstAndLastDayOfMonth($jDate->getYear(), $jDate->getMonth());
-
-            return OrderShippingItem::with('product.category')
-                ->whereDate('created_at', '>=', $first_month)
-                ->whereDate('created_at', '<=', $end_month)
-                ->get()
-                ->map(function ($orderItem) {
-                    return [
-                        'category' => $orderItem->product->category->title,
-                        'quantity' => $orderItem->quantity,
-                    ];
-                });
-        })
+        $results = OrderShippingItem::with('product.category')
+            ->whereBetween('created_at', [$start_date, now()->addMonth(1)])
+            ->get()
+            ->map(function ($orderItem) {
+                return [
+                    'category' => $orderItem->product->category->title,
+                    'quantity' => 1,
+                ];
+            })
             ->groupBy('category')
             ->map(function ($orders) {
                 return $orders->sum('quantity');
@@ -44,44 +79,56 @@ class DashboardRepository implements DashboardRepositoryInterface
         $categories = $results->keys()->toArray();
         $values = $results->values()->toArray();
 
-        return array('labels' => $categories, 'values' => $values, 'total' => array_sum($values));
+        return array(
+            'labels' => $categories,
+            'values' => $values,
+            'total' => array_sum($values),
+            'start_at' => $sub_months_jalali->format('%B %d، %Y'),
+            'end_at' => $now_jalali->format('%B %d، %Y')
+        );
     }
 
-    public function severalMonthsCategoriesSales()
+    public function severalMonthsSales()
     {
+
         $now_jalali = \Morilog\Jalali\Jalalian::now();
 
         $sub_months_jalali = $now_jalali->subMonths(5);
 
         $start_date = \Morilog\Jalali\Jalalian::fromFormat('Y-m-d', $sub_months_jalali->format('Y-m-d'))->toCarbon();
 
-        $results = collect(CarbonPeriod::create($start_date, '1 month', now()->addMonth(1)))->flatMap(function ($period_item) {
-            $jDate = Jalalian::fromDateTime($period_item);
-            [$first_month, $end_month] = $this->getFirstAndLastDayOfMonth($jDate->getYear(), $jDate->getMonth());
+        $data = collect(CarbonPeriod::create($start_date, '1 month', now()->addMonth(1)))
+            ->map(function ($period_item) {
+                $jDate = Jalalian::fromDateTime($period_item);
+                [$first_month, $end_month] = $this->getFirstAndLastDayOfMonth($jDate->getYear(), $jDate->getMonth());
+                $orders = Order::query()
+                    ->whereDate('created_at', '>=', $first_month)
+                    ->whereDate('created_at', '<=', $end_month)
+                    ->get();
 
-            return OrderShippingItem::with('product.category')
-                ->whereDate('created_at', '>=', $first_month)
-                ->whereDate('created_at', '<=', $end_month)
-                ->get()
-                ->map(function ($orderItem) {
-                    return [
-                        'category' => $orderItem->product->category->title,
-                        'quantity' => $orderItem->quantity,
-                    ];
-                });
-        })
-            ->groupBy('category')
-            ->map(function ($orders) {
-                return $orders->sum('quantity');
-            });
+                $totalSales = $orders->reduce(function ($total, $orderItem) {
+                    return $total + $orderItem->payable_price;
+                }, 0);
 
-        $categories = $results->keys()->toArray();
-        $values = $results->values()->toArray();
+                return [
+                    'label' => $jDate->format('%B'),
+                    'value' => $totalSales,
+                ];
+            })
+            ->toArray();
 
-        return array('labels' => $categories, 'values' => $values, 'total' => array_sum($values));
+        $labels = array_column($data, 'label');
+        $values = array_column($data, 'value');
+
+        return array(
+            'labels' => $labels, 'values' => $values,
+            'total' => array_sum($values),
+            'start_at' => $sub_months_jalali->format('%B %d، %Y'),
+            'end_at' => $now_jalali->format('%B %d، %Y')
+        );
     }
 
-    public function severalMonthsSales()
+    public function severalMonthsOrders()
     {
 
         $now_jalali = \Morilog\Jalali\Jalalian::now();
@@ -109,7 +156,12 @@ class DashboardRepository implements DashboardRepositoryInterface
         $labels = array_column($data, 'label');
         $values = array_column($data, 'value');
 
-        return array('labels' => $labels, 'values' => $values, 'total' => array_sum($values));
+        return array(
+            'labels' => $labels, 'values' => $values,
+            'total' => array_sum($values),
+            'start_at' => $sub_months_jalali->format('%B %d، %Y'),
+            'end_at' => $now_jalali->format('%B %d، %Y')
+        );
     }
 
     public function getFirstAndLastDayOfMonth($year, $month)

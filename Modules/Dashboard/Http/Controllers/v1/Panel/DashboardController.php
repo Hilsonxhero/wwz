@@ -6,7 +6,9 @@ namespace Modules\Dashboard\Http\Controllers\v1\Panel;
 use App\Services\ApiService;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Modules\Category\Entities\Category;
 use Modules\Dashboard\Repository\DashboardRepositoryInterface;
+use Modules\Order\Entities\Order;
 
 class DashboardController extends Controller
 {
@@ -24,12 +26,23 @@ class DashboardController extends Controller
         // return Cache::remember('stats.dashboard', 60, function () {
         // });
 
-        $several_months_sales =  $this->dashboardRepo->severalMonthsSales();
+
+        $total_sales =  $this->dashboardRepo->totalSales();
+        $monthly_sales =  $this->dashboardRepo->monthlySales();
+        $yearly_sales =  $this->dashboardRepo->yearlySales();
+        $daily_sales =  $this->dashboardRepo->dailySales();
+        $several_months_sales = $this->dashboardRepo->severalMonthsSales();
+        $several_months_orders =  $this->dashboardRepo->severalMonthsOrders();
         $several_months_categories = $this->dashboardRepo->severalMonthsCategories();
 
 
         ApiService::_success(array(
+            'total_sales' => $total_sales,
+            'monthly_sales' => $monthly_sales,
+            'yearly_sales' => $yearly_sales,
+            'daily_sales' => $daily_sales,
             'several_months_sales' => $several_months_sales,
+            'several_months_orders' => $several_months_orders,
             'several_months_categories' => $several_months_categories,
         ));
     }
