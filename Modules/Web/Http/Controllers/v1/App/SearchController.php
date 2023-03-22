@@ -42,7 +42,7 @@ class SearchController extends Controller
 
         ApiService::_success(
             array(
-                // 'categories' => CategoryResource::collection($categories),
+                'categories' => CategoryResource::collection($categories),
                 'products' => ProductSearchResource::collection($products)
             )
         );

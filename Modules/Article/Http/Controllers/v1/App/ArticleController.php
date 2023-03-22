@@ -48,6 +48,10 @@ class ArticleController extends Controller
      */
     public function show(Request $request, $id)
     {
+        // $detect = new \Detection\MobileDetect;
+        // $deviceType = ($detect->isMobile() ? ($detect->isTablet() ? 'tablet' : 'phone') : 'computer');
+
+
         $article = $this->articleRepo->show($id);
 
         $article_collection = new ArticleResource($article);

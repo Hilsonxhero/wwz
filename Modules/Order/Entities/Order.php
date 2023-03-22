@@ -96,4 +96,9 @@ class Order extends Model
             })
         );
     }
+
+    protected static function newFactory()
+    {
+        return \Modules\Order\Database\factories\OrderFactory::new();
+    }
 }

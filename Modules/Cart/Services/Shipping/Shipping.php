@@ -29,7 +29,6 @@ class Shipping
 
     public function content()
     {
-        // return "Ww";
         $data = collect($this->cart_items)->groupBy('product.delivery')->transform(function ($item, $delivery) {
 
             $default_shipment =  $this->shipmentRepo->default($delivery);
