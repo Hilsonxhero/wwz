@@ -27,6 +27,8 @@ class OrderResource extends JsonResource
             'payment_method' => new PaymentMethodResource($this->payment_method),
             'reference_code' => $this->reference_code,
             'payable_price' => round($this->payable_price),
+            'remaining_amount' => round($this->remaining_amount),
+            'payment_remaining_time' => $this->remaining_time_seconds * 1000,
             'is_returnable' => $this->is_returnable,
             'status' => $this->status,
             'status_fa' => $this->order_status,

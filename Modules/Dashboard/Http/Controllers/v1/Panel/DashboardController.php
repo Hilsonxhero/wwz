@@ -5,10 +5,15 @@ namespace Modules\Dashboard\Http\Controllers\v1\Panel;
 
 use App\Services\ApiService;
 use Illuminate\Http\Response;
-use Illuminate\Routing\Controller;
-use Modules\Category\Entities\Category;
-use Modules\Dashboard\Repository\DashboardRepositoryInterface;
 use Modules\Order\Entities\Order;
+use Illuminate\Routing\Controller;
+use Modules\Order\Enums\OrderStatus;
+use Modules\Category\Entities\Category;
+use Modules\Order\Entities\OrderShipping;
+use Modules\Product\Entities\ProductVariant;
+use Modules\Order\Entities\OrderShippingItem;
+use Modules\Order\Repository\OrderRepositoryInterface;
+use Modules\Dashboard\Repository\DashboardRepositoryInterface;
 
 class DashboardController extends Controller
 {
@@ -23,10 +28,6 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        // return Cache::remember('stats.dashboard', 60, function () {
-        // });
-
-
         $total_sales =  $this->dashboardRepo->totalSales();
         $monthly_sales =  $this->dashboardRepo->monthlySales();
         $yearly_sales =  $this->dashboardRepo->yearlySales();

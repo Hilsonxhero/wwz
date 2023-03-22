@@ -2,16 +2,17 @@
 
 namespace Modules\Order\Entities;
 
+use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Modules\Cart\Entities\Cart;
 use Modules\User\Entities\User;
+use Modules\Order\Casts\OrderStatus;
 use Modules\Payment\Entities\Payment;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Payment\Entities\PaymentMethod;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\Order\Casts\OrderStatus;
 use Modules\Order\Enums\OrderStatus as OrderStatusEnum;
 
 class Order extends Model
@@ -34,6 +35,7 @@ class Order extends Model
 
     protected $casts = [
         'price' => 'json',
+        'payment_remaining_time' => 'datetime',
         'order_status' => OrderStatus::class
     ];
 
@@ -65,6 +67,26 @@ class Order extends Model
     {
         return $this->hasMany(OrderShipping::class)->with('items');
     }
+
+    public function order_shipping_items()
+    {
+        return $this->hasManyThrough(OrderShippingItem::class, OrderShipping::class);
+    }
+
+
+    /**
+     * Get payment remaining time DiffInSeconds
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+
+    protected function remainingTimeSeconds(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => Carbon::parse($this->payment_remaining_time)->DiffInSeconds(now())
+        );
+    }
+
     /**
      * Calculate the order status fa
      *

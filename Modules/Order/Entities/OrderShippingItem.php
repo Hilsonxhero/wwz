@@ -20,7 +20,7 @@ class OrderShippingItem extends Model
 
 
     protected $casts = [
-        'price' => 'json'
+        'price' => 'object'
     ];
 
 

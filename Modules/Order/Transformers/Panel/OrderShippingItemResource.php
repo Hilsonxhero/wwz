@@ -19,7 +19,7 @@ class OrderShippingItemResource extends JsonResource
         return [
             'id' => $this->id,
             'quantity' => $this->quantity,
-            'price' => json_decode($this->price),
+            'price' => $this->price,
             'product' => new ProductResource($this->product),
             'variant' => new ProductVariantResource($this->variant),
         ];

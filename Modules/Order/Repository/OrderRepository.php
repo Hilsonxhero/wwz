@@ -2,11 +2,13 @@
 
 namespace Modules\Order\Repository;
 
-use App\Services\ApiService;
 use Faker\Core\Number;
+use App\Services\ApiService;
 use Modules\Order\Entities\Order;
 
 use Illuminate\Support\Facades\DB;
+use Modules\Order\Enums\OrderStatus;
+use Modules\Product\Entities\ProductVariant;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 
@@ -43,6 +45,28 @@ class OrderRepository implements OrderRepositoryInterface
         return Order::orderBy('created_at', 'desc')
 
             ->paginate();
+    }
+
+    public function cancelUnpaidOrders()
+    {
+        $orders = Order::where([
+            ['status', '=', OrderStatus::WaitPayment],
+            ['payment_remaining_time', '<', now()]
+        ])->get();
+
+        $orderShippingItems = $orders->flatMap(fn ($order) => $order->order_shipping_items);
+
+        $shippingItems = $orderShippingItems->map(fn ($item) => [
+            'id' => $item->variant_id,
+            'stock' => $item->variant->stock + $item->quantity
+        ])->toArray();
+
+        ProductVariant::query()->upsert($shippingItems, ['id'], ['stock']);
+
+        return  Order::where([
+            ['payment_remaining_time', '<', now()],
+            ['status', '=', OrderStatus::WaitPayment]
+        ])->update(['status' => OrderStatus::CanceledSystem->value]);
     }
 
     public function create($data)

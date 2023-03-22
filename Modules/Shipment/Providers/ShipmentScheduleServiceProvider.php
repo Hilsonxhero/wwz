@@ -17,8 +17,8 @@ class ShipmentScheduleServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->app->booted(function () {
-            $schedule = $this->app->make(Schedule::class);
-            $schedule->job(new GenerateShipmentDate)->everyMinute();
+            // $schedule = $this->app->make(Schedule::class);
+            // $schedule->job(new GenerateShipmentDate)->everyMinute();
         });
     }
 

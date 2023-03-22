@@ -2,9 +2,9 @@
 
 namespace App\Console;
 
+use Modules\Order\Jobs\CancelUnpaidOrders;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use Modules\Shipment\Jobs\GenerateShipmentDate;
 
 class Kernel extends ConsoleKernel
 {
@@ -16,7 +16,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->job(new GenerateShipmentDate)->everyMinute();
+        $schedule->job(new CancelUnpaidOrders)->everyMinute();
     }
 
     /**

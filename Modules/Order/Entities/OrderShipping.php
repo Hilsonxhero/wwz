@@ -45,7 +45,7 @@ class OrderShipping extends Model
     {
         return Attribute::make(
             get: fn ($value) => $this->items->sum(function ($item) {
-                return $item->quantity * json_decode($item->price)->selling_price;
+                return $item->quantity * $item->price->selling_price;
             })
         );
     }

@@ -82,6 +82,8 @@ class PaymentController extends Controller
             'payment_method_id' => $request->payment_method,
             'status' => OrderStatus::WaitPayment,
             'payable_price' => $cart_content->payable_price,
+            'remaining_amount' => $cart_content->payable_price,
+            'payment_remaining_time' => now()->addHour(),
             'is_returnable' => 0,
             'price' => json_encode([
                 'payable_price' => $cart_content->payable_price,
@@ -118,11 +120,11 @@ class PaymentController extends Controller
                     'product_id' => $value->cart_item->product_id,
                     'variant_id' => $value->cart_item->variant_id,
                     'quantity' => $value->cart_item->quantity,
-                    'price' => json_encode([
+                    'price' => [
                         'selling_price' => $value->cart_item->variant->price - $value->cart_item->variant->price * ($value->cart_item->variant->calculate_discount / 100),
                         'rrp_price' => $value->cart_item->variant->price,
                         'discount_percent' => $value->cart_item->variant->calculate_discount
-                    ]),
+                    ],
                 ]);
             }
             $order_shipping->items()->createMany($order_shipping_items);
