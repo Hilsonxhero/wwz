@@ -20,14 +20,18 @@ class UserAddressRepository implements UserAddressRepositoryInterface
 
     public function create($data)
     {
+        $user = auth()->user();
+
+        $user->addresses()->update(['is_default' => false]);
+
         $address =  Address::query()->create([
-            'user_id' => auth()->user()->id,
+            'user_id' => $user->id,
             'state_id' => $data->input('state_id'),
             'city_id' => $data->input('city_id'),
             'address' => $data->input('address'),
             'postal_code' => $data->input('postal_code'),
             'telephone' => $data->input('telephone'),
-            'mobile' => auth()->user()->phone,
+            'mobile' => $user->phone,
             'is_default' =>  true,
             'latitude' => $data->input('latitude'),
             'longitude' => $data->input('longitude'),

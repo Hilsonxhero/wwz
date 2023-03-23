@@ -132,8 +132,9 @@ class Category extends Model implements HasMedia, Explored, IndexSettings
 
     public function children()
     {
-        return $this->hasMany(Category::class, 'parent_id')->with('children')->withCount(['products']);
+        return $this->hasMany(Category::class, 'parent_id')->with('children');
     }
+
 
     public function parent()
     {
@@ -172,6 +173,22 @@ class Category extends Model implements HasMedia, Explored, IndexSettings
     public function vouchers()
     {
         return $this->morphToMany(Voucher::class, 'voucherable');
+    }
+
+    /**
+     * Get sub parent
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+
+    protected function productsCount(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value) {
+                $categoryIds = $this->children()->pluck('id')->prepend($this->id);
+                return Product::whereIn('category_id', $categoryIds)->count();
+            }
+        );
     }
 
     /**
