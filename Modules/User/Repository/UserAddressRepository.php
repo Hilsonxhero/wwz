@@ -28,7 +28,7 @@ class UserAddressRepository implements UserAddressRepositoryInterface
             'postal_code' => $data->input('postal_code'),
             'telephone' => $data->input('telephone'),
             'mobile' => auth()->user()->phone,
-            'is_default' =>  $data->input('is_default'),
+            'is_default' =>  true,
             'latitude' => $data->input('latitude'),
             'longitude' => $data->input('longitude'),
             'building_number' => $data->input('building_number'),

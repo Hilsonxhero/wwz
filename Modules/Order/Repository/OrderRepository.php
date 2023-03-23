@@ -33,10 +33,10 @@ class OrderRepository implements OrderRepositoryInterface
             ->first();
 
         return array(
-            array('status' => 'progress', 'title' => "جاری", 'count' => $orders->progress_count),
-            array('status' => 'canceled', 'title' => "لغو شده", 'count' => $orders->canceled_count),
-            array('status' => 'sent', 'title' => "تحویل شده", 'count' =>  $orders->sent_count),
-            array('status' => 'returned', 'title' => "مرجوع شده", 'count' => $orders->returned_count)
+            array('status' => 'progress', 'title' => "جاری", 'count' => $orders->progress_count ?? 0),
+            array('status' => 'canceled', 'title' => "لغو شده", 'count' => $orders->canceled_count ?? 0),
+            array('status' => 'sent', 'title' => "تحویل شده", 'count' =>  $orders->sent_count ?? 0),
+            array('status' => 'returned', 'title' => "مرجوع شده", 'count' => $orders->returned_count ?? 0)
         );
     }
 

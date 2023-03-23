@@ -44,6 +44,12 @@ class ShippingController extends Controller
      */
     public function init()
     {
+        $user = auth()->user();
+
+        if (!$user->has_default_address) {
+            ApiService::_throw(array("message" => trans('response.defective_profile'), 'status' => 410), 200);
+        }
+
         $shipping = Shipping::content();
         $content = (object) [
             'items' => $shipping,

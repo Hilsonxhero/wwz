@@ -34,7 +34,7 @@ class ApiService
         self::_response($data, 200, true);
     }
 
-    public static function _throw(string $message, $code = 401, $success = false)
+    public static function _throw($message, $code = 401, $success = false)
     {
         self::_response($message, $code, $success);
     }
