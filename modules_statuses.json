@@ -21,5 +21,6 @@
     "Voucher": true,
     "Migration": true,
     "AddDeliveryDateToShipmentsTable": true,
-    "Dashboard": true
+    "Dashboard": true,
+    "Sms": true
 }

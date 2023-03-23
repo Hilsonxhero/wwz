@@ -45,6 +45,13 @@ return [
         ],
         'username' => 'elastic',
         'password' => 'jG63LI8Yj*wfYeO=k*Sc',
+    ],
+    'sms' => [
+        'melipayamak' => [
+            'username' => env('MELIPAYAMAK_USERNAME'),
+            'password' => env('MELIPAYAMAK_PASSWORD'),
+            'from' => env('MELIPAYAMAK_NUMBER'),
+        ],
     ]
 
 ];

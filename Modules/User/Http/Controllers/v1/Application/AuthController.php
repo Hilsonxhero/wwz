@@ -2,15 +2,17 @@
 
 namespace Modules\User\Http\Controllers\v1\Application;
 
-use App\Services\ApiService;
 use Carbon\Carbon;
+use App\Services\ApiService;
 use Illuminate\Http\Request;
 use Modules\User\Entities\User;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Support\Facades\Notification;
 use Modules\User\Services\VerifyCodeService;
 use Modules\User\Transformers\App\ShowUserResource;
+use Modules\User\Notifications\v1\App\VerifyPhoneNotification;
 
 class AuthController extends Controller
 {
@@ -35,8 +37,9 @@ class AuthController extends Controller
             $ttl = $has_exists;
             $code = $has_exists->code;
         }
+        Notification::route('sms', null)
+            ->notify(new VerifyPhoneNotification($phone, $code));
 
-        //        Notification::send(null, new VerifyPhoneNotification($phone, $code));
         ApiService::_success([
             'phone' => $phone,
             'has_account' => !!$user,

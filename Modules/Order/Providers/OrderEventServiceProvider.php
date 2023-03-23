@@ -8,6 +8,7 @@ use Modules\Order\Listeners\App\ProcesseOrder;
 use Modules\Order\Listeners\App\InventoryReduction;
 use Modules\Voucher\Listeners\App\IncreaseVoucherUsed;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Modules\Order\Listeners\App\SendOrderNotif;
 
 class OrderEventServiceProvider extends ServiceProvider
 {
@@ -21,6 +22,7 @@ class OrderEventServiceProvider extends ServiceProvider
             IncreaseVoucherUsed::class,
             ProcesseOrder::class,
             InventoryReduction::class,
+            SendOrderNotif::class,
         ],
     ];
 
