@@ -50,6 +50,10 @@ class ShippingController extends Controller
             ApiService::_throw(array("message" => trans('response.defective_profile'), 'status' => 410), 200);
         }
 
+        $user->cart->update([
+            'config' => null
+        ]);
+
         $shipping = Shipping::content();
         $content = (object) [
             'items' => $shipping,

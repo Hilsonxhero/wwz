@@ -411,7 +411,7 @@ class Cart
      *
      * @return \Illuminate\Support\Collection
      */
-    public function content()
+    public function content($shipping = false)
     {
         $cart_collection = (object)  collect([
             'id' =>  random_int(1000000, 10000000),
@@ -455,6 +455,10 @@ class Cart
         $cart_items = collect(CartItemsResource::collection($cart_items));
         $cart_items = collect(json_decode($cart_items));
 
+        if ($shipping) {
+            $this->shipment($cart);
+        }
+
         $content = (object) [
             'id' => $cart->id ?? random_int(1000000, 10000000),
             'items' => $cart_items->toArray(),
@@ -463,7 +467,7 @@ class Cart
             "voucher_discount" => $this->voucher($cart),
             'items_discount' => $this->discount($cart_items),
             'total_discount' => $this->discount($cart_items) + $this->voucher($cart),
-            'shipment_cost' => $this->shipment($cart),
+            'shipment_cost' => $this->shipment_cost,
             'shipment_discount' => $this->shipment_discount,
             'summary_price' =>  $this->summary($cart_items),
             'payable_price' =>  $this->subtotal($cart_items),
@@ -567,6 +571,7 @@ class Cart
     public function shipment($cart)
     {
         $this->shipment_cost = $cart->shipping_cost ?? 0;
+        // $this->shipment_cost =  0;
         return $this->shipment_cost;
     }
     public function voucher($cart)

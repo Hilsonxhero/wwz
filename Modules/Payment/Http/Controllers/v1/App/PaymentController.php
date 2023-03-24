@@ -52,7 +52,7 @@ class PaymentController extends Controller
 
         $data = array(
             'cart_shipments' => CartShippingResource::collection($cart_shippings),
-            'cart' => new CartResource(Cart::content()),
+            'cart' => new CartResource(Cart::content(true)),
             'user' => new UserResource($user),
             'payment_methods' => PaymentMethodResource::collection($payment_methods),
             'address' => $cart->address
@@ -74,7 +74,7 @@ class PaymentController extends Controller
 
         $cart = $user->cart;
 
-        $cart_content = Cart::content();
+        $cart_content = Cart::content(true);
 
         $data = [
             'user_id' => $user->id,

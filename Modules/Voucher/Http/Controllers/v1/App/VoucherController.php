@@ -67,8 +67,8 @@ class VoucherController extends Controller
             "voucher_discount" => $discount,
             "items_discount" => $cart->items_discount,
             "rrp_price" => $cart->rrp_price,
-            "shipping_cost" => $cart->shipment_cost,
-            "payable_price" => $payable_price - $discount + $cart->shipment_cost,
+            "shipping_cost" => $user->available_cart->shipping_cost,
+            "payable_price" => $payable_price - $discount + $user->available_cart->shipping_cost,
         );
 
         return ApiService::_success($data);

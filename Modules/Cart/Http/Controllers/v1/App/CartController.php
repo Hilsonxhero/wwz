@@ -39,7 +39,14 @@ class CartController extends Controller
 
     public function index(Request $request)
     {
+        $user = auth()->user();
+        if (!is_null($user->available_cart)) {
+            $user->cart->update([
+                'config' => null
+            ]);
+        }
         $cart = Cart::content();
+
         return new CartResource($cart);
     }
 
