@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Modules\Banner\Entities\Banner;
-use Modules\Slide\Entities\Slide;
 
 class Page extends Model
 {

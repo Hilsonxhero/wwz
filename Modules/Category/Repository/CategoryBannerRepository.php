@@ -6,7 +6,6 @@ use App\Services\ApiService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Modules\Banner\Entities\Banner;
 use Modules\Category\Entities\Category;
-use Modules\Slide\Entities\Slide;
 
 class CategoryBannerRepository implements CategoryBannerRepositoryInterface
 {
@@ -18,7 +17,7 @@ class CategoryBannerRepository implements CategoryBannerRepositoryInterface
 
     public function create($category, $data)
     {
-        $slide = $category->banners()->create([
+        $banner = $category->banners()->create([
             'title' => $data->title,
             'url' => $data->url,
             'position' => 0,
@@ -26,33 +25,33 @@ class CategoryBannerRepository implements CategoryBannerRepositoryInterface
             'status' => $data->status,
         ]);
 
-        return $slide;
+        return $banner;
     }
 
     public function update($id, $data)
     {
-        $slide = $this->find($id);
-        $slide->update([
+        $banner = $this->find($id);
+        $banner->update([
             'title' => $data->title,
             'url' => $data->url,
             'position' => 0,
             'type' => $data->type,
             'status' => $data->status,
         ]);
-        return $slide;
+        return $banner;
     }
 
     public function show($id)
     {
-        $slide = $this->find($id);
-        return $slide;
+        $banner = $this->find($id);
+        return $banner;
     }
 
     public function find($id)
     {
         try {
-            $slide = Banner::query()->where('id', $id)->firstOrFail();
-            return $slide;
+            $banner = Banner::query()->where('id', $id)->firstOrFail();
+            return $banner;
         } catch (ModelNotFoundException $e) {
             return ApiService::_response(trans('response.responses.404'), 404);
         }
@@ -60,8 +59,8 @@ class CategoryBannerRepository implements CategoryBannerRepositoryInterface
 
     public function delete($id)
     {
-        $slide = $this->find($id);
-        $slide->clearMediaCollectionExcept();
-        $slide->delete();
+        $banner = $this->find($id);
+        $banner->clearMediaCollectionExcept();
+        $banner->delete();
     }
 }

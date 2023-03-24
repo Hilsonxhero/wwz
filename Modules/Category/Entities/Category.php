@@ -6,7 +6,6 @@ use Illuminate\Support\Str;
 use Laravel\Scout\Searchable;
 use Spatie\Image\Manipulations;
 use Modules\Brand\Entities\Brand;
-use Modules\Slide\Entities\Slide;
 use Spatie\MediaLibrary\HasMedia;
 use Modules\Banner\Entities\Banner;
 use Modules\Product\Entities\Feature;
@@ -142,10 +141,6 @@ class Category extends Model implements HasMedia, Explored, IndexSettings
     }
 
 
-    public function slides()
-    {
-        return $this->morphMany(Slide::class, 'slideable');
-    }
 
     public function banners()
     {

@@ -7,10 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Modules\Category\Http\Requests\CategoryBannerRequest;
-use Modules\Category\Http\Requests\CategorySlide;
 use Modules\Category\Repository\CategoryBannerRepositoryInterface;
 use Modules\Category\Repository\CategoryRepositoryInterface;
-use Modules\Category\Repository\CategorySlideRepositoryInterface;
 use Modules\Category\Transformers\CategoryBannerResource;
 
 class CategoryBannerController extends Controller
@@ -30,8 +28,8 @@ class CategoryBannerController extends Controller
      */
     public function index()
     {
-        $slides = $this->bannerRepo->all();
-        return CategoryBannerResource::collection($slides);
+        $banners = $this->bannerRepo->all();
+        return CategoryBannerResource::collection($banners);
     }
 
     /**
@@ -43,10 +41,10 @@ class CategoryBannerController extends Controller
     {
         $category = $this->categoryRepo->find($request->category);
 
-        $slide = $this->bannerRepo->create($category, $request);
+        $banner = $this->bannerRepo->create($category, $request);
 
-        base64($request->banner) ? $slide->addMediaFromBase64($request->banner)->toMediaCollection()
-            : $slide->addMedia($request->banner)->toMediaCollection();
+        base64($request->banner) ? $banner->addMediaFromBase64($request->banner)->toMediaCollection()
+            : $banner->addMedia($request->banner)->toMediaCollection();
 
 
         ApiService::_success(trans('response.responses.200'));
@@ -59,8 +57,8 @@ class CategoryBannerController extends Controller
      */
     public function show($id)
     {
-        $slide = $this->bannerRepo->show($id);
-        return new CategoryBannerResource($slide);
+        $banner = $this->bannerRepo->show($id);
+        return new CategoryBannerResource($banner);
     }
 
     /**
@@ -71,13 +69,13 @@ class CategoryBannerController extends Controller
      */
     public function update(CategoryBannerRequest $request, $id)
     {
-        $slide = $this->bannerRepo->update($id, $request);
+        $banner = $this->bannerRepo->update($id, $request);
 
 
         if ($request->filled('banner')) {
-            $slide->clearMediaCollectionExcept();
-            base64($request->banner) ? $slide->addMediaFromBase64($request->banner)->toMediaCollection()
-                : $slide->addMedia($request->banner)->toMediaCollection();
+            $banner->clearMediaCollectionExcept();
+            base64($request->banner) ? $banner->addMediaFromBase64($request->banner)->toMediaCollection()
+                : $banner->addMedia($request->banner)->toMediaCollection();
         }
 
         ApiService::_success(trans('response.responses.200'));
@@ -90,7 +88,7 @@ class CategoryBannerController extends Controller
      */
     public function destroy($id)
     {
-        $slide = $this->bannerRepo->delete($id);
+        $banner = $this->bannerRepo->delete($id);
         ApiService::_success(trans('response.responses.200'));
     }
 }
