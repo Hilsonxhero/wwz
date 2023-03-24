@@ -12,14 +12,6 @@ class City extends Model
 {
     use HasFactory;
 
-    const DISABLE_STATUS = 'disable';
-    const ENABLE_STATUS = 'enable';
-    const PENDING_STATUS = 'pending';
-    const REJECTED_STATUS = 'rejected';
-
-    static $statuses = [self::DISABLE_STATUS, self::ENABLE_STATUS, self::PENDING_STATUS, self::REJECTED_STATUS];
-
-
     protected $fillable = [
         'state_id',
         'name',
@@ -39,8 +31,6 @@ class City extends Model
         });
     }
 
-
-
     // protected static function newFactory()
     // {
     //     return \Modules\State\Database\factories\CityFactory::new();
@@ -55,6 +45,4 @@ class City extends Model
     {
         return $this->hasMany(ShipmentCity::class);
     }
-
-
 }

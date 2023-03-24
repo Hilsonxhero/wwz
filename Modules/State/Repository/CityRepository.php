@@ -5,6 +5,7 @@ namespace Modules\State\Repository;
 use App\Services\ApiService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Modules\State\Entities\City;
+use Modules\State\Enums\CityStatus;
 
 class CityRepository implements CityRepositoryInterface
 {
@@ -18,7 +19,7 @@ class CityRepository implements CityRepositoryInterface
     public function allActive()
     {
         return City::orderBy('created_at', 'desc')
-            ->where('status', City::ENABLE_STATUS)
+            ->where('status', CityStatus::Enable->value)
             ->with('state')
             ->paginate();
     }

@@ -41,7 +41,7 @@ class CityController extends Controller
             'name' => ['required'],
             'zone_code' => ['required'],
             'state' => ['required', 'exists:states,id'],
-            'status' => ['required', Rule::in(City::$statuses)]
+            'status' => ['required']
         ]);
 
         $data = [
@@ -82,12 +82,10 @@ class CityController extends Controller
         ApiService::Validator($request->all(), [
             'name' => ['required'],
             'zone_code' => ['required'],
-            'state' => ['required', 'exists:states,id'],
-            'status' => ['required', Rule::in(City::$statuses)]
+            'status' => ['required']
         ]);
 
         $data = [
-            'state_id' => $request->state,
             'name' => $request->name,
             'zone_code' => $request->zone_code,
             'latitude' => $request->latitude,

@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('longitude')->nullable();
             $table->boolean('city_fast_sending')->default(false);
             $table->boolean('pay_at_place')->default(false);
-            $table->enum('status', City::$statuses)->default(City::ENABLE_STATUS);
+            $table->string('status');
             $table->timestamps();
         });
     }
