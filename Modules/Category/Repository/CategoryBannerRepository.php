@@ -16,14 +16,6 @@ class CategoryBannerRepository implements CategoryBannerRepositoryInterface
         return Banner::query()->where('bannerable_type', Category::class)->orderByDesc('created_at')->paginate();
     }
 
-    public function allActive()
-    {
-        return Category::orderBy('created_at', 'desc')
-            ->where('status', Category::ENABLE_STATUS)
-            ->paginate();
-    }
-
-
     public function create($category, $data)
     {
         $slide = $category->banners()->create([
