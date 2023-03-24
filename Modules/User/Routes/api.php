@@ -9,8 +9,8 @@ use Modules\User\Http\Controllers\v1\Application\AuthController;
 use Modules\User\Http\Controllers\v1\Application\PersonalInfoController;
 use Modules\User\Http\Controllers\v1\Application\UpdateProfileController;
 use Modules\User\Http\Controllers\v1\Application\Profile\UserAddressController;
-
-
+use Modules\User\Http\Controllers\v1\Application\Profile\UserAnnouncementController;
+use Modules\User\Http\Controllers\v1\Application\Profile\UserWishController;
 
 Route::prefix('v1/application')->group(function () {
 
@@ -35,7 +35,10 @@ Route::prefix('v1/application')->group(function () {
                     );
 
                     Route::apiResource('addresses', UserAddressController::class);
-
+                    Route::get('announcements', [UserAnnouncementController::class, 'index']);
+                    Route::delete('announcements/{id}', [UserAnnouncementController::class, 'destroy']);
+                    Route::get('wishes', [UserWishController::class, 'index']);
+                    Route::delete('wishes/{id}', [UserWishController::class, 'destroy']);
                     Route::get('personal-info', [PersonalInfoController::class, 'index']);
                 }
             );

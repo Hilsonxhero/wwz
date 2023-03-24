@@ -18,8 +18,8 @@ return new class extends Migration
             $table->foreignId("product_variant_id")->constrained('product_variants')->onDelete('cascade');
             $table->foreignId("user_id")->constrained('users')->onDelete('cascade');
             $table->string("type");
-            $table->string("via_sms");
-            $table->string("via_email");
+            $table->boolean("via_sms");
+            $table->boolean("via_email");
             $table->timestamps();
         });
     }
