@@ -10,13 +10,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Product\Enums\ProductAnnouncementType;
+use Modules\Seller\Entities\Seller;
 
 class ProductVariant extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'product_id', 'warranty_id', 'shipment_id', 'price', 'discount', 'discount_price', 'stock',
+        'product_id', 'warranty_id', 'seller_id', 'shipment_id', 'price', 'discount', 'discount_price', 'stock',
         'weight', 'order_limit', 'default_on', 'discount_expire_at'
     ];
 
@@ -39,6 +40,10 @@ class ProductVariant extends Model
         });
     }
 
+    public function seller()
+    {
+        return $this->belongsTo(Seller::class);
+    }
 
     public function product()
     {
@@ -54,8 +59,6 @@ class ProductVariant extends Model
     {
         return $this->belongsTo(Shipment::class);
     }
-
-
 
     public function incredible()
     {

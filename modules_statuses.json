@@ -21,5 +21,6 @@
     "Migration": true,
     "AddDeliveryDateToShipmentsTable": true,
     "Dashboard": true,
-    "Sms": true
+    "Sms": true,
+    "Seller": true
 }
