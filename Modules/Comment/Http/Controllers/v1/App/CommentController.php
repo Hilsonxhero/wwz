@@ -46,7 +46,8 @@ class CommentController extends Controller
 
         $data = [
             'comments' => $comments_collection->items(),
-            'scores' => ScoreModelResource::collection($this->scoreModelRepo->get()),
+            'models' => ScoreModelResource::collection($this->scoreModelRepo->get()),
+            'scores' => ScoreModelResource::collection($this->commentRepo->scores($id)),
             'pager' => array(
                 'pages' => $comments_collection->lastPage(),
                 'total' => $comments_collection->total(),

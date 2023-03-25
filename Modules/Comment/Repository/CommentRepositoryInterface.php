@@ -5,6 +5,7 @@ namespace Modules\Comment\Repository;
 interface CommentRepositoryInterface
 {
     public function find($id);
+    public function scores($product);
     public function get();
     public function all();
     public function allActive();

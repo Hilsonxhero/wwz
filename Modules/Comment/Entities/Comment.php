@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Comment\Casts\CommentableTitle;
+use Modules\Comment\Database\factories\CommentFactory;
 
 class Comment extends Model
 {
@@ -64,5 +65,10 @@ class Comment extends Model
         return Attribute::make(
             get: fn ($value) => $this->scores->average('value')
         );
+    }
+
+    protected static function newFactory()
+    {
+        return CommentFactory::new();
     }
 }

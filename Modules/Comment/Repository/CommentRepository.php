@@ -3,9 +3,10 @@
 namespace Modules\Comment\Repository;
 
 use App\Services\ApiService;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\DB;
 use Modules\Comment\Entities\Comment;
 use Modules\Comment\Enums\CommentStatus;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CommentRepository implements CommentRepositoryInterface
 {
@@ -13,6 +14,19 @@ class CommentRepository implements CommentRepositoryInterface
     {
         return Comment::orderBy('created_at', 'desc')
             ->get();
+    }
+
+    public function scores($product)
+    {
+        $scores = Comment::with('scores.score_model')
+            ->where('commentable_id', $product)
+            ->select('id', 'commentable_id')
+            ->join('comment_scores', 'comments.id', '=', 'comment_scores.comment_id')
+            ->join('score_models', 'comment_scores.score_model_id', '=', 'score_models.id')
+            ->groupBy('score_models.id')
+            ->select('score_models.id', 'score_models.title', DB::raw('AVG(comment_scores.value) as avg_value'))->get();
+
+        return $scores;
     }
     public function all()
     {
