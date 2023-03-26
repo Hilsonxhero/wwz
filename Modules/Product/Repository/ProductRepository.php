@@ -149,7 +149,7 @@ class ProductRepository implements ProductRepositoryInterface
     public function combinations($id)
     {
         $product = $this->find($id);
-        return $product->combinations();
+        return $product->combinations;
     }
 
     public function allActive()

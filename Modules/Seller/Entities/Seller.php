@@ -16,7 +16,8 @@ class Seller extends Model
     protected $fillable = [
         'state_id', 'city_id', 'name', 'lname', 'title', 'brand_name', 'code',
         'shaba_number', 'postal_code', 'job', 'national_identity_number', 'ip',
-        'email', 'phone', 'password', 'about', 'website', 'telephone', 'status', 'birth', 'wallet', 'learning_status'
+        'email', 'phone', 'password', 'about', 'website', 'telephone', 'status',
+        'birth', 'wallet', 'learning_status', 'is_default'
     ];
 
     protected static function newFactory()

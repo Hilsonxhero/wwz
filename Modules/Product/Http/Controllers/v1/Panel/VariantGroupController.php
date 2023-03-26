@@ -8,6 +8,7 @@ use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
 use Illuminate\Routing\Controller;
 use Modules\Product\Entities\VariantGroup;
+use Modules\Product\Repository\ProductRepositoryInterface;
 use Modules\Product\Transformers\VariantResource;
 use Modules\Product\Transformers\VariantGroupResource;
 use Modules\Product\Repository\VariantGroupRepositoryInterface;
@@ -15,9 +16,11 @@ use Modules\Product\Repository\VariantGroupRepositoryInterface;
 class VariantGroupController extends Controller
 {
     private $groupRepo;
-    public function __construct(VariantGroupRepositoryInterface $groupRepo)
+    private $productRepo;
+    public function __construct(VariantGroupRepositoryInterface $groupRepo, ProductRepositoryInterface $productRepo)
     {
         $this->groupRepo = $groupRepo;
+        $this->productRepo = $productRepo;
     }
     /**
      * Display a listing of the resource.
@@ -34,11 +37,33 @@ class VariantGroupController extends Controller
      * Display a listing of the resource.
      * @return Response
      */
-    public function list()
+    public function list($id)
     {
-        $groups = $this->groupRepo->active();
-        return VariantGroupResource::collection($groups);
-        // ApiService::_success($groups);
+        $product = $this->productRepo->find($id);
+
+        $combinations = $product->combinations;
+
+        $groupd_combinations = $combinations->mapToGroups(function ($ss) {
+            return [$ss['variant']['product_variant_id'] => $ss['variant']['id']];
+        })->values()->toArray();
+
+
+        if (count($combinations) >= 1) {
+            $groups = $combinations->map(function ($orders) {
+                return  $orders->variant->group;
+            })->unique('id');
+        } else {
+            $groups = $this->groupRepo->active();
+        }
+
+
+        $group_collections =  VariantGroupResource::collection($groups);
+
+        ApiService::_success(array(
+            'groups' => $group_collections,
+            'has_variants' => !!count($combinations),
+            'combinations' => $groupd_combinations
+        ));
     }
 
     /**

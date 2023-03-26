@@ -20,6 +20,20 @@ class ProductVariantRepository implements ProductVariantRepositoryInterface
     public function create($data)
     {
         $variant =  ProductVariant::query()->create($data);
+
+        $data = [];
+
+        $combinations = request()->input('combinations');
+
+        foreach ($combinations as $key => $combination) {
+            $data[$key] = [
+                'product_variant_id' => $variant->id,
+                'variant_id' => $combination
+            ];
+        }
+
+        $variant->combinations()->insert($data);
+
         return $variant;
     }
     public function update($id, $data)

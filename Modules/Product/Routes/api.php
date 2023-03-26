@@ -86,7 +86,7 @@ Route::prefix('v1/panel')->group(function () {
     //variants
     Route::apiResource("/variants", VariantController::class);
     Route::apiResource("/variant/groups", VariantGroupController::class);
-    Route::get("/variant/groups/list/active", [VariantGroupController::class, 'list']);
+    Route::get("/variant/groups/list/active/{id}", [VariantGroupController::class, 'list']);
     Route::get("/variant/groups/{id}/values", [VariantGroupController::class, 'values']);
     //features
     Route::apiResource("/features", FeatureController::class);

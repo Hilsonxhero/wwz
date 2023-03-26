@@ -37,6 +37,7 @@ return new class extends Migration
             $table->string('birth')->nullable();
             $table->string('learning_status')->nullable();
             $table->decimal('wallet',  64,  3)->default(0);
+            $table->boolean('is_default')->default(0);
             $table->softDeletes();
             $table->timestamps();
         });

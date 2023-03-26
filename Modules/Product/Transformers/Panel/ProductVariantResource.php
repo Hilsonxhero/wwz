@@ -1,8 +1,9 @@
 <?php
 
-namespace Modules\Product\Transformers;
+namespace Modules\Product\Transformers\Panel;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Modules\Product\Transformers\ProductVariantCombinationResource;
 
 class ProductVariantResource extends JsonResource
 {
@@ -40,7 +41,7 @@ class ProductVariantResource extends JsonResource
             'discount' => $this->calculate_discount,
             'selling_price' => round($this->calculate_discount_price),
             'discount_expire_at' => formatGregorian($this->discount_expire_date),
-            'weight' => round($this->weight),
+            'weight' => $this->weight,
             'shipment_price' => 0,
             'combinations' =>  ProductVariantCombinationResource::collection($this->combinations),
         ];
