@@ -32,6 +32,12 @@ class SettingController extends Controller
         return SettingResource::collection($settings);
     }
 
+    public function isJson($string)
+    {
+        json_decode($string, true);
+        return json_last_error() === JSON_ERROR_NONE;
+    }
+
     /**
      * Update the specified resource in storage.
      * @param Request $request
@@ -39,32 +45,21 @@ class SettingController extends Controller
      */
     public function update(Request $request)
     {
-        // return $request->file('logo');
-        // return $request->file('logo')->getClientOriginalExtension();
-        // $media = MediaFileService::publicUpload($request->file('logo'), 'static');
-        // ApiService::_success(asset($media->files['original']));
         $options = config('setting.options');
         $settings = [];
-
         foreach ($options as $option) {
-            if (base64($request->{$option})) {
-                // $setting = $this->settingrRepo->find($option);
-                // $setting->clearMediaCollectionExcept('main');
-                // $setting->addMediaFromBase64($request->{$option})->toMediaCollection('main');
-            }
             if ($request->{$option}) {
-                $value = json_encode($request->input($option));
+                $value = $this->isJson($request->input($option)) ? json_encode(json_decode($request->input($option), true)) : json_encode($request->input($option));
                 if ($request->file($option)) {
                     $setting = $this->settingrRepo->find($option);
                     if ($setting) {
-                        MediaFileService::delete($setting->value);
+                        $setting->clearMediaCollectionExcept();
+                    } else {
+                        $setting = Setting::query()->create(['name' => $option]);
                     }
-                    // $setting = $this->settingrRepo->find($option);
-                    // if ($setting) $setting->clearMediaCollectionExcept('main');
-                    // $setting->addMedia($request->{$option})->toMediaCollection('main');
+                    $setting->addMedia($request->{$option})->toMediaCollection();
 
-                    $media = MediaFileService::publicUpload($request->file($option), 'static');
-                    $value = $media->files['original'];
+                    $value = json_encode($setting->getFirstMediaUrl());
                 }
                 array_push($settings, ['name' => $option, 'value' => $value]);
             }

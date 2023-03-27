@@ -14,7 +14,7 @@ class SettingResource extends JsonResource
      */
     public function toArray($request)
     {
-        $option = is_null(json_decode(json_decode($this->value))) ? json_decode($this->value) : json_decode(json_decode($this->value));
+        $option = $this->value;
         return $this->getFirstMediaUrl('main') ?: $option;
     }
 }
