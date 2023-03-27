@@ -4,6 +4,7 @@ namespace Modules\Page\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Page\Repository\PageRepositoryInterface;
 
 class PageDatabaseSeeder extends Seeder
 {
@@ -15,6 +16,13 @@ class PageDatabaseSeeder extends Seeder
     public function run()
     {
         Model::unguard();
+
+        resolve(PageRepositoryInterface::class)->create([
+            'title' => "صفحه اصلی",
+            'title_en' => "landing",
+            'content' => "",
+        ]);
+
 
         // $this->call("OthersTableSeeder");
     }

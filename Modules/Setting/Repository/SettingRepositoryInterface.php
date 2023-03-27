@@ -5,6 +5,7 @@ namespace Modules\Setting\Repository;
 interface SettingRepositoryInterface
 {
     public function find($id);
+    public function insert($data);
     public function all();
     public function create($data);
     public function update($id, $data);

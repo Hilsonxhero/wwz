@@ -36,7 +36,12 @@ class PageController extends Controller
      */
     public function store(PageRequest $request)
     {
-        $page = $this->pageRepo->create($request);
+        $data = [
+            'title' => $request->title,
+            'title_en' => $request->title_en,
+            'content' => $request->content,
+        ];
+        $page = $this->pageRepo->create($data);
         ApiService::_success(trans('response.responses.200'));
     }
 
@@ -59,7 +64,12 @@ class PageController extends Controller
      */
     public function update(PageRequest $request, $id)
     {
-        $page = $this->pageRepo->update($id, $request);
+        $data = [
+            'title' => $request->title,
+            'title_en' => $request->title_en,
+            'content' => $request->content,
+        ];
+        $page = $this->pageRepo->update($id, $data);
         ApiService::_success(trans('response.responses.200'));
     }
 

@@ -18,21 +18,13 @@ class PageRepository implements PageRepositoryInterface
 
     public function create($data)
     {
-        $page =  Page::query()->create([
-            'title' => $data->title,
-            'title_en' => $data->title_en,
-            'content' => $data->content,
-        ]);
+        $page =  Page::query()->create($data);
         return $page;
     }
     public function update($id, $data)
     {
         $page = $this->find($id);
-        $page->update([
-            'title' => $data->title,
-            'title_en' => $data->title_en,
-            'content' => $data->content,
-        ]);
+        $page->update($data);
         return $page;
     }
     public function show($id)

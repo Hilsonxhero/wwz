@@ -17,6 +17,10 @@ class SettingRepository implements SettingRepositoryInterface
         return Setting::all()->keyBy->name;
     }
 
+    public function insert($data)
+    {
+        return Setting::query()->insert($data);
+    }
 
     public function create($data)
     {
