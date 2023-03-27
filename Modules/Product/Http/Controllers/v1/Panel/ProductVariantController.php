@@ -11,17 +11,23 @@ use Modules\Product\Transformers\ProductVariantResource;
 use Modules\Product\Repository\ProductRepositoryInterface;
 use Modules\Product\Http\Requests\Panel\ProductVariantRequest;
 use Modules\Product\Repository\ProductVariantRepositoryInterface;
+use Modules\Seller\Repository\SellerRepositoryInterface;
 
 class ProductVariantController extends Controller
 {
 
     private $productRepo;
     private $variantRepo;
+    private $sellerRepo;
 
-    public function __construct(ProductRepositoryInterface $productRepo, ProductVariantRepositoryInterface $variantRepo)
-    {
+    public function __construct(
+        ProductRepositoryInterface $productRepo,
+        ProductVariantRepositoryInterface $variantRepo,
+        SellerRepositoryInterface $sellerRepo
+    ) {
         $this->productRepo = $productRepo;
         $this->variantRepo = $variantRepo;
+        $this->sellerRepo = $sellerRepo;
     }
 
     /**
@@ -47,21 +53,27 @@ class ProductVariantController extends Controller
 
         $combinations = $product->combinations;
 
-        $groupd_combinations = $combinations->mapToGroups(function ($ss) {
-            return [$ss['variant']['product_variant_id'] => $ss['variant']['id']];
-        });
+        if (count($combinations) >= 1) {
 
-        $match = $groupd_combinations->every(function ($groupd_combination, $key) use ($variants_ids) {
-            $intersect_combinations = collect($groupd_combination)->intersect($variants_ids);
-            return  count($intersect_combinations) >= count($variants_ids) && count($groupd_combination) == count($variants_ids);
-        });
+            $groupd_combinations = $combinations->mapToGroups(function ($ss) {
+                return [$ss['variant']['product_variant_id'] => $ss['variant']['id']];
+            });
 
-        if ($match) {
-            ApiService::_throw(array('message' => trans('response.variant_exists'), 'staus' => 410));
+            $match = $groupd_combinations->every(function ($groupd_combination, $key) use ($variants_ids) {
+                $intersect_combinations = collect($groupd_combination)->intersect($variants_ids);
+                return  count($intersect_combinations) >= count($variants_ids) && count($groupd_combination) == count($variants_ids);
+            });
+
+            if ($match) {
+                ApiService::_throw(array('message' => trans('response.variant_exists'), 'staus' => 410));
+            }
         }
+
+        $default_seller = $this->sellerRepo->default();
 
         $variant_data = [
             'product_id' => $product->id,
+            'seller_id' => $default_seller->id,
             'warranty_id' => $request->warranty_id,
             'shipment_id' => $request->shipment_id,
             'price' => $request->price,

@@ -5,9 +5,10 @@ namespace Modules\Setting\Http\Controllers\v1\Panel;
 use App\Services\ApiService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Modules\Page\Entities\Page;
 use Illuminate\Routing\Controller;
-use Modules\Setting\Transformers\SettingBannerResource;
 use Modules\Setting\Http\Requests\SettingBannerRequest;
+use Modules\Setting\Transformers\SettingBannerResource;
 use Modules\Setting\Repository\SettingBannerRepositoryInterface;
 
 class BannerController extends Controller
@@ -60,7 +61,22 @@ class BannerController extends Controller
      */
     public function update(SettingBannerRequest $request, $id)
     {
-        $this->bannerRepo->update($id, $request);
+        $data = [
+            'title' => $request->title,
+            'url' => $request->url,
+            'type' => $request->type,
+            'status' => $request->status,
+            'bannerable_id' => $request->page,
+            'bannerable_type' => Page::class,
+        ];
+
+        $banner =  $this->bannerRepo->update($id, $data);
+
+        if ($request->filled('banner')) {
+            $banner->clearMediaCollectionExcept('main');
+            base64($request->banner) ? $banner->addMediaFromBase64($request->banner)->toMediaCollection('main')
+                : $banner->addMedia($request->banner)->toMediaCollection('main');
+        }
         ApiService::_success(trans('response.responses.200'));
     }
 

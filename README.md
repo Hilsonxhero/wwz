@@ -17,6 +17,21 @@ composer install
 
 # Start docker in os
 ./vendor/bin/sail up -d
+
+./vendor/bin/sail artisan key:generate
+
+./vendor/bin/sail artisan storage:link
+
+./vendor/bin/sail artisan passport:install
+
+./vendor/bin/sail artisan migrate
+
+./vendor/bin/sail artisan module:seed
+
+./vendor/bin/sail artisan queue:work
+
+./vendor/bin/sail artisan schedule:work
+
 ```
 
 ## Tests
@@ -28,7 +43,7 @@ composer install
 ## Fake data
 
 ```sh
-./vendor/bin/sail artisan migrate:fresh --seed
+./vendor/bin/sail artisan module:seed
 ```
 
 ## Elasticsearch
@@ -37,6 +52,9 @@ If you use elasticsearch,you must create index.
 
 ```sh
 ./vendor/bin/sail artisan scout:index products
+
+./vendor/bin/sail artisan scout:import "\Modules\Product\Entities\Product"
+
 ```
 
 and then you can see other information in kibana

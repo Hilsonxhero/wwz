@@ -15,8 +15,6 @@ interface ProductRepositoryInterface
     public function select($query);
     public function variants($id);
     public function combinations($id);
-    public function createVariants($id, $variants);
-    public function updateVariants($id, $variants);
     public function allActive();
     public function create($data);
     public function update($id, $data);

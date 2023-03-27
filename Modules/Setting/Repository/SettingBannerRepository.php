@@ -44,20 +44,7 @@ class SettingBannerRepository implements SettingBannerRepositoryInterface
     public function update($id, $data)
     {
         $banner = $this->find($id);
-        $banner->update([
-            'title' => $data->title,
-            'url' => $data->url,
-            'type' => $data->type,
-            'status' => $data->status,
-            'bannerable_id' => $data->page,
-            'bannerable_type' => Page::class,
-        ]);
-
-        if ($data->banner) {
-            $banner->clearMediaCollectionExcept('main');
-            base64($data->banner) ? $banner->addMediaFromBase64($data->banner)->toMediaCollection('main')
-                : $banner->addMedia($data->banner)->toMediaCollection('main');
-        }
+        $banner->update($data);
         return $banner;
     }
     public function show($id)

@@ -173,78 +173,16 @@ class ProductRepository implements ProductRepositoryInterface
             'delivery_id' => $data->delivery
         ]);
 
-        $this->createVariants($product, $data->input('variants'));
-
         base64(json_decode($data->image)) ? $product->addMediaFromBase64(json_decode($data->image))->toMediaCollection('main')
             : $product->addMedia($data->image)->toMediaCollection('main');
 
         return $product;
     }
 
-    public function createVariants($product, $variants)
-    {
-        $variants = collect(json_decode($variants));
-
-        foreach ($variants as $key => $variant) {
-            $producy_variant = $product->variants()->create([
-                'warranty_id' => $variant->warranty,
-                'shipment_id' => $variant->shipment,
-                'price' => $variant->rrp_price,
-                'discount' => $variant->discount,
-                'discount_price' => $variant->rrp_price * $variant->discount / 100,
-                'stock' => $variant->stock,
-                'weight' => $variant->weight,
-                'order_limit' => $variant->order_limit,
-                'default_on' => $variant->default_on,
-                'discount_expire_at' => $variant->discount_expire_at ? createDatetimeFromFormat($variant->discount_expire_at) : null
-            ]);
-
-            foreach ($variant->combinations as $combination) {
-                $producy_variant->combinations()->firstOrCreate([
-                    'variant_id' => $combination->variant_id,
-                ]);
-            }
-        }
-    }
-
-    public function updateVariants($product, $variants)
-    {
-        $variants = collect(json_decode($variants), true);
-
-        DB::transaction(function () use ($variants, $product) {
-            foreach ($variants as $key => $variant) {
-                $producy_variant = $product->variants()->updateOrCreate(
-                    ['product_id' => $variant->product, 'id' => $variant->id],
-                    [
-                        'warranty_id' => $variant->warranty,
-                        'shipment_id' => $variant->shipment,
-                        'price' => $variant->rrp_price,
-                        'discount' => $variant->discount,
-                        'discount_price' => $variant->rrp_price * $variant->discount / 100,
-                        'stock' => $variant->stock,
-                        'weight' => $variant->weight,
-                        'order_limit' => $variant->order_limit,
-                        'default_on' => $variant->default_on,
-                        'discount_expire_at' => $variant->discount_expire_at ? createDatetimeFromFormat($variant->discount_expire_at) : null
-                    ],
-                );
-                foreach ($variant->combinations as $combination) {
-                    $producy_variant->combinations()->updateOrCreate(
-                        ['product_variant_id' => $producy_variant->id, 'variant_id' => $combination->variant_id],
-                        [
-                            'variant_id' => $combination->variant_id,
-                        ]
-                    );
-                }
-            }
-        });
-    }
 
     public function update($id, $data)
     {
         $product = $this->find($id);
-
-        $this->updateVariants($product, $data->input('variants'));
 
         $product->update([
             'title_fa' => $data->title_fa,
