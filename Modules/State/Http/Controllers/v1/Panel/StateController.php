@@ -2,13 +2,15 @@
 
 namespace Modules\State\Http\Controllers\v1\Panel;
 
+use Illuminate\Support\Str;
 use App\Services\ApiService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Modules\State\Entities\State;
 use Illuminate\Routing\Controller;
-use Modules\State\Repository\StateRepositoryInterface;
 use Modules\State\Transformers\CityResource;
 use Modules\State\Transformers\StateResource;
+use Modules\State\Repository\StateRepositoryInterface;
 
 class StateController extends Controller
 {

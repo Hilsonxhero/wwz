@@ -34,6 +34,10 @@ class StateRepository implements StateRepositoryInterface
         $state =  State::query()->create($data);
         return $state;
     }
+    public function createManyCity($state, $data)
+    {
+        $state->cities()->createMany($data);
+    }
     public function update($id, $data)
     {
         $state = $this->find($id);

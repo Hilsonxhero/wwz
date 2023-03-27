@@ -28,9 +28,4 @@ class Setting extends Model implements HasMedia
     protected $casts = [
         'value' => 'json'
     ];
-
-    // protected static function newFactory()
-    // {
-    //     return \Modules\Setting\Database\factories\SettingFactory::new();
-    // }
 }

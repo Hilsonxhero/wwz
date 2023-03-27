@@ -3,9 +3,9 @@
 namespace Modules\Seller\Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Eloquent\Model;
-use Modules\Seller\Database\Seeders\SellerTableSeeder;
 use Modules\Seller\Entities\Seller;
+use Illuminate\Database\Eloquent\Model;
+use Modules\State\Database\Seeders\StateTableSeeder;
 
 class SellerDatabaseSeeder extends Seeder
 {
@@ -17,7 +17,7 @@ class SellerDatabaseSeeder extends Seeder
     public function run()
     {
         Model::unguard();
-        // $this->call("SellerTableSeeder");
-        $this->call(SellerTableSeeder::class);
+        $this->call(StateTableSeeder::class);
+        Seller::factory(1)->create();
     }
 }
