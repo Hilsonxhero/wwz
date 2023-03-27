@@ -25,9 +25,9 @@ class Setting extends Model implements HasMedia
         return static::all()->last();
     }
 
-    // protected $casts = [
-    //     'value' => 'json'
-    // ];
+    protected $casts = [
+        'value' => 'json'
+    ];
 
     // protected static function newFactory()
     // {
