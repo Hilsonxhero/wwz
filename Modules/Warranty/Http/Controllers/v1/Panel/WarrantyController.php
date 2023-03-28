@@ -49,6 +49,7 @@ class WarrantyController extends Controller
             'status' => $request->status,
             'description' => $request->description,
         ];
+
         $warranty = $this->warrantyRepo->create($data);
 
         ApiService::_success($warranty);

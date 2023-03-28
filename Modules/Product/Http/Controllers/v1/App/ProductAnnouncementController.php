@@ -6,21 +6,22 @@ use App\Services\ApiService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
-use Modules\Product\Entities\ProductAnnouncement;
-use Modules\Product\Enums\ProductAnnouncementType;
 use Modules\Product\Http\Requests\App\ProductAnnouncementRequest;
-use Modules\Product\Repository\ProductRepositoryInterface;
+use Modules\Product\Repository\ProductAnnouncementRepositoryInterface;
 use Modules\Product\Repository\ProductVariantRepositoryInterface;
 
 class ProductAnnouncementController extends Controller
 {
     private $productVariantRepo;
+    private $announcementRepo;
 
 
     public function __construct(
-        ProductVariantRepositoryInterface $productVariantRepo
+        ProductVariantRepositoryInterface $productVariantRepo,
+        ProductAnnouncementRepositoryInterface $announcementRepo
     ) {
         $this->productVariantRepo = $productVariantRepo;
+        $this->announcementRepo = $announcementRepo;
     }
 
     /**
@@ -32,9 +33,7 @@ class ProductAnnouncementController extends Controller
     {
         $user = auth()->user();
 
-        $product_variant = $this->productVariantRepo->find($id);
-
-        ProductAnnouncement::query()->create([
+        $this->announcementRepo->create([
             'product_variant_id' => $id,
             'user_id' => $user->id,
             'type' => $request->type,
