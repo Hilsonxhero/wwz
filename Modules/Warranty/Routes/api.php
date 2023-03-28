@@ -14,6 +14,6 @@ use Modules\Warranty\Http\Controllers\v1\Panel\WarrantyController;
 |
 */
 
-Route::prefix('v1/panel')->group(function () {
+Route::prefix('v1/panel')->middleware(['auth.panel', 'auth:api'])->group(function () {
     Route::apiResource("/warranties", WarrantyController::class);
 });

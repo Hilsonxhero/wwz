@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use Modules\Setting\Http\Controllers\v1\Panel\BannerController;
 use Modules\Setting\Http\Controllers\v1\Panel\SettingController;
 
-Route::prefix('v1/panel')->group(function () {
+Route::prefix('v1/panel')->middleware(['auth.panel', 'auth:api'])->group(function () {
     Route::prefix('setting')->group(
         function () {
             Route::apiResource("/banners", BannerController::class);

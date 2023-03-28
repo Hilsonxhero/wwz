@@ -15,6 +15,11 @@ class PageRepository implements PageRepositoryInterface
         return Page::orderBy('created_at', 'desc')
             ->paginate();
     }
+    public function banners($banners, $type)
+    {
+        return $banners->where('type', $type)->get();
+    }
+
 
     public function create($data)
     {
@@ -31,6 +36,15 @@ class PageRepository implements PageRepositoryInterface
     {
         $page = $this->find($id);
         return $page;
+    }
+    public function findByTitle($title)
+    {
+        try {
+            $page = Page::query()->where('title_en', $title)->firstOrFail();
+            return $page;
+        } catch (ModelNotFoundException $e) {
+            return  ApiService::_response(trans('response.responses.404'), 404);
+        }
     }
 
     public function find($id)

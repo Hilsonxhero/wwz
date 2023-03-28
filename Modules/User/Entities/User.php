@@ -196,4 +196,10 @@ class User extends Authenticatable implements HasMedia
     {
         return $this->morphToMany(Voucher::class, 'voucherable');
     }
+
+
+    public function isSuperUser()
+    {
+        return $this->is_superuser;
+    }
 }

@@ -10,7 +10,7 @@ Route::prefix('v1/application')->group(function () {
     Route::get("/comments/product/{id}", [\Modules\Comment\Http\Controllers\v1\App\CommentController::class, 'index']);
 });
 
-Route::prefix('v1/panel')->group(function () {
+Route::prefix('v1/panel')->middleware(['auth.panel', 'auth:api'])->group(function () {
     // score models
     Route::apiResource("score/models", ScoreModelController::class);
 

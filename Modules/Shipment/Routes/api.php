@@ -17,7 +17,7 @@ Route::prefix('v1/application')->group(function () {
         }
     );
 });
-Route::prefix('v1/panel')->group(function () {
+Route::prefix('v1/panel')->middleware(['auth.panel', 'auth:api'])->group(function () {
     Route::prefix('shipment')->group(
         function () {
             Route::apiResource("cities/{id}/dates", ShipmentDateController::class);
