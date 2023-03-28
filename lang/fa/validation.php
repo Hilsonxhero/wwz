@@ -118,6 +118,10 @@ return [
     'url'                  => ':attribute معتبر نمی‌باشد.',
     'uuid'                 => ':attribute باید یک UUID معتبر باشد.',
 
+
+    'enum' => ':attribute انتخاب شده معتبر نمی باشد',
+
+
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines
@@ -130,8 +134,8 @@ return [
     */
 
     'custom' => [
-        'code'=>[
-            'between'=>'کذ وارد شده نامعتبر است'
+        'code' => [
+            'between' => 'کذ وارد شده نامعتبر است'
         ]
     ],
 
@@ -145,6 +149,8 @@ return [
     | of "email". This simply helps us make messages a little cleaner.
     |
     */
+
+
 
     'attributes' => [
         'name'                  => 'نام',

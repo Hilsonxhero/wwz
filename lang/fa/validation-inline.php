@@ -119,6 +119,10 @@ return [
     'url'                  => 'این فرمت نامعتبر است.',
     'uuid'                 => 'این مقدار باید یک UUID معتبر باشد.',
 
+    'status' => [
+        'Illuminate\Validation\Rules\Enum' => 'وضعیت انتخاب شده معتبر نمی باشد'
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines
@@ -134,6 +138,9 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'status' => [
+            'Illuminate\Validation\Rules\Enum' => 'وضعیت انتخاب شده معتبر نمی باشد'
+        ]
     ],
 
 ];

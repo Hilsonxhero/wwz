@@ -9,6 +9,7 @@ use Modules\User\Entities\User;
 use Modules\State\Entities\State;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Modules\Order\Enums\OrderStatus;
+use Modules\User\Enums\UserStatus;
 
 class UserRepository implements UserRepositoryInterface
 {
@@ -68,7 +69,7 @@ class UserRepository implements UserRepositoryInterface
     public function allActive()
     {
         return User::orderBy('created_at', 'desc')
-            ->where('status', User::STATUS_ACTIVE)
+            ->where('status', UserStatus::ACTIVE)
             ->with('parent')
             ->paginate();
     }

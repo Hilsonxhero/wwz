@@ -4,6 +4,7 @@ use Modules\User\Entities\User;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Modules\User\Enums\UserStatus;
 
 return new class extends Migration
 {
@@ -25,7 +26,7 @@ return new class extends Migration
             $table->string('phone')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->enum('status', User::$statuses)->default(User::STATUS_ACTIVE);
+            $table->string('status')->default(UserStatus::ACTIVE);
             $table->string('job')->nullable();
             $table->string('national_identity_number')->nullable();
             $table->string('gender')->nullable();

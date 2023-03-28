@@ -10,6 +10,7 @@ use Modules\User\Repository\UserRepositoryInterface;
 use Modules\User\Transformers\UserResource;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Modules\User\Http\Requests\Panel\UserRequest;
 
 class UserController extends Controller
 {
@@ -45,18 +46,8 @@ class UserController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
-
-        ApiService::Validator($request->all(), [
-            'username' => ['required', 'min:3'],
-            'email' => ['required', 'email', 'min:3', 'unique:users,email'],
-            'phone' => ['required', 'min:3', 'unique:users,phone'],
-            'national_identity_number' => ['required'],
-            'password' => ['required', 'confirmed'],
-            'status' => ['required'],
-        ]);
-
         $data = [
             'username' => $request->username,
             'email' => $request->email,
@@ -66,7 +57,6 @@ class UserController extends Controller
             'cart_number' => $request->cart_number,
             'password' => Hash::make($request->password),
         ];
-        // ApiService::_response($data['role'], 403);
 
         $user = $this->userRepo->create($data);
 
@@ -96,17 +86,8 @@ class UserController extends Controller
      * @param int $id
      * @return Response
      */
-    public function update(Request $request, $id)
+    public function update(UserRequest $request, $id)
     {
-        ApiService::Validator($request->all(), [
-            'username' => ['required', 'min:3'],
-            'email' => ['required', 'email', 'min:3', Rule::unique('users', 'email')->ignore($id)],
-            'phone' => ['required', 'min:3', Rule::unique('users', 'phone')->ignore($id)],
-            'national_identity_number' => ['required'],
-            'password' => ['nullable', 'confirmed'],
-            'status' => ['required'],
-        ]);
-
         $request->filled('password') ? $request->all() : $request->except(['password']);
 
         $data = [
@@ -118,7 +99,6 @@ class UserController extends Controller
             'cart_number' => $request->cart_number,
             'password' => Hash::make($request->password),
         ];
-        // ApiService::_response($data['role'], 403);
 
         $user = $this->userRepo->update($id, $data);
 
