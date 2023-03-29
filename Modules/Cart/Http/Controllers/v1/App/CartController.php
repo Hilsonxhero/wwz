@@ -6,16 +6,10 @@ use App\Services\ApiService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Modules\Cart\Facades\Cart;
-use Modules\Order\Entities\Order;
 use Illuminate\Routing\Controller;
-use Modules\Payment\Entities\Payment;
-use Modules\Order\Events\App\OrderCreated;
-use Modules\Product\Entities\ProductVariant;
 use Modules\Cart\Http\Requests\App\CartRequest;
 use Modules\Cart\Transformers\App\CartResource;
 use Modules\Product\Transformers\ProductResource;
-use Modules\Product\Transformers\VariantResource;
-use Modules\Product\Transformers\ProductVariantResource;
 use Modules\Product\Repository\ProductRepositoryInterface;
 use Modules\Product\Repository\ProductVariantRepositoryInterface;
 
@@ -40,6 +34,7 @@ class CartController extends Controller
     public function index(Request $request)
     {
         $user = auth()->user();
+        return $user->available_cart;
         if (!is_null($user->available_cart)) {
             $user->cart->update([
                 'config' => null

@@ -57,8 +57,8 @@ class ProductController extends Controller
     {
         // return  visits('Modules\Product\Entities\Product')->topIds(10);
 
-        $product = $this->productRepo->show($id);
-        visits($product)->increment();
+        $product = $this->productRepo->find($id);
+        // visits($product)->increment();
 
         // return   visits($product)->count();
 

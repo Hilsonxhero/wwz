@@ -212,6 +212,25 @@ class Product extends Model implements HasMedia, Explored
 
 
     /**
+     * Get  grouped combinations
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+
+    protected function groupedCombinations(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => collect($this->combinations)->unique('variant_id')->groupBy('variant.group')->transform(function ($item, $key) {
+                return ['group' => json_decode($key), 'values' => $item->transform(function ($combination, $key) {
+                    $combination->variant->combination_id = $combination->id;
+                    return $combination->variant;
+                })];
+            })->values()
+        );
+    }
+
+
+    /**
      * Get  grouped features
      *
      * @return \Illuminate\Database\Eloquent\Casts\Attribute

@@ -15,12 +15,10 @@ use Illuminate\Support\Traits\Macroable;
 use Illuminate\Contracts\Events\Dispatcher;
 use Modules\Cart\Contracts\InstanceIdentifier;
 use Modules\Cart\Enums\CartStatus;
-use Modules\Cart\Exceptions\InvalidRowIDException;
 use Modules\Cart\Exceptions\UnknownModelException;
 use Modules\Cart\Repository\CartRepositoryInterface;
 use Modules\Cart\Transformers\App\CartItemsResource;
 use Modules\User\Repository\UserRepositoryInterface;
-use Modules\Product\Transformers\Cart\ProductResource;
 use Modules\Cart\Repository\CartItemRepositoryInterface;
 use Modules\Product\Repository\ProductVariantRepositoryInterface;
 
@@ -203,8 +201,6 @@ class Cart
             }, $id);
         }
 
-        // $cartItem = $this->createCartItem($id, $product, $variant, $discount, $price, $weight, $quantity, $options);
-        // return $cartItem;
         $cartItem = (object) array(
             "rowId" => md5($id),
             "id" => $id,
@@ -234,14 +230,6 @@ class Cart
      */
     public function addCartItem($item, $discount, $keepDiscount = false, $keepTax = false, $dispatchEvent = true)
     {
-        // if (!$keepDiscount) {
-        //     $item->setDiscountRate($discount);
-        // }
-
-        // if (!$keepTax) {
-        //     $item->setTaxRate($this->taxRate);
-        // }
-
         if (!auth()->check()) {
             $content = $this->getContent();
             if ($content->has($item->id)) {
@@ -301,21 +289,8 @@ class Cart
         if (!$this->authenticated) {
             $cartItem =  $this->get($rowId);
             $cartItem->quantity = Arr::get($quantity, 'quantity', $cartItem->quantity);
-            // return  $cartItem;
-            // $cartItem->updateFromArray($quantity);
             $content = $this->getContent();
 
-
-            // if ($rowId !== $cartItem->id) {
-            //     $itemOldIndex = $content->keys()->search($rowId);
-
-            //     $content->pull($rowId);
-
-            //     if ($content->has($cartItem->id)) {
-            //         $existingCartItem = $this->get($cartItem->id);
-            //         $cartItem->setQuantity($existingCartItem->quantity + $cartItem->quantity);
-            //     }
-            // }
             if ($cartItem->quantity <= 0) {
                 $this->remove($cartItem->id);
                 return;
@@ -376,13 +351,6 @@ class Cart
     public function get($rowId)
     {
         $content = $this->getContent();
-
-        // if (!$content->has($rowId)) {
-        //     throw new InvalidRowIDException("The cart does not contain rowId {$rowId}.");
-        // }
-
-        // return  $content->where('id', $rowId)->first();
-
         return  $content->get($rowId);
     }
 
@@ -807,16 +775,9 @@ class Cart
                         'product_id' => $item->product,
                         'variant_id' => $item->variant,
                         'price' => $item->price,
-                        // 'subtotal' => $item->subtotal,
-                        // 'total' => $item->total,
-                        // 'discount' => $item->discount,
                         'quantity' => $item->quantity,
                     ]
                 );
-
-                // if (!is_null($exists)) {
-                //     $exists->update(['quantity' => $item->quantity]);
-                // }
             });
 
 
@@ -982,9 +943,6 @@ class Cart
     private function createCartItem($id, $product, $variant, $discount, $price, $weight, $quantity, array $options = [])
     {
 
-        // $cartItem = CartItem::fromAttributes($id, $product, $variant, $discount, $price, $weight, $quantity, $options);
-        // $cartItem->setQuantity($quantity);
-        // $cartItem->setInstance($this->currentInstance());
         $cartItem = (object) array(
             "rowId" => md5($id),
             "id" => $id,
@@ -1054,33 +1012,6 @@ class Cart
         $connection = config('cart.database.connection');
 
         return is_null($connection) ? config('database.default') : $connection;
-    }
-
-    /**
-     * Get the Formatted number.
-     *
-     * @param $value
-     * @param $decimals
-     * @param $decimalPoint
-     * @param $thousandSeperator
-     *
-     * @return string
-     */
-    private function numberFormat($value, $decimals, $decimalPoint, $thousandSeperator)
-    {
-        if (is_null($decimals)) {
-            $decimals = config('cart.format.decimals', 2);
-        }
-
-        if (is_null($decimalPoint)) {
-            $decimalPoint = config('cart.format.decimal_point', '.');
-        }
-
-        if (is_null($thousandSeperator)) {
-            $thousandSeperator = config('cart.format.thousand_separator', ',');
-        }
-
-        return number_format($value, $decimals, $decimalPoint, $thousandSeperator);
     }
 
     /**
