@@ -2,13 +2,10 @@
 
 namespace Modules\Dashboard\Repository;
 
-use Carbon\Carbon;
+
 use Carbon\CarbonPeriod;
-use App\Services\ApiService;
 use Morilog\Jalali\Jalalian;
 use Modules\Order\Entities\Order;
-use Modules\Order\Entities\OrderShippingItem;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Modules\Order\Enums\OrderStatus;
 
 class DashboardRepository implements DashboardRepositoryInterface
@@ -62,18 +59,15 @@ class DashboardRepository implements DashboardRepositoryInterface
 
         $start_date = \Morilog\Jalali\Jalalian::fromFormat('Y-m-d', $sub_months_jalali->format('Y-m-d'))->toCarbon();
 
-        $results = OrderShippingItem::with('product.category')
+        $results =  Order::with(['order_shipping_items' => ['product.category', 'shipping' => ['order']]])
+            ->where('status', OrderStatus::Sent->value)
             ->whereBetween('created_at', [$start_date, now()->addMonth(1)])
-            ->get()
-            ->map(function ($orderItem) {
-                return [
-                    'category' => $orderItem->product->category->title,
-                    'quantity' => 1,
-                ];
-            })
-            ->groupBy('category')
-            ->map(function ($orders) {
-                return $orders->sum('quantity');
+            ->get()->flatMap(function ($item) {
+                return $item['order_shipping_items'];
+            })->mapToGroups(function ($item) {
+                return [$item['product']['category']['title'] => $item['shipping']['order']['id']];
+            })->map(function ($item) {
+                return collect($item)->unique()->first();
             });
 
         $categories = $results->keys()->toArray();
@@ -102,6 +96,7 @@ class DashboardRepository implements DashboardRepositoryInterface
                 $jDate = Jalalian::fromDateTime($period_item);
                 [$first_month, $end_month] = $this->getFirstAndLastDayOfMonth($jDate->getYear(), $jDate->getMonth());
                 $orders = Order::query()
+                    ->where('status', OrderStatus::Sent->value)
                     ->whereDate('created_at', '>=', $first_month)
                     ->whereDate('created_at', '<=', $end_month)
                     ->get();
@@ -142,6 +137,7 @@ class DashboardRepository implements DashboardRepositoryInterface
                 $jDate = Jalalian::fromDateTime($period_item);
                 [$first_month, $end_month] = $this->getFirstAndLastDayOfMonth($jDate->getYear(), $jDate->getMonth());
                 $count = Order::query()
+                    ->where('status', OrderStatus::Sent->value)
                     ->whereDate('created_at', '>=', $first_month)
                     ->whereDate('created_at', '<=', $end_month)
                     ->count();
