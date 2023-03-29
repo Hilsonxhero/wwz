@@ -67,9 +67,7 @@ class CartController extends Controller
             1
         );
 
-
         $cart = Cart::content();
-
 
         return new CartResource($cart);
     }

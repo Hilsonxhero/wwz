@@ -129,7 +129,9 @@ class User extends Authenticatable implements HasMedia
     protected function availableCart(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => $this->carts()->where('status', CartStatus::Available->value)->with(['items.product' => ['delivery', 'media'], 'items.variant' => ['incredible']])->first()
+            get: fn ($value) => $this->carts()->where('status', CartStatus::Available->value)
+                ->with(['items' => ['product' => ['delivery', 'media'], 'variant' => ['incredible']]])
+                ->first()
         );
     }
 

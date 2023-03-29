@@ -10,22 +10,24 @@ use Illuminate\Redis\RedisManager;
 use Illuminate\Support\Collection;
 use Modules\Cart\Enums\CartStatus;
 use Modules\Cart\Contracts\Buyable;
+use Modules\Cart\Entities\CartItem;
+use Modules\Product\Entities\Product;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Support\Traits\Macroable;
 use Illuminate\Contracts\Events\Dispatcher;
+use Modules\Product\Entities\ProductVariant;
 use Modules\Cart\Contracts\InstanceIdentifier;
+use Modules\Cart\Entities\Cart as EntitiesCart;
+use Modules\Product\Repository\ProductRepository;
 use Modules\Cart\Exceptions\UnknownModelException;
 use Modules\Cart\Repository\CartRepositoryInterface;
 use Modules\Cart\Transformers\App\CartItemsResource;
 use Modules\User\Repository\UserRepositoryInterface;
+use Modules\Product\Transformers\Cart\ProductResource;
 use Modules\Cart\Repository\CartItemRepositoryInterface;
-use Modules\Product\Entities\Product;
-use Modules\Product\Entities\ProductVariant;
-use Modules\Product\Repository\ProductRepository;
 use Modules\Product\Transformers\Cart\ProductVariantResource;
 use Modules\Product\Repository\ProductVariantRepositoryInterface;
-use Modules\Product\Transformers\Cart\ProductResource;
 
 class Cart
 {
@@ -401,7 +403,6 @@ class Cart
 
         if (auth()->check()) {
             $cart = resolve(UserRepositoryInterface::class)->cart();
-
             if (!is_null($cart)) {
                 $cart_items = $cart->items->map(function ($item) {
                     return $this->createCartItem(

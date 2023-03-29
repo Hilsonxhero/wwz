@@ -7,9 +7,10 @@ use App\Services\ApiService;
 use Modules\User\Entities\User;
 
 use Modules\State\Entities\State;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Modules\Order\Enums\OrderStatus;
+use Modules\Cart\Enums\CartStatus;
 use Modules\User\Enums\UserStatus;
+use Modules\Order\Enums\OrderStatus;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UserRepository implements UserRepositoryInterface
 {
@@ -65,7 +66,9 @@ class UserRepository implements UserRepositoryInterface
 
     public function cart()
     {
-        return  auth()->user()->available_cart;
+        return  auth()->user()->carts()->where('status', CartStatus::Available->value)
+            ->with(['items' => ['product' => ['delivery', 'media'], 'variant' => ['incredible']]])
+            ->first();
     }
 
 
