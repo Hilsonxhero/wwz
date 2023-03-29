@@ -13,6 +13,5 @@ enum OrderStatus: string
     case LeavingCenter = 'leaving_center';
     case ReceivedCenter = 'received_center';
     case DeliveryDispatcher = 'delivery_dispatcher';
-    case DeliveryCustomer = 'delivery_customer';
     case CanceledSystem = 'canceled_system';
 }

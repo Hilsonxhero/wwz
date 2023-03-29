@@ -98,7 +98,7 @@ class Order extends Model
 
             get: fn ($value) => [
                 OrderStatusEnum::WaitPayment->value, OrderStatusEnum::Processed->value,
-                OrderStatusEnum::DeliveryDispatcher->value, OrderStatusEnum::DeliveryCustomer->value,
+                OrderStatusEnum::DeliveryDispatcher->value, OrderStatusEnum::Sent->value,
                 OrderStatusEnum::LeavingCenter->value, OrderStatusEnum::ReceivedCenter->value
             ]
         );

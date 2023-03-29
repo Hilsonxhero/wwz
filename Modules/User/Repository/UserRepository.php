@@ -43,7 +43,7 @@ class UserRepository implements UserRepositoryInterface
             if (request()->status == "progress") {
                 $query->whereIn('status', [
                     OrderStatus::WaitPayment->value, OrderStatus::Processed->value,
-                    OrderStatus::DeliveryDispatcher->value, OrderStatus::DeliveryCustomer->value,
+                    OrderStatus::DeliveryDispatcher->value, OrderStatus::Sent->value,
                     OrderStatus::LeavingCenter->value, OrderStatus::ReceivedCenter->value
                 ]);
             }

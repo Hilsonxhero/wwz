@@ -40,14 +40,11 @@ class OrderStatus implements CastsAttributes
             case EnumsOrderStatus::DeliveryDispatcher->value:
                 return "تحویل به مامور ارسال";
                 break;
-            case EnumsOrderStatus::DeliveryCustomer->value:
+            case EnumsOrderStatus::Sent->value:
                 return "تحویل مرسوله به مشتری";
                 break;
             case EnumsOrderStatus::CanceledSystem->value:
                 return "سفارش لغو شده";
-                break;
-            case EnumsOrderStatus::Sent->value:
-                return "تحویل  شده";
                 break;
 
             default:
