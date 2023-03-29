@@ -23,7 +23,11 @@ class UserRepository implements UserRepositoryInterface
 
     public function orders($user)
     {
-        $query = $user->orders()->orderBy('created_at', 'desc');
+
+        $query = $user->orders()->with(['shippings' => ['items' => [
+            'product' => ['media', 'brand', 'category' => ['media'], 'delivery'],
+            'variant' => ['warranty', 'incredible', 'shipment', 'combinations' => ['variant' => ['group']]]
+        ], 'shipment'], 'user', 'payment_method', 'payments'])->orderBy('created_at', 'desc');
 
         if (request()->has('status')) {
             if (request()->status == "sent") {

@@ -3,8 +3,8 @@
 namespace Modules\Order\Transformers\Panel;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use Modules\Product\Transformers\ProductResource;
-use Modules\Product\Transformers\ProductVariantResource;
+use Modules\Product\Transformers\App\Order\ProductResource;
+use Modules\Product\Transformers\App\Order\ProductVariantResource;
 
 class OrderShippingItemResource extends JsonResource
 {

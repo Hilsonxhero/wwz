@@ -1,8 +1,9 @@
 <?php
 
-namespace Modules\Product\Transformers;
+namespace Modules\Product\Transformers\App\Order;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Modules\Product\Transformers\ProductVariantCombinationResource;
 
 class ProductVariantResource extends JsonResource
 {
@@ -18,16 +19,16 @@ class ProductVariantResource extends JsonResource
         return [
             'id' => $this->id,
             'has_stock' => $this->has_stock,
+            // 'is_announcemented_promotion' => $this->is_announcemented_promotion,
+            // 'is_announcemented_availability' => $this->is_announcemented_availability,
+            'product' => $this->product_id,
+            // 'warranty' => [
+            //     'id' => $this->warranty->id,
+            //     'title' => $this->warranty->title,
+            // ],
             'shipment' => [
                 'id' => $this->shipment->id,
                 'title' => $this->shipment->title,
-            ],
-            'is_announcemented_promotion' => $this->is_announcemented_promotion,
-            'is_announcemented_availability' => $this->is_announcemented_availability,
-            'product' => $this->product->id,
-            'warranty' => [
-                'id' => $this->warranty->id,
-                'title' => $this->warranty->title,
             ],
             'price' => round($this->price),
             'is_incredible' => !!$this->incredible,

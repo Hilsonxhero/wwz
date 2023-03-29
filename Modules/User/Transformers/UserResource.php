@@ -28,7 +28,7 @@ class UserResource extends JsonResource
             'national_identity_number' => $this->national_identity_number,
             'cart_number' => $this->cart_number,
             'status' => $this->status,
-            'avatar' => $this->getFirstMediaUrl('avatar', 'thumb')
+            // 'avatar' => $this->getFirstMediaUrl('avatar', 'thumb')
         ];
     }
 }
