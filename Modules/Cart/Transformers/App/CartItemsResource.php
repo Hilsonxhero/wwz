@@ -19,19 +19,19 @@ class CartItemsResource extends JsonResource
     public function toArray($request)
     {
 
-        $variant = new ProductVariantResource(resolve(ProductVariantRepositoryInterface::class)->find($this->variant));
+        // $variant = new ProductVariantResource(resolve(ProductVariantRepositoryInterface::class)->find($this->variant));
 
         return [
             'id' => $this->id,
             'uuid' => $this->rowId,
             'quantity' => $this->quantity,
-            'product' => new ProductResource(resolve(ProductRepositoryInterface::class)->find($this->product)),
-            'variant' => $variant,
+            'product' => new ProductResource($this->product),
+            'variant' => $this->variant,
             'price' => round($this->price),
-            'subtotal' => ($variant->price * $this->quantity - round($variant->price * ($variant->calculate_discount / 100) * $this->quantity)),
-            'total' => $variant->price * ($this->quantity),
-            'discount' => $variant->price * ($variant->calculate_discount / 100),
-            'discount_total' => round($variant->price * ($variant->calculate_discount / 100) * $this->quantity),
+            'subtotal' => ($this->variant->price * $this->quantity - round($this->variant->price * ($this->variant->calculate_discount / 100) * $this->quantity)),
+            'total' => $this->variant->price * ($this->quantity),
+            'discount' => $this->variant->price * ($this->variant->calculate_discount / 100),
+            'discount_total' => round($this->variant->price * ($this->variant->calculate_discount / 100) * $this->quantity),
         ];
     }
 }

@@ -7,23 +7,14 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Modules\Cart\Facades\Cart;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\DB;
 use Modules\Cart\Facades\Shipping;
-use Modules\Cart\Entities\CartShipping;
 use Modules\Shipment\Entities\Shipment;
-use Modules\Shipment\Entities\ShipmentCity;
-use Modules\Shipment\Entities\ShipmentDate;
-use Modules\User\Transformers\UserResource;
-use Modules\Cart\Transformers\App\CartResource;
 use Modules\Cart\Transformers\App\ShippingResource;
-use Modules\Cart\Transformers\App\CartItemsResource;
 use Modules\User\Transformers\App\UserAddressResource;
-use Modules\Cart\Entities\Shipping as EntitiesShipping;
 use Modules\Cart\Http\Requests\App\ShippingRequest;
 use Modules\Cart\Repository\ShippingRepositoryInterface;
 use Modules\Cart\Transformers\App\ShippingCostResource;
 use Modules\Shipment\Repository\ShipmentRepositoryInterface;
-use Modules\Shipment\Transformers\Panel\ShipmentDateResource;
 use Modules\User\Entities\Address;
 
 class ShippingController extends Controller
@@ -53,8 +44,10 @@ class ShippingController extends Controller
         $user->cart->update([
             'config' => null
         ]);
-
         $shipping = Shipping::content();
+
+        // return $shipping;
+
         $content = (object) [
             'items' => $shipping,
         ];

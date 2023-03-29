@@ -8,19 +8,24 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Redis\RedisManager;
 use Illuminate\Support\Collection;
+use Modules\Cart\Enums\CartStatus;
 use Modules\Cart\Contracts\Buyable;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Support\Traits\Macroable;
 use Illuminate\Contracts\Events\Dispatcher;
 use Modules\Cart\Contracts\InstanceIdentifier;
-use Modules\Cart\Enums\CartStatus;
 use Modules\Cart\Exceptions\UnknownModelException;
 use Modules\Cart\Repository\CartRepositoryInterface;
 use Modules\Cart\Transformers\App\CartItemsResource;
 use Modules\User\Repository\UserRepositoryInterface;
 use Modules\Cart\Repository\CartItemRepositoryInterface;
+use Modules\Product\Entities\Product;
+use Modules\Product\Entities\ProductVariant;
+use Modules\Product\Repository\ProductRepository;
+use Modules\Product\Transformers\Cart\ProductVariantResource;
 use Modules\Product\Repository\ProductVariantRepositoryInterface;
+use Modules\Product\Transformers\Cart\ProductResource;
 
 class Cart
 {
@@ -401,8 +406,8 @@ class Cart
                 $cart_items = $cart->items->map(function ($item) {
                     return $this->createCartItem(
                         $item->id,
-                        $item->product_id,
-                        $item->variant_id,
+                        $item->product,
+                        $item->variant,
                         $item->variant->calculate_discount,
                         $item->variant->price,
                         $item->variant->weight,
@@ -419,7 +424,22 @@ class Cart
                 return $cart_collection;
             }
             $cart_items = collect(unserialize($this->storage->get($this->instance)));
+            $product_ids = $cart_items->pluck('product')->values()->toArray();
+            $variant_ids = $cart_items->pluck('variant')->values()->toArray();
+            $products = Product::query()->whereIn('id', $product_ids)->with(['delivery', 'media'])->get();
+            $variants = ProductVariant::query()->whereIn('id', $variant_ids)->with(['incredible', 'combinations', 'shipment', 'warranty'])->get();
+
+            $cart_items = $cart_items->map(function ($cart_item, $k) use ($products, $variants) {
+                return (object) [
+                    'rowId' => $cart_item->rowId, 'id' => $cart_item->id, 'quantity' => $cart_item->quantity, 'price' => $cart_item->price,
+                    'weight' => $cart_item->weight, 'options' => $cart_item->options, 'variant' => new ProductVariantResource($variants->where('id', $cart_item->variant)->first()),
+                    'product' => new ProductResource($products->where('id', $cart_item->product)->first())
+                ];
+            })->values()->toArray();
         }
+
+
+
         $cart_items = collect(CartItemsResource::collection($cart_items));
         $cart_items = collect(json_decode($cart_items));
 

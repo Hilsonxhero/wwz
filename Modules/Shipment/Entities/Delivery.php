@@ -21,6 +21,11 @@ class Delivery extends Model
         });
     }
 
+    public function shipments()
+    {
+        return $this->hasMany(Shipment::class);
+    }
+
 
     // protected static function newFactory()
     // {

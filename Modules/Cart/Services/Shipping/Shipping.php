@@ -29,8 +29,7 @@ class Shipping
 
     public function content()
     {
-        $data = collect($this->cart_items)->groupBy('product.delivery')->transform(function ($item, $delivery) {
-
+        $data = collect($this->cart_items)->groupBy('product.delivery.id')->transform(function ($item, $delivery) {
             $default_shipment =  $this->shipmentRepo->default($delivery);
             $shipment = $this->shipmentCityRepo->shipment($delivery);
             $shipping =  !is_null($shipment)  ? $shipment->shipment : $default_shipment;
@@ -47,10 +46,10 @@ class Shipping
                 $shipping->has_interval_scope = $shipment->has_interval_scope;
                 if ($shipping->has_interval_scope)  $shipping->time_scopes = ShipmentDateResource::collection($shipment->dates);
             }
+
+
             return ['delivery_id' => $delivery, 'submit_type' =>  $shipping, 'cart_items' =>  $item];
         })->values();
-
-
 
         $grouped = $data->groupBy('submit_type.id')->map(function ($item2, $key) {
             return (object) array(

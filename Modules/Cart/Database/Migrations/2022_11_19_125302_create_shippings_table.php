@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId("user_id")->constrained('users');
             $table->foreignId("cart_id")->constrained('carts');
             $table->foreignId("shipment_id")->constrained('shipments');
-            $table->foreignId("shipment_interval_id")->constrained('shipment_intervals');
+            $table->foreignId("shipment_interval_id")->nullable()->constrained('shipment_intervals');
             $table->decimal("package_price", $precision = 64, $scale = 8);
             $table->timestamps();
         });

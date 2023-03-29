@@ -34,13 +34,13 @@ class CartController extends Controller
     public function index(Request $request)
     {
         $user = auth()->user();
-        return $user->available_cart;
-        if (!is_null($user->available_cart)) {
+        if (isset($user->available_cart)) {
             $user->cart->update([
                 'config' => null
             ]);
         }
         $cart = Cart::content();
+        // return $cart;
 
         return new CartResource($cart);
     }

@@ -26,6 +26,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Hilsonxhero\ElasticVision\Application\IndexSettings;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Modules\Order\Entities\OrderShippingItem;
+use Modules\Product\Casts\ProductDefaultShipment;
 use Modules\Product\Transformers\ProductVariantResource;
 
 class Product extends Model implements HasMedia, Explored
@@ -42,6 +43,9 @@ class Product extends Model implements HasMedia, Explored
         'status',
         'delivery_id',
     ];
+
+    protected $appends = ['default_shipment'];
+
 
     public function mappableAs(): array
     {
@@ -201,6 +205,10 @@ class Product extends Model implements HasMedia, Explored
         return $this->hasOne(ProductVariant::class)->ofMany('price', 'max');
     }
 
+
+
+
+
     public function registerMediaConversions(Media $media = null): void
     {
         $this->addMediaConversion('thumb')
@@ -278,7 +286,7 @@ class Product extends Model implements HasMedia, Explored
 
 
     /**
-     * Calculate default delivery.
+     * Get default delivery.
      *
      * @return \Illuminate\Database\Eloquent\Casts\Attribute
      */

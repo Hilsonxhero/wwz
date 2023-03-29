@@ -10,6 +10,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Support\Facades\Notification;
+use Modules\Cart\Services\Cart;
 use Modules\User\Services\VerifyCodeService;
 use Modules\User\Transformers\App\ShowUserResource;
 use Modules\User\Notifications\v1\App\VerifyPhoneNotification;
@@ -51,6 +52,8 @@ class AuthController extends Controller
 
     public function init(Request $request)
     {
+        // return Cart::content();
+
         return new ShowUserResource(auth()->user());
     }
 
