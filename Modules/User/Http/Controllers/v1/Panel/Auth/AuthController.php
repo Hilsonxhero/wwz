@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\User\Http\Controllers\v1\Application;
+namespace Modules\User\Http\Controllers\v1\Panel\Auth;
 
 use Carbon\Carbon;
 use App\Services\ApiService;
@@ -13,13 +13,13 @@ use Illuminate\Support\Facades\Notification;
 use Modules\User\Services\VerifyCodeService;
 use Modules\User\Transformers\App\ShowUserResource;
 use Modules\User\Notifications\v1\App\VerifyPhoneNotification;
+use Modules\User\Transformers\Panel\AuthUserResource;
 
 class AuthController extends Controller
 {
 
     public function authenticate(Request $request)
     {
-
         $request->validate([
             'phone' => ['required'],
         ]);
@@ -51,7 +51,7 @@ class AuthController extends Controller
 
     public function init(Request $request)
     {
-        return new ShowUserResource(auth()->user());
+        return new AuthUserResource(auth()->user());
     }
 
     public function logout(Request $request)

@@ -210,6 +210,26 @@ class Product extends Model implements HasMedia, Explored
             ->format(Manipulations::FORMAT_PNG);
     }
 
+
+    /**
+     * Get  grouped features
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+
+    protected function groupedFeatures(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $this->productFeatures ? collect($this->productFeatures)->groupBy('feature.parent.title')->transform(function ($item, $key) {
+                return ['feature' => $key, 'values' => $item->mapToGroups(function ($item) {
+                    return [$item['feature']['title'] => $item['value']];
+                })->transform(function ($xx, $uu) {
+                    return ['title' => $uu, 'values' => $xx];
+                })];
+            })->all() : null
+        );
+    }
+
     /**
      * Calculate total stock.
      *

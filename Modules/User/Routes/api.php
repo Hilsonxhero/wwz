@@ -47,7 +47,20 @@ Route::prefix('v1/application')->group(function () {
 });
 
 
-Route::prefix('v1/panel')->middleware(['auth.panel', 'auth:api'])->group(function () {
-    Route::apiResource("/users", UserController::class);
-    Route::get("/user/select", [UserController::class, 'select']);
+Route::prefix('v1/panel')->group(function () {
+
+    Route::prefix('')->middleware(['auth.panel', 'auth:api'])->group(function () {
+        Route::apiResource("/users", UserController::class);
+        Route::get("/user/select", [UserController::class, 'select']);
+    });
+
+    Route::prefix('auth')->group(
+        function () {
+            Route::get("init", [\Modules\User\Http\Controllers\v1\Panel\Auth\AuthController::class, 'init']);
+            Route::post("authenticate", [\Modules\User\Http\Controllers\v1\Panel\Auth\AuthController::class, 'authenticate']);
+            Route::post("login/otp", [\Modules\User\Http\Controllers\v1\Panel\Auth\LoginController::class, 'otp']);
+            Route::post("logout", [\Modules\User\Http\Controllers\v1\Panel\Auth\AuthController::class, 'logout'])->middleware(['auth:api']);
+            Route::get('personal-info', [PersonalInfoController::class, 'index']);
+        }
+    );
 });

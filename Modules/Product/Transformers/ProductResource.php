@@ -33,13 +33,14 @@ class ProductResource extends JsonResource
                     return $combination->variant;
                 })];
             })->values(),
-            'features' => $this->productFeatures ? collect($this->productFeatures)->groupBy('feature.parent.title')->transform(function ($item, $key) {
-                return ['feature' => $key, 'values' => $item->mapToGroups(function ($item) {
-                    return [$item['feature']['title'] => $item['value']];
-                })->transform(function ($xx, $uu) {
-                    return ['title' => $uu, 'values' => $xx];
-                })];
-            })->all() : null,
+            // 'features' => $this->productFeatures ? collect($this->productFeatures)->groupBy('feature.parent.title')->transform(function ($item, $key) {
+            //     return ['feature' => $key, 'values' => $item->mapToGroups(function ($item) {
+            //         return [$item['feature']['title'] => $item['value']];
+            //     })->transform(function ($xx, $uu) {
+            //         return ['title' => $uu, 'values' => $xx];
+            //     })];
+            // })->all() : null,
+            'features' => $this->grouped_features,
             'default_variant' => new ProductVariantResource($this->default_variant),
             'variants' =>  ProductVariantResource::collection($this->variants),
             'review' => array(
