@@ -80,8 +80,6 @@ class ProductRepository implements ProductRepositoryInterface
         }
 
         if (request()->filled('max_price') && request()->filled('min_price')) {
-
-
             $boolQuery->add('must', new Nested('variants', new Range(
                 'variants.selling_price',
                 ['gte' => request()->min_price]

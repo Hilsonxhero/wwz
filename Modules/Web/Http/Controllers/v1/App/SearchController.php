@@ -55,7 +55,6 @@ class SearchController extends Controller
      */
     public function products(Request $request)
     {
-
         $category = $this->categoryRepo->findBySlug($request->category_slug);
         // return $this->productRepo->filters($request->q, $category);
         $products = $this->productRepo->filters($request->q, $category);

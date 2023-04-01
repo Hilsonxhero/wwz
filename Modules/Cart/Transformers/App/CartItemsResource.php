@@ -26,7 +26,7 @@ class CartItemsResource extends JsonResource
             'uuid' => $this->rowId,
             'quantity' => $this->quantity,
             'product' => new ProductResource($this->product),
-            'variant' => $this->variant,
+            'variant' => new ProductVariantResource($this->variant),
             'price' => round($this->price),
             'subtotal' => ($this->variant->price * $this->quantity - round($this->variant->price * ($this->variant->calculate_discount / 100) * $this->quantity)),
             'total' => $this->variant->price * ($this->quantity),

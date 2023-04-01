@@ -22,10 +22,10 @@ class ProductVariantResource extends JsonResource
             // 'is_announcemented_promotion' => $this->is_announcemented_promotion,
             // 'is_announcemented_availability' => $this->is_announcemented_availability,
             'product' => $this->product_id,
-            // 'warranty' => [
-            //     'id' => $this->warranty->id,
-            //     'title' => $this->warranty->title,
-            // ],
+            'warranty' => [
+                'id' => $this->warranty->id,
+                'title' => $this->warranty->title,
+            ],
             'shipment' => [
                 'id' => $this->shipment->id,
                 'title' => $this->shipment->title,

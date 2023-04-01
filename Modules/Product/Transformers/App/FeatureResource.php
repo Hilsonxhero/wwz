@@ -18,6 +18,7 @@ class FeatureResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'values' => FeatureValueResource::collection($this->values),
+            'type' => "checkbox"
         ];
     }
 }
