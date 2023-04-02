@@ -40,6 +40,7 @@ class ProductServiceProvider extends ServiceProvider
     {
         $this->app->register(RouteServiceProvider::class);
         $this->app->register(ProductRepoServiceProvider::class);
+        $this->app->register(ProductScheduleServiceProvider::class);
     }
 
     /**

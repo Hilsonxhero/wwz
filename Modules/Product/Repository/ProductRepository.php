@@ -129,12 +129,12 @@ class ProductRepository implements ProductRepositoryInterface
             $query->whereDoesntHave('incredibles');
         });
 
-        $query->when(request()->input('doesnt_have_discount'), function ($query) use ($q) {
+        // $query->when(request()->input('doesnt_have_discount'), function ($query) use ($q) {
 
-            $query->whereHas('variants', function ($query) {
-                $query->where('discount', 0)->whereNull('discount_expire_at')->orWhereDate('discount_expire_at', '<', now());
-            });
-        });
+        //     $query->whereHas('variants', function ($query) {
+        //         $query->where('discount', 0)->whereNull('discount_expire_at')->orWhereDate('discount_expire_at', '<', now());
+        //     });
+        // });
         return $query->take(25)->get();
     }
 

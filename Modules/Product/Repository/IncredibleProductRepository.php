@@ -28,6 +28,8 @@ class IncredibleProductRepository implements IncredibleProductRepositoryInterfac
             ->take(15)
             ->get();
     }
+
+
     public function promotions()
     {
         // $query = IncredibleProduct::query()->with('variant')->orderBy('created_at', 'desc')->groupBy('product_id');
@@ -38,6 +40,14 @@ class IncredibleProductRepository implements IncredibleProductRepositoryInterfac
         }
 
         return $search->paginate(20);
+    }
+
+
+    public function deleteExpired()
+    {
+        $products = IncredibleProduct::where([
+            ['discount_expire_at', '<', now()]
+        ])->delete();
     }
 
 

@@ -5,6 +5,7 @@ namespace Modules\Product\Repository;
 interface IncredibleProductRepositoryInterface
 {
     public function find($id);
+    public function deleteExpired();
     public function promotions();
     public function select($id);
     public function all();
