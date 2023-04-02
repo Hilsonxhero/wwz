@@ -21,7 +21,9 @@ class OrderShippingResource extends JsonResource
             'order_items_cost' => $this->total_price,
             'order_items' => OrderShippingItemResource::collection($this->items),
             'date' => !is_null($this->date) ? formatGregorian($this->date, '%A, %d %B') : $this->shipment->delivery_date,
-
+            'status' => $this->status,
+            'status_fa' => $this->order_status,
+            'reference_code' => $this->reference_code,
         ];
     }
 }

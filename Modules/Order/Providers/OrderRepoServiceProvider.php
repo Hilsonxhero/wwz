@@ -5,6 +5,8 @@ namespace Modules\Order\Providers;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Modules\Order\Repository\OrderRepository;
 use Modules\Order\Repository\OrderRepositoryInterface;
+use Modules\Order\Repository\OrderShippingRepository;
+use Modules\Order\Repository\OrderShippingRepositoryInterface;
 
 class OrderRepoServiceProvider extends ServiceProvider
 {
@@ -26,5 +28,6 @@ class OrderRepoServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->app->bind(OrderRepositoryInterface::class, OrderRepository::class);
+        $this->app->bind(OrderShippingRepositoryInterface::class, OrderShippingRepository::class);
     }
 }

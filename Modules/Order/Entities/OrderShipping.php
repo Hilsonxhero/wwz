@@ -2,6 +2,7 @@
 
 namespace Modules\Order\Entities;
 
+use Modules\Order\Casts\OrderStatus;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Cart\Entities\CartShipping;
 use Modules\Shipment\Entities\Shipment;
@@ -19,8 +20,20 @@ class OrderShipping extends Model
         'date',
         'start_date',
         'end_date',
-        'status'
+        'status',
+        'reference_code'
     ];
+
+    protected $casts = [
+        'order_status' => OrderStatus::class
+    ];
+
+    public static function booted()
+    {
+        static::saving(function ($order) {
+            $order->reference_code = random_int(1000, 9999);
+        });
+    }
 
     public function order()
     {
