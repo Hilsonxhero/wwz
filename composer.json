@@ -12,7 +12,7 @@
         "awssat/laravel-visits": "^5.0",
         "cviebrock/eloquent-sluggable": "^9.0",
         "guzzlehttp/guzzle": "^7.2",
-        "hilsonxhero/elasticvision": "^1.0",
+        "hilsonxhero/elasticvision": "^2.0",
         "intervention/image": "^2.7",
         "laravel/framework": "^9.19",
         "laravel/octane": "^1.4",

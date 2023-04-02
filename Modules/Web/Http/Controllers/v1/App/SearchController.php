@@ -58,6 +58,7 @@ class SearchController extends Controller
         $category = $this->categoryRepo->findBySlug($request->category_slug);
         // return $this->productRepo->filters($request->q, $category);
         $products = $this->productRepo->filters($request->q, $category);
+        // return $products;
         $products_collection =  ProductSearchResource::collection($products);
 
         ApiService::_success(

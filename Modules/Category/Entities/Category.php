@@ -23,7 +23,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Hilsonxhero\ElasticVision\Application\IndexSettings;
 
-class Category extends Model implements HasMedia, Explored, IndexSettings
+class Category extends Model implements HasMedia, Explored
+// IndexSettings
 {
     use HasFactory, SoftDeletes, Sluggable, InteractsWithMedia, Searchable;
 
@@ -43,15 +44,15 @@ class Category extends Model implements HasMedia, Explored, IndexSettings
             'id' => 'keyword',
             'title_en' => [
                 'type' => 'text',
-                'analyzer' => 'my_analyzer',
+                'analyzer' => 'keyword',
             ],
             'title' => [
                 'type' => 'text',
-                'analyzer' => 'my_analyzer',
+                'analyzer' => 'keyword',
             ],
             'status' => [
                 'type' => 'text',
-                // 'analyzer' => 'synonym',
+                'analyzer' => 'keyword',
             ],
         ];
     }
@@ -67,29 +68,29 @@ class Category extends Model implements HasMedia, Explored, IndexSettings
         ];
     }
 
-    public function indexSettings(): array
-    {
-        return [
-            "analysis" => [
-                "analyzer" => [
-                    "my_analyzer" => [
-                        "type" => "custom",
-                        "tokenizer" => "standard",
-                        "filter" => ["lowercase", "my_filter"]
-                    ]
-                ],
-                "filter" => [
-                    "my_filter" => [
-                        "type" => "ngram",
-                        "min_gram" => 2,
-                    ]
-                ]
-            ],
-            "index" => [
-                "max_ngram_diff" => 13
-            ]
-        ];
-    }
+    // public function indexSettings(): array
+    // {
+    //     return [
+    //         "analysis" => [
+    //             "analyzer" => [
+    //                 "my_analyzer" => [
+    //                     "type" => "custom",
+    //                     "tokenizer" => "standard",
+    //                     "filter" => ["lowercase", "my_filter"]
+    //                 ]
+    //             ],
+    //             "filter" => [
+    //                 "my_filter" => [
+    //                     "type" => "ngram",
+    //                     "min_gram" => 2,
+    //                 ]
+    //             ]
+    //         ],
+    //         "index" => [
+    //             "max_ngram_diff" => 13
+    //         ]
+    //     ];
+    // }
 
 
     /**

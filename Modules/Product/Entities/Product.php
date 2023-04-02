@@ -44,7 +44,7 @@ class Product extends Model implements HasMedia, Explored
         'delivery_id',
     ];
 
-    protected $appends = ['default_shipment'];
+    // protected $appends = ['default_shipment'];
 
 
     public function mappableAs(): array
@@ -82,29 +82,29 @@ class Product extends Model implements HasMedia, Explored
         ];
     }
 
-    public function indexSettings(): array
-    {
-        return [
-            "analysis" => [
-                "analyzer" => [
-                    "my_analyzer" => [
-                        "type" => "custom",
-                        "tokenizer" => "standard",
-                        "filter" => ["lowercase", "my_filter"]
-                    ]
-                ],
-                "filter" => [
-                    "my_filter" => [
-                        "type" => "ngram",
-                        "min_gram" => 2,
-                    ]
-                ]
-            ],
-            "index" => [
-                "max_ngram_diff" => 13
-            ]
-        ];
-    }
+    // public function indexSettings(): array
+    // {
+    //     return [
+    //         "analysis" => [
+    //             "analyzer" => [
+    //                 "my_analyzer" => [
+    //                     "type" => "custom",
+    //                     "tokenizer" => "standard",
+    //                     "filter" => ["lowercase", "my_filter"]
+    //                 ]
+    //             ],
+    //             "filter" => [
+    //                 "my_filter" => [
+    //                     "type" => "ngram",
+    //                     "min_gram" => 2,
+    //                 ]
+    //             ]
+    //         ],
+    //         "index" => [
+    //             "max_ngram_diff" => 13
+    //         ]
+    //     ];
+    // }
 
 
     /**
@@ -279,8 +279,9 @@ class Product extends Model implements HasMedia, Explored
     protected function hasStock(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => $this->variants()->sum('stock') > 0 ? true : false,
-            set: fn (string $value) =>  ['has_stock' => $value],
+            // get: fn ($value) => $this->variants()->sum('stock') > 0 ? true : false,
+            get: fn ($value) => true,
+            // set: fn (string $value) =>  ['has_stock' => $value],
         );
     }
 
