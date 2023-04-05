@@ -3,6 +3,7 @@
 namespace Modules\Product\Transformers;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Modules\Seller\Transformers\v1\App\SellerResource;
 
 class ProductVariantResource extends JsonResource
 {
@@ -17,6 +18,7 @@ class ProductVariantResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'seller' => new SellerResource($this->seller),
             'has_stock' => $this->has_stock,
             'shipment' => [
                 'id' => $this->shipment->id,
