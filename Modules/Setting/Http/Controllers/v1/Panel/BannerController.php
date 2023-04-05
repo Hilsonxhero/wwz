@@ -38,7 +38,21 @@ class BannerController extends Controller
      */
     public function store(SettingBannerRequest $request)
     {
-        $this->bannerRepo->create($request);
+        $data = [
+            'title' => $request->title,
+            'url' => $request->url,
+            'type' => $request->type,
+            'page' => $request->page,
+            'status' => $request->status,
+        ];
+        $banner = $this->bannerRepo->create($data);
+
+        base64($request->banner) ? $banner->addMediaFromBase64($request->banner)->toMediaCollection('main')
+            : $banner->addMedia($request->banner)->toMediaCollection('main');
+
+        base64($request->mobile_banner) ? $banner->addMediaFromBase64($request->mobile_banner)->toMediaCollection('mobile')
+            : $banner->addMedia($request->mobile_banner)->toMediaCollection('mobile');
+
         ApiService::_success(trans('response.responses.200'));
     }
 
@@ -76,6 +90,11 @@ class BannerController extends Controller
             $banner->clearMediaCollectionExcept('main');
             base64($request->banner) ? $banner->addMediaFromBase64($request->banner)->toMediaCollection('main')
                 : $banner->addMedia($request->banner)->toMediaCollection('main');
+        }
+        if ($request->filled('mobile_banner')) {
+            $banner->clearMediaCollectionExcept('mobile');
+            base64($request->mobile_banner) ? $banner->addMediaFromBase64($request->mobile_banner)->toMediaCollection('mobile')
+                : $banner->addMedia($request->mobile_banner)->toMediaCollection('mobile');
         }
         ApiService::_success(trans('response.responses.200'));
     }

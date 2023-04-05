@@ -74,6 +74,7 @@ class VariantController extends Controller
         ]);
         $data = [
             'name' => $request->name,
+            'value' => $request->value,
             'type' => $request->type,
         ];
 

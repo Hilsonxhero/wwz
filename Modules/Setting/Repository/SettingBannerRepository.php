@@ -29,16 +29,9 @@ class SettingBannerRepository implements SettingBannerRepositoryInterface
 
     public function create($data)
     {
-        $page = Page::query()->where('id', $data->page)->first();
+        $page = Page::query()->where('id', $data['page'])->first();
 
-        $banner =  $page->banners()->create([
-            'title' => $data->title,
-            'url' => $data->url,
-            'type' => $data->type,
-            'status' => $data->status,
-        ]);
-        base64($data->image) ? $banner->addMediaFromBase64($data->image)->toMediaCollection('main')
-            : $banner->addMedia($data->image)->toMediaCollection('main');
+        $banner =  $page->banners()->create($data);;
         return $banner;
     }
     public function update($id, $data)

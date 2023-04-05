@@ -25,7 +25,7 @@ class SettingDatabaseSeeder extends Seeder
             ['name' => "phone", 'value' => json_encode("021454323")],
             ['name' => "address", 'value' => json_encode("test")],
             ['name' => "copyright", 'value' => json_encode("test")],
-            ['name' => "logo", 'value' => json_encode(asset('media/statics/logo.svg'))],
+            ['name' => "logo", 'value' => json_encode("http://127.0.0.1/media/statics/logo.svg")],
             ['name' => "links", 'value' => json_encode([
                 ["title" => "خدمات مشتریان", 'values' => [
                     ["title" => "پاسخ به پرسش های متداول", "url" => "#"],

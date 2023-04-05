@@ -1,5 +1,8 @@
 <?php
 
+use Jenssegers\Agent\Agent;
+
+
 /**
  * @param $text
  * @param $limit
@@ -28,4 +31,20 @@ function formatGregorian($date, $format = 'Y/m/d H:i')
 {
     if ($date)  return \Morilog\Jalali\CalendarUtils::strftime($format, strtotime($date));
     return null;
+}
+
+function isMobile()
+{
+    $agent = new Agent();
+    $agent->setUserAgent(request()->header('user-agent'));
+    return $agent->isPhone() ? true : false;
+    // return preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|up\.browser|up\.link|webos|wos)/i", request()->header('user-agent'));
+}
+
+
+function isTablet()
+{
+    $agent = new Agent();
+    $agent->setUserAgent(request()->header('user-agent'));
+    return $agent->isTablet() ? true : false;
 }

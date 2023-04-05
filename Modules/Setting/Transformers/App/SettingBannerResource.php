@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Setting\Transformers;
+namespace Modules\Setting\Transformers\App;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -25,8 +25,7 @@ class SettingBannerResource extends JsonResource
                 'id' => $this->bannerable->id,
                 'title' => $this->bannerable->title,
             ],
-            'banner' =>  $this->getFirstMediaUrl('main'),
-            'mobile_banner' => $this->getFirstMediaUrl('mobile'),
+            'banner' => isMobile() ? $this->getFirstMediaUrl('mobile') :  $this->getFirstMediaUrl('main'),
         ];
     }
 }

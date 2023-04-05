@@ -7,16 +7,16 @@ use Illuminate\Http\Request;
 use Modules\Page\Entities\Page;
 use Illuminate\Routing\Controller;
 use Modules\Article\Transformers\ArticleResource;
-use Modules\Setting\Transformers\SettingBannerResource;
+use Modules\Product\Transformers\ProductResource;
+use Modules\Category\Transformers\CategoryResource;
+use Modules\Page\Repository\PageRepositoryInterface;
 use Modules\Article\Repository\ArticleRepositoryInterface;
 use Modules\Product\Repository\ProductRepositoryInterface;
 use Modules\Product\Transformers\IncredibleProductResource;
+use Modules\Setting\Transformers\App\SettingBannerResource;
 use Modules\Category\Repository\CategoryRepositoryInterface;
 use Modules\Category\Repository\RecommendationCategoryRepoInterface;
-use Modules\Category\Transformers\CategoryResource;
-use Modules\Page\Repository\PageRepositoryInterface;
 use Modules\Product\Repository\IncredibleProductRepositoryInterface;
-use Modules\Product\Transformers\ProductResource;
 
 class LandingController extends Controller
 {

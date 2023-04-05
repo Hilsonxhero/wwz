@@ -28,6 +28,8 @@ class ProductResource extends JsonResource
             'status' => $this->status,
             'media' => [
                 'thumb' => $this->getFirstMediaUrl('main', 'thumb'),
+                'base64_encode' => "data:image/png;base64," . base64_encode(file_get_contents(asset($this->getFirstMediaUrl('main', 'thumb')))),
+
             ],
             'rating' => round($this->scores_avg_value),
         ];

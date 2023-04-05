@@ -40,6 +40,7 @@ class ProductResource extends JsonResource
             'media' => [
                 'main' => $this->getFirstMediaUrl('main'),
                 'thumb' => $this->getFirstMediaUrl('main', 'thumb'),
+
                 'galleries' => ProductGalleryResource::collection($this->images)
             ],
             'rating' => round($this->scores_avg_value),
