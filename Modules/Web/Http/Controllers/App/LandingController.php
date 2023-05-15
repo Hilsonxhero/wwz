@@ -47,7 +47,8 @@ class LandingController extends Controller
         $landing_page = $this->pageRepo->findByTitle("landing");
         $articles = $this->articleRepo->take();
         $best_selling_products = ProductResource::collection($this->productRepo->getBestSelling());
-        $banners = $landing_page->banners();
+        // $banners = $landing_page->banners();
+        // return $banners->where('type', 'top')->get();
         $data = [
             'incredible_products' => IncredibleProductResource::collection($incredible_products),
             'best_selling_products' => $best_selling_products,
@@ -55,13 +56,14 @@ class LandingController extends Controller
             'articles' => ArticleResource::collection($articles),
             'banners' =>  array(
                 'header_banners' => $landing_page ?
-                    SettingBannerResource::collection($banners->where('type', 'hero')->get()) : array(),
+                    SettingBannerResource::collection($landing_page->banners()->where('type', 'hero')->get()) : array(),
                 'top_banners' => $landing_page ?
-                    SettingBannerResource::collection($banners->where('type', 'top')->get()) : array(),
+                    SettingBannerResource::collection($landing_page->banners()->where('type', 'top')->get()) : array(),
                 'middle_banners' => $landing_page ?
-                    SettingBannerResource::collection($banners->where('type', 'middle')->get()) : array()
+                    SettingBannerResource::collection($landing_page->banners()->where('type', 'middle')->get()) : array()
             )
         ];
+
 
         ApiService::_success($data);
     }

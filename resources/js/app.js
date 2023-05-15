@@ -1,10 +1,9 @@
 import "./bootstrap";
 
 import { createApp } from "vue";
-console.log("here");
 
 import app from "./layouts/app.vue";
 
-const ww = createApp(app);
+const init = createApp(app);
 
-ww.mount("#app");
+init.mount("#app");
