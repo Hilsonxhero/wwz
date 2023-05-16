@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use Modules\Payment\Entities\Gateway;
+use Modules\Payment\Enums\GatewayStatus;
 
 return new class extends Migration
 {
@@ -21,7 +22,7 @@ return new class extends Migration
             $table->text("config")->nullable();
             $table->boolean("is_default")->default(false);
             $table->enum("type", Gateway::$types);
-            $table->enum("status", Gateway::$statuses);
+            $table->string("status")->default(GatewayStatus::ENABLE->value);
             $table->softDeletes();
             $table->timestamps();
         });

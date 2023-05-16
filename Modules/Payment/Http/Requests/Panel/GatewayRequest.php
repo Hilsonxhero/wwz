@@ -3,9 +3,11 @@
 namespace Modules\Payment\Http\Requests\Panel;
 
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 use Modules\Payment\Entities\Gateway;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Modules\Payment\Enums\GatewayStatus;
 
 class GatewayRequest extends FormRequest
 {
@@ -23,7 +25,7 @@ class GatewayRequest extends FormRequest
                 'config' => ['nullable'],
                 'type' => ['required'],
                 'is_default' => ['required'],
-                'status' => ['required', Rule::in(Gateway::$statuses)],
+                'status' => ['required', new Enum(GatewayStatus::class)],
             ];
         }
 
@@ -33,7 +35,7 @@ class GatewayRequest extends FormRequest
             'config' => ['nullable'],
             'type' => ['required'],
             'is_default' => ['required'],
-            'status' => ['required', Rule::in(Gateway::$statuses)],
+            'status' => ['required', new Enum(GatewayStatus::class)],
         ];
     }
 

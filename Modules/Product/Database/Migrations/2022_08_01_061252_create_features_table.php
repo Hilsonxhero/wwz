@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use Modules\Product\Entities\Feature;
+use Modules\Product\Enums\FeatureStatus;
 
 return new class extends Migration
 {
@@ -20,7 +21,7 @@ return new class extends Migration
             $table->foreignId("category_id")->constrained('categories')->onDelete('cascade');
             $table->foreignId("parent_id")->nullable()->constrained('features')->onDelete('cascade');
             $table->integer("position")->default(0);
-            $table->enum('status', Feature::$statuses)->default(Feature::ENABLE_STATUS);
+            $table->string('status')->default(FeatureStatus::ENABLE->value);
             $table->softDeletes();
             $table->timestamps();
         });

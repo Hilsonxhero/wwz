@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use Modules\State\Entities\State;
+use Modules\State\Enums\StateStatus;
 
 return new class extends Migration
 {
@@ -18,7 +19,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('zone_code')->nullable();
-            $table->enum('status', State::$statuses)->default(State::ENABLE_STATUS);
+            $table->string('status')->default(StateStatus::ENABLE->value);
             $table->timestamps();
         });
     }

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use Modules\Warranty\Entities\Warranty;
+use Modules\Warranty\Enums\WarrantyStatus;
 
 return new class extends Migration
 {
@@ -18,7 +19,7 @@ return new class extends Migration
             $table->id();
             $table->string("title");
             $table->string("description")->nullable();
-            $table->enum('status', Warranty::$statuses)->default(Warranty::ENABLE_STATUS);
+            $table->string('status')->default(WarrantyStatus::ENABLE->value);
             $table->timestamps();
         });
     }

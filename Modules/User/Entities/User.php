@@ -30,14 +30,6 @@ class User extends Authenticatable implements HasMedia
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes, InteractsWithMedia, HasRoles;
 
-    const STATUS_ACTIVE = 'active';
-    const STATUS_INACTIVE = 'inactive';
-    const STATUS_BAN = 'ban';
-
-    public static $statuses = [
-        self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_BAN
-    ];
-
     protected $fillable = [
         'city_id', 'username', 'wallet', 'ip', 'point', 'email', 'phone', 'email_verified_at', 'password',
         'status', 'job', 'national_identity_number', 'gender', 'cart_number', 'iban', 'is_superuser',

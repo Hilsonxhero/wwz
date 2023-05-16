@@ -18,15 +18,6 @@ class Banner extends Model implements HasMedia
         'title', 'url', 'type', 'bannerable_id', 'bannerable_type', 'position', 'status',
     ];
 
-    const DISABLE_STATUS = 'disable';
-    const ENABLE_STATUS = 'enable';
-    const PENDING_STATUS = 'pending';
-    const REJECTED_STATUS = 'rejected';
-
-    static $statuses = [self::DISABLE_STATUS, self::ENABLE_STATUS, self::PENDING_STATUS, self::REJECTED_STATUS];
-
-
-
     public static function last()
     {
         return static::all()->last();

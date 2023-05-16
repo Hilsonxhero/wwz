@@ -3,9 +3,11 @@
 namespace Modules\Payment\Http\Requests\Panel;
 
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
 use Modules\Payment\Entities\PaymentMethod;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Modules\Payment\Enums\PaymentMethodStatus;
 
 class PaymentMethodRequest extends FormRequest
 {
@@ -23,7 +25,7 @@ class PaymentMethodRequest extends FormRequest
                 'description' => ['required'],
                 'type' => ['required'],
                 'is_default' => ['required'],
-                'status' => ['required', Rule::in(PaymentMethod::$statuses)],
+                'status' => ['required', new Enum(PaymentMethodStatus::class)],
             ];
         }
 
@@ -33,7 +35,7 @@ class PaymentMethodRequest extends FormRequest
             'description' => ['required'],
             'type' => ['required'],
             'is_default' => ['required'],
-            'status' => ['required', Rule::in(PaymentMethod::$statuses)],
+            'status' => ['required', new Enum(PaymentMethodStatus::class)],
         ];
     }
 

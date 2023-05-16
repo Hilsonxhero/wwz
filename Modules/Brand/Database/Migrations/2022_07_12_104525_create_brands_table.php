@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use Modules\Brand\Entities\Brand;
+use Modules\Brand\Enum\BrandStatus;
 
 return new class extends Migration
 {
@@ -22,7 +23,7 @@ return new class extends Migration
             $table->string('link')->nullable();
             $table->text('description')->nullable();
             $table->foreignId('category_id')->nullable()->constrained('categories')->onDelete('cascade');
-            $table->enum('status', Brand::$statuses)->default(Brand::ENABLE_STATUS);
+            $table->string('status')->default(BrandStatus::ENABLE);
             $table->boolean('is_special')->default(0);
             $table->softDeletes();
             $table->timestamps();

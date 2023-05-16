@@ -7,7 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
 use Illuminate\Routing\Controller;
+use Illuminate\Validation\Rules\Enum;
 use Modules\Product\Entities\Feature;
+use Modules\Product\Enums\FeatureStatus;
 use Modules\Product\Transformers\FeatureResource;
 use Modules\Product\Transformers\FeatureValueResource;
 use Modules\Product\Repository\FeatureRepositoryInterface;
@@ -110,7 +112,7 @@ class FeatureController extends Controller
     {
         ApiService::Validator($request->all(), [
             'title' => ['required'],
-            'status' => ['required', Rule::in(Feature::$statuses)],
+            'status' => ['required', new Enum(FeatureStatus::class)],
             'category_id' => ['required', 'exists:categories,id'],
         ]);
 

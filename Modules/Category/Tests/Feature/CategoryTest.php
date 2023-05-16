@@ -12,25 +12,45 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class CategoryTest extends TestCase
 {
     use RefreshDatabase;
+
+    public $category_data;
+
+    public $user;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->category_data =  [
+            'title' => 'New Category',
+            'title_en' => 'New Category (English)',
+            'slug' => 'new-category',
+            'link' => 'https://example.com',
+            'description' => 'This is a new category.',
+            'status' => CategoryStatus::ENABLE->value,
+            'image' => \Illuminate\Http\Testing\File::image('photo.jpg')
+        ];
+
+        // $this->createUser();
+    }
+
+
     /**
-     * A basic feature test example.
+     * Test to get categories
      *
      * @return void
      */
-    public function testCategoryExample()
+    public function testGetCategoryList()
     {
         $category = Category::factory(3)->create();
 
-        $response = $this->get('/api/v1/application/categories');
+        $response = $this->getJson('/api/v1/application/categories');
 
         $response->assertStatus(200);
-
-        // $response->assertJsonFragment(['title' => $category->title]);
-
     }
 
     /**
-     * create  category.
+     * Test to create category.
      *
      * @return void
      */
@@ -39,26 +59,15 @@ class CategoryTest extends TestCase
 
         config()->set('medialibrary.disk_name', 'testing');
 
-        $categoryData = [
-            'title' => 'New Category',
-            'title_en' => 'New Category (English)',
-            'slug' => 'new-category',
-            'link' => 'https://example.com',
-            'description' => 'This is a new category.',
-            'status' => CategoryStatus::ENABLE->value,
-            'image' => \Illuminate\Http\Testing\File::image('photo.jpg')
-
-        ];
-
         $this->createUser();
 
-        $response = $this->post('/api/v1/panel/categories', $categoryData);
+        $response = $this->postJson('/api/v1/panel/categories', $this->category_data);
 
         $response->assertStatus(200);
     }
 
     /**
-     * create  category.
+     * Test to user cannot access create a category.
      *
      * @return void
      */
@@ -67,23 +76,13 @@ class CategoryTest extends TestCase
 
         config()->set('medialibrary.disk_name', 'testing');
 
-        $categoryData = [
-            'title' => 'New Category',
-            'title_en' => 'New Category (English)',
-            'slug' => 'new-category',
-            'link' => 'https://example.com',
-            'description' => 'This is a new category.',
-            'status' => CategoryStatus::ENABLE->value,
-            'image' => \Illuminate\Http\Testing\File::image('photo.jpg')
-        ];
-
-        $response = $this->post('/api/v1/panel/categories', $categoryData);
+        $response = $this->postJson('/api/v1/panel/categories', $this->category_data);
 
         $response->assertStatus(401);
     }
 
     /**
-     * update  category.
+     * Test to update a category
      *
      * @return void
      */
@@ -93,26 +92,31 @@ class CategoryTest extends TestCase
 
         config()->set('medialibrary.disk_name', 'testing');
 
-        $updatedCategoryData = [
-            'title' => 'Updated Category',
-            'title_en' => 'Updated Category (English)',
-            'slug' => 'updated-category',
-            'link' => 'https://example.com/updated-category',
-            'description' => 'This category has been updated.',
-            'status' => CategoryStatus::DISABLE->value,
-            'image' => \Illuminate\Http\Testing\File::image('photo.jpg')
-        ];
+        $this->createUser();
+
+        $response = $this->putJson('/api/v1/panel/categories/' . $category->id, $this->category_data);
+
+        $response->assertStatus(200);
+    }
+    /**
+     * Test to check category validation errors.
+     *
+     * @return void
+     */
+    public function testUpdateCategoryValidationError()
+    {
+        $category = Category::factory()->create();
 
         $this->createUser();
 
-        $response = $this->put('/api/v1/panel/categories/' . $category->id, $updatedCategoryData);
+        $response = $this->putJson('/api/v1/panel/categories/' . $category->id, [...$this->category_data, 'title' => ""]);
 
-        $response->assertStatus(200);
+        $response->assertStatus(422);
     }
 
 
     /**
-     * delete  category.
+     * Test to delete a category
      *
      * @return void
      */
@@ -122,9 +126,11 @@ class CategoryTest extends TestCase
 
         $this->createUser();
 
-        $response = $this->delete('/api/v1/panel/categories/' . $category->id);
+        $response = $this->deleteJson('/api/v1/panel/categories/' . $category->id);
 
         $response->assertStatus(200);
+
+        $this->assertDatabaseMissing('categories', $category->toArray());
     }
 
 

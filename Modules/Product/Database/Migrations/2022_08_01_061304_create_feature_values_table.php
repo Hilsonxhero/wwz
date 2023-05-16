@@ -1,9 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Schema;
+use Modules\Product\Enums\FeatureStatus;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Migrations\Migration;
 use Modules\Product\Entities\FeatureValue;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
@@ -18,7 +19,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('feature_id')->constrained('features')->onDelete('cascade');
             $table->string('title');
-            $table->enum('status', FeatureValue::$statuses)->default(FeatureValue::ENABLE_STATUS);
+            $table->string('status')->default(FeatureStatus::ENABLE->value);
             $table->softDeletes();
             $table->timestamps();
         });

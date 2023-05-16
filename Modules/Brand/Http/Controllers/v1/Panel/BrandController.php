@@ -57,23 +57,6 @@ class BrandController extends Controller
             'is_special' => $request->is_special
         ];
         $brand = $this->brandRepo->create($data);
-        // if (base64($request->logo)) {
-        //     return "base 64";
-        // } else {
-        //     return "not base 64";
-        // }
-        // if (base64($request->logo)) {
-        //     return "base 64";
-        // } else {
-        //     return "not base 64";
-        // }
-
-        // if (base64($request->logo)) {
-        //     return "base 64";
-        // } else {
-        //     return $request->logo;
-        // }
-
 
         base64($request->logo) ? $brand->addMediaFromBase64($request->logo)->toMediaCollection()
             : $brand->addMedia($request->logo)->toMediaCollection();
@@ -105,9 +88,10 @@ class BrandController extends Controller
             'title_en' => ['required'],
             'description' => ['required'],
             'link' => ['nullable'],
-            // 'status' => ['nullable', Rule::in(Brand::$statuses)],
             'category_id' => ['nullable', 'exists:categories,id'],
         ]);
+
+
         $data = [
             'title' => $request->title,
             'title_en' => $request->title_en,

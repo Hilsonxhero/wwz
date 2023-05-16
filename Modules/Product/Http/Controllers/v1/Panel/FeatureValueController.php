@@ -5,8 +5,10 @@ namespace Modules\Product\Http\Controllers\v1\Panel;
 use App\Services\ApiService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Routing\Controller;
 use Illuminate\Validation\Rule;
+use Illuminate\Routing\Controller;
+use Illuminate\Validation\Rules\Enum;
+use Modules\Product\Enums\FeatureStatus;
 use Modules\Product\Entities\FeatureValue;
 use Modules\Product\Repository\FeatureValueRepositoryInterface;
 
@@ -79,7 +81,7 @@ class FeatureValueController extends Controller
         ApiService::Validator($request->all(), [
             'title' => ['required'],
             'feature_id' => ['required', 'exists:features,id'],
-            'status' => ['required', Rule::in(FeatureValue::$statuses)]
+            'status' => ['required', new Enum(FeatureStatus::class)]
         ]);
 
         $data = [
