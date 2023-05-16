@@ -28,6 +28,7 @@ use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Modules\Order\Entities\OrderShippingItem;
 use Modules\Product\Casts\ProductDefaultShipment;
 use Modules\Product\Transformers\ProductVariantResource;
+use Modules\Seller\Entities\Seller;
 
 class Product extends Model implements HasMedia, Explored
 {
@@ -177,6 +178,12 @@ class Product extends Model implements HasMedia, Explored
     {
         return $this->hasManyThrough(ProductVariantCombination::class, ProductVariant::class);
     }
+
+    public function sellers()
+    {
+        return $this->hasManyThrough(Seller::class, ProductVariant::class, 'product_id', 'id', 'id', 'seller_id')->groupBy('sellers.id');
+    }
+
 
     public function scores()
     {

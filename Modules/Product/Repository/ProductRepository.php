@@ -3,22 +3,19 @@
 namespace Modules\Product\Repository;
 
 use App\Services\ApiService;
-use Illuminate\Support\Facades\DB;
 use Modules\Product\Entities\Product;
 use Modules\Comment\Enums\CommentStatus;
 use Modules\Product\Enums\ProductStatus;
-use Illuminate\Database\Eloquent\Builder;
 use Modules\Product\Entities\IncredibleProduct;
 use Hilsonxhero\ElasticVision\Domain\Syntax\Term;
 use Hilsonxhero\ElasticVision\Domain\Syntax\Range;
 use Hilsonxhero\ElasticVision\Domain\Syntax\Terms;
 use Hilsonxhero\ElasticVision\Domain\Syntax\Nested;
-use Hilsonxhero\ElasticVision\Domain\Syntax\Matching;
 use Modules\Product\Enums\ProductQuestionStatusStatus;
 use Hilsonxhero\ElasticVision\Domain\Syntax\MatchPhrase;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Hilsonxhero\ElasticVision\Domain\Syntax\Compound\BoolQuery;
-use Hilsonxhero\ElasticVision\Infrastructure\Scout\ElasticEngine;
+
 
 class ProductRepository implements ProductRepositoryInterface
 {
@@ -38,6 +35,13 @@ class ProductRepository implements ProductRepositoryInterface
         $query = IncredibleProduct::query()->with('variant')->orderBy('created_at', 'desc')->groupBy('product_id');
 
         return $query->paginate(20);
+    }
+
+    public function relatedProducts($category)
+    {
+        $query = Product::query()->where('category_id', $category)->orderBy('created_at', 'desc')->take(12);
+
+        return $query->get();
     }
 
     public function getBestSelling()

@@ -93,3 +93,7 @@ http://localhost:5601
 ## Pull Requests
 
 Thank you for investing your time in contributing to our project.
+
+## Database Diagram
+
+https://dbdiagram.io/d/62ca934dcc1bc14cc58aab14

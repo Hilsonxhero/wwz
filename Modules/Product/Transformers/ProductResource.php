@@ -6,6 +6,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Modules\Category\Transformers\CategoryResource;
 use Modules\Product\Transformers\App\ProductReviewResource;
 use Modules\Product\Transformers\Panel\ProductGalleryResource;
+use Modules\Seller\Transformers\v1\App\SellerResource;
 use Modules\Shipment\Transformers\Panel\DeliveryResource;
 
 class ProductResource extends JsonResource
@@ -30,6 +31,7 @@ class ProductResource extends JsonResource
             'combinations' =>  $this->grouped_combinations,
             'features' => $this->grouped_features,
             'default_variant' => new ProductVariantResource($this->defaultVariant),
+            'sellers' => SellerResource::collection($this->sellers),
             'variants' =>  ProductVariantResource::collection($this->variants),
             'review' => array(
                 'content' => $this->review,
