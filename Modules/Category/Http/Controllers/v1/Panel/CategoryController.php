@@ -115,9 +115,9 @@ class CategoryController extends Controller
         $category = $this->categoryRepo->update($id, $data);
 
         if ($request->image) {
-            // $category->last()->delete();
             $category->clearMediaCollectionExcept();
-            $category->addMediaFromBase64($request->image)->toMediaCollection();
+            base64($request->image) ? $category->addMediaFromBase64($request->image)->toMediaCollection()
+                : $category->addMedia($request->image)->toMediaCollection();
         }
 
 

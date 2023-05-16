@@ -23,6 +23,7 @@ use Modules\Cart\Entities\Cart as EntitiesCart;
 use Modules\Cart\Entities\Shipping;
 use Modules\Cart\Enums\CartStatus;
 use Modules\Order\Entities\Order;
+use Modules\User\Database\factories\UserFactory;
 use Modules\Voucher\Entities\Voucher;
 
 class User extends Authenticatable implements HasMedia
@@ -186,10 +187,10 @@ class User extends Authenticatable implements HasMedia
     }
 
 
-    // protected static function newFactory()
-    // {
-    //     return \Modules\User\Database\factories\UserFactory::new();
-    // }
+    protected static function newFactory()
+    {
+        return UserFactory::new();
+    }
 
     /**
      * Get all of the vouchers for the user.

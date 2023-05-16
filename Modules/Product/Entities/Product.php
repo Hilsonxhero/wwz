@@ -27,6 +27,7 @@ use Hilsonxhero\ElasticVision\Application\IndexSettings;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Modules\Order\Entities\OrderShippingItem;
 use Modules\Product\Casts\ProductDefaultShipment;
+use Modules\Product\Database\factories\ProductFactory;
 use Modules\Product\Transformers\ProductVariantResource;
 use Modules\Seller\Entities\Seller;
 
@@ -116,6 +117,11 @@ class Product extends Model implements HasMedia, Explored
     public function searchableAs()
     {
         return 'products';
+    }
+
+    protected static function newFactory()
+    {
+        return ProductFactory::new();
     }
 
 

@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('phone')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('status')->default(UserStatus::ACTIVE);
+            $table->string('status')->default(UserStatus::ACTIVE->value);
             $table->string('job')->nullable();
             $table->string('national_identity_number')->nullable();
             $table->string('gender')->nullable();

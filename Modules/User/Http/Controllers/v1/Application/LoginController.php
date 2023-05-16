@@ -37,8 +37,6 @@ class LoginController extends Controller
             ]);
         }
 
-        // return config('services.passport.login_endpoint');
-
         try {
 
             $response = Http::asForm()->post(config('services.passport.login_endpoint'), [

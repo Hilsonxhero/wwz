@@ -22,6 +22,7 @@ use Hilsonxhero\ElasticVision\Application\BePrepared;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Hilsonxhero\ElasticVision\Application\IndexSettings;
+use Modules\Category\Database\factories\CategoryFactory;
 
 class Category extends Model implements HasMedia, Explored
 // IndexSettings
@@ -121,6 +122,12 @@ class Category extends Model implements HasMedia, Explored
     {
         return static::all()->last();
     }
+
+    protected static function newFactory()
+    {
+        return CategoryFactory::new();
+    }
+
 
     public function registerMediaConversions(Media $media = null): void
     {
