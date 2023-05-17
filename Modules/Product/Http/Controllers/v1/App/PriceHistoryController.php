@@ -12,11 +12,24 @@ use Illuminate\Routing\Controller;
 use Modules\Product\Entities\Product;
 use PhpParser\Node\Expr\Cast\Object_;
 use Modules\Product\Entities\PriceHistory;
+use Modules\Product\Repository\PriceHistoryRepositoryInterface;
+use Modules\Product\Repository\ProductRepositoryInterface;
 use Modules\Product\Transformers\ProductVariantResource;
 use Modules\Product\Transformers\App\PriceHistoryResource;
 
 class PriceHistoryController extends Controller
 {
+
+
+    public $productRepo;
+
+    public $priceRepo;
+
+    public function __construct(ProductRepositoryInterface $productRepo, PriceHistoryRepositoryInterface $priceRepo)
+    {
+        $this->productRepo = $productRepo;
+        $this->priceRepo = $priceRepo;
+    }
 
     /**
      * Display product price history
@@ -25,7 +38,7 @@ class PriceHistoryController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $product = Product::with(['variants.combinations.variant'])->findOrFail($id);
+        $product = $this->productRepo->show($id);
 
         $now_jalali = \Morilog\Jalali\Jalalian::now();
 
@@ -63,10 +76,7 @@ class PriceHistoryController extends Controller
                     'date' =>  formatGregorian($variant->created_at),
                 ];
 
-                $history = PriceHistory::query()
-                    ->where('product_variant_id', $variant->id)
-                    ->whereDate('created_at', Carbon::parse($period_item)->format("Y-m-d"))
-                    ->first();
+                $history = $this->priceRepo->chart($variant, $period_item);
 
                 if ($history) {
                     $history = new PriceHistoryResource($history);
@@ -77,15 +87,7 @@ class PriceHistoryController extends Controller
                 }
             }
 
-            $titleString = '';
-
-            foreach ($variant->combinations as $combination) {
-                $titleString .= $combination->variant->name . ' ';
-            }
-
-            $titleString = trim($titleString);
-
-            array_push($histories, ['history' =>  $chart_data, 'title' => $titleString]);
+            array_push($histories, ['history' =>  $chart_data, 'combinations' => $variant->combinations]);
         }
 
         return ApiService::_success(array(

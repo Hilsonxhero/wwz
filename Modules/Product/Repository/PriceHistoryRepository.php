@@ -3,10 +3,11 @@
 namespace Modules\Product\Repository;
 
 use App\Services\ApiService;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Carbon;
 use Modules\Product\Entities\Feature;
-use Modules\Product\Entities\PriceHistory;
 use Modules\Product\Enums\FeatureStatus;
+use Modules\Product\Entities\PriceHistory;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class PriceHistoryRepository implements PriceHistoryRepositoryInterface
 {
@@ -32,6 +33,14 @@ class PriceHistoryRepository implements PriceHistoryRepositoryInterface
     {
         $price_history = $this->find($id);
         return $price_history;
+    }
+
+    public function chart($variant, $date)
+    {
+        return  PriceHistory::query()
+            ->where('product_variant_id', $variant->id)
+            ->whereDate('created_at', Carbon::parse($date)->format("Y-m-d"))
+            ->first();
     }
 
 

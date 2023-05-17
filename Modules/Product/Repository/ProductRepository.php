@@ -209,7 +209,7 @@ class ProductRepository implements ProductRepositoryInterface
     public function show($id)
     {
         // $product = $this->find($id)->with(['features.childs']);
-        $product = $this->find($id)->load(['variants', 'productFeatures', 'combinations', 'category', 'delivery'])->loadAvg('scores', 'value')->loadCount('comments');
+        $product = $this->find($id)->load(['variants.combinations.variant', 'productFeatures', 'combinations', 'category', 'delivery'])->loadAvg('scores', 'value')->loadCount('comments');
         return $product;
     }
 
