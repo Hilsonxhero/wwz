@@ -23,6 +23,10 @@ Route::prefix('v1/application')->group(function () {
 
     Route::get("/product/{id}", [Modules\Product\Http\Controllers\v1\App\ProductController::class, 'show']);
 
+    // product price history
+
+    Route::get("/product/{id}/price/history", [Modules\Product\Http\Controllers\v1\App\PriceHistoryController::class, 'show']);
+
     // product questions
 
     Route::post("/questions/product/{id}", [ProductQuestionController::class, 'store'])->middleware('auth:api');

@@ -163,6 +163,18 @@ class ProductVariant extends Model
     }
 
     /**
+     * Calculate total discount price .
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    protected function calculateTotalDiscountPrice(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => $this->incredible ?   $this->price * $this->incredible->discount / 100 :  $this->price * $this->discount / 100,
+        );
+    }
+
+    /**
      * Calculate discount diff seconds .
      *
      * @return \Illuminate\Database\Eloquent\Casts\Attribute

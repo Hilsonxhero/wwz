@@ -5,6 +5,7 @@ namespace Modules\Product\Repository;
 use App\Services\ApiService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Modules\Product\Entities\Feature;
+use Modules\Product\Enums\FeatureStatus;
 
 class FeatureRepository implements FeatureRepositoryInterface
 {
@@ -19,7 +20,7 @@ class FeatureRepository implements FeatureRepositoryInterface
     public function allActive()
     {
         return Feature::orderBy('created_at', 'desc')
-            ->where('status', Feature::ENABLE_STATUS)
+            ->where('status', FeatureStatus::ENABLE)
             ->with('parent')
             ->paginate();
     }

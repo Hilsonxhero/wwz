@@ -15,7 +15,7 @@ use Modules\Product\Enums\ProductQuestionStatusStatus;
 use Hilsonxhero\ElasticVision\Domain\Syntax\MatchPhrase;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Hilsonxhero\ElasticVision\Domain\Syntax\Compound\BoolQuery;
-
+use Modules\Product\Events\ProductUpdated;
 
 class ProductRepository implements ProductRepositoryInterface
 {

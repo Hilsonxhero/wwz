@@ -31,6 +31,8 @@ use Modules\Product\Repository\RecommendationProductRepoInterface;
 use Modules\Product\Repository\IncredibleProductRepositoryInterface;
 use Modules\Product\Repository\ProductAnnouncementRepositoryInterface;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use Modules\Product\Repository\PriceHistoryRepository;
+use Modules\Product\Repository\PriceHistoryRepositoryInterface;
 use Modules\Product\Repository\ProductWishRepository;
 use Modules\Product\Repository\ProductWishRepositoryInterface;
 
@@ -68,5 +70,6 @@ class ProductRepoServiceProvider extends ServiceProvider
         $this->app->bind(ProductReviewRepositoryInterface::class, ProductReviewRepository::class);
         $this->app->bind(ProductAnnouncementRepositoryInterface::class, ProductAnnouncementRepository::class);
         $this->app->bind(ProductWishRepositoryInterface::class, ProductWishRepository::class);
+        $this->app->bind(PriceHistoryRepositoryInterface::class, PriceHistoryRepository::class);
     }
 }

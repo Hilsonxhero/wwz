@@ -3,10 +3,11 @@
 namespace Modules\Product\Repository;
 
 use App\Services\ApiService;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Modules\Product\Entities\Product;
+use Modules\Product\Events\ProductUpdated;
 
 use Modules\Product\Entities\ProductVariant;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ProductVariantRepository implements ProductVariantRepositoryInterface
 {
@@ -40,6 +41,7 @@ class ProductVariantRepository implements ProductVariantRepositoryInterface
     {
         $variant = $this->find($id);
         $variant->update($data);
+        event(new ProductUpdated($variant));
         return $variant;
     }
     public function show($id)
