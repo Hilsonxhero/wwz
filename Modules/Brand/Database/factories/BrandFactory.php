@@ -3,6 +3,7 @@
 namespace Modules\Brand\Database\factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Modules\Brand\Enum\BrandStatus;
 
 class BrandFactory extends Factory
 {
@@ -27,7 +28,7 @@ class BrandFactory extends Factory
             'link' =>  fake()->words(rand(2, 5), true),
             // 'category_id' => null,
             'is_special' => false,
-            'status' => "enable"
+            'status' => BrandStatus::ENABLE->value
         ];
     }
 

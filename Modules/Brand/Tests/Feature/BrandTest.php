@@ -9,6 +9,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Brand\Entities\Brand;
 use Modules\Brand\Enum\BrandStatus;
+use Modules\Category\Entities\Category;
 
 class BrandTest extends TestCase
 {
@@ -26,7 +27,7 @@ class BrandTest extends TestCase
             'slug' => 'new-brand',
             'link' => 'https://example.com',
             'description' => 'This is a new brand.',
-            'brand_id' => Brand::factory()->create()->first()->id,
+            'category_id' => Category::factory()->create()->first()->id,
             'status' => BrandStatus::ENABLE->value,
             'is_special' => false,
             'logo' => \Illuminate\Http\Testing\File::image('photo.jpg')
@@ -38,11 +39,13 @@ class BrandTest extends TestCase
      *
      * @return void
      */
-    public function testGetBrandList()
+    public function testGetBrandColection()
     {
         $brand = Brand::factory(3)->create();
 
-        $response = $this->getJson('/api/v1/application/brands');
+        $this->createUser();
+
+        $response = $this->getJson('/api/v1/panel/brands');
 
         $response->assertStatus(200);
     }

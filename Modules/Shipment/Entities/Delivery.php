@@ -27,8 +27,8 @@ class Delivery extends Model
     }
 
 
-    // protected static function newFactory()
-    // {
-    //     return \Modules\Shipment\Database\factories\DeliveryFactory::new();
-    // }
+    protected static function newFactory()
+    {
+        return \Modules\Shipment\Database\factories\DeliveryFactory::new();
+    }
 }

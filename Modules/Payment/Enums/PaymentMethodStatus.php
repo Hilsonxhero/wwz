@@ -2,7 +2,7 @@
 
 namespace Modules\Payment\Enums;
 
-enum GatewayStatus: string
+enum PaymentMethodStatus: string
 {
     case ENABLE = "enable";
     case DISABLE = "disable";

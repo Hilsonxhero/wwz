@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('link')->nullable();
             $table->text('description')->nullable();
             $table->foreignId('category_id')->nullable()->constrained('categories')->onDelete('cascade');
-            $table->string('status')->default(BrandStatus::ENABLE);
+            $table->string('status')->default(BrandStatus::ENABLE->value);
             $table->boolean('is_special')->default(0);
             $table->softDeletes();
             $table->timestamps();
