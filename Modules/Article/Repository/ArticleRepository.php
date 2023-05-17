@@ -20,7 +20,7 @@ class ArticleRepository implements ArticleRepositoryInterface
     public function get()
     {
         return Article::orderBy('created_at', 'desc')
-            ->where('status', ArticleStatus::Enable->value)
+            ->where('status', ArticleStatus::ENABLE->value)
             ->with(['category'])
             ->paginate(20);
     }
@@ -28,7 +28,7 @@ class ArticleRepository implements ArticleRepositoryInterface
     public function related($article)
     {
         return Article::orderBy('created_at', 'desc')
-            ->where('status', ArticleStatus::Enable->value)
+            ->where('status', ArticleStatus::ENABLE->value)
             ->where('category_id', $article->category_id)
             ->whereNot('id', $article->id)
             ->with(['category'])
@@ -47,7 +47,7 @@ class ArticleRepository implements ArticleRepositoryInterface
     public function allActive()
     {
         return Article::orderBy('created_at', 'desc')
-            ->where('status', ArticleStatus::Enable->value)
+            ->where('status', ArticleStatus::ENABLE->value)
             ->with('parent')
             ->paginate();
     }
