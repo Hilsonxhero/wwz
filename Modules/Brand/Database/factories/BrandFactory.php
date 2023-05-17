@@ -26,7 +26,6 @@ class BrandFactory extends Factory
             'title_en' => fake()->words(rand(2, 5), true),
             'description' => fake()->words(rand(2, 5), true),
             'link' =>  fake()->words(rand(2, 5), true),
-            // 'category_id' => null,
             'is_special' => false,
             'status' => BrandStatus::ENABLE->value
         ];

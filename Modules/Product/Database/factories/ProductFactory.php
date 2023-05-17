@@ -3,6 +3,9 @@
 namespace Modules\Product\Database\factories;
 
 use Illuminate\Support\Str;
+use Modules\Brand\Entities\Brand;
+use Modules\Category\Entities\Category;
+use Modules\Shipment\Entities\Delivery;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ProductFactory extends Factory
@@ -25,10 +28,10 @@ class ProductFactory extends Factory
             'title_fa' => fake()->words(rand(2, 5), true),
             'title_en' => fake()->words(rand(2, 5), true),
             'review' => fake()->words(rand(2, 5), true),
-            'category_id' => fake()->words(rand(2, 5), true),
-            'brand_id' => fake()->words(rand(2, 5), true),
             'status' => fake()->words(rand(2, 5), true),
-            'delivery_id' => fake()->words(rand(2, 5), true),
+            'category_id' => Category::factory()->create()->first()->id,
+            'brand_id' => Brand::factory()->create()->first()->id,
+            'delivery_id' => Delivery::factory()->create()->first()->id,
         ];
     }
 }
