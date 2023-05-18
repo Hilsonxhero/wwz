@@ -2,7 +2,10 @@
 
 namespace Modules\Cart\Database\factories;
 
+use Illuminate\Support\Str;
+use Modules\User\Entities\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Modules\Cart\Enums\CartStatus;
 
 class CartFactory extends Factory
 {
@@ -21,8 +24,12 @@ class CartFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'user_id' => User::factory()->create()->first()->id,
+            'identifier' => Str::random(8),
+            'instance' => Str::random(8),
+            'address' => fake()->words(rand(4, 8), true),
+            'config' => null,
+            'status' => CartStatus::Available->value,
         ];
     }
 }
-

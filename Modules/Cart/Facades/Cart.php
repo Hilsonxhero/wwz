@@ -5,6 +5,7 @@ namespace Modules\Cart\Facades;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Cart\Database\factories\CartFactory;
 
 /**
  * Class Cart
