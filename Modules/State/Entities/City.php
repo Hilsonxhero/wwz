@@ -31,10 +31,10 @@ class City extends Model
         });
     }
 
-    // protected static function newFactory()
-    // {
-    //     return \Modules\State\Database\factories\CityFactory::new();
-    // }
+    protected static function newFactory()
+    {
+        return \Modules\State\Database\factories\CityFactory::new();
+    }
 
     public function state()
     {

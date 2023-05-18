@@ -12,8 +12,8 @@ class Warranty extends Model
     protected $fillable = ['title', 'status', 'description'];
 
 
-    // protected static function newFactory()
-    // {
-    //     return \Modules\Warranty\Database\factories\WarrantyFactory::new();
-    // }
+    protected static function newFactory()
+    {
+        return \Modules\Warranty\Database\factories\WarrantyFactory::new();
+    }
 }

@@ -108,7 +108,7 @@ class ProductVariantController extends Controller
      * @param int $id
      * @return Response
      */
-    public function update(Request $request, $product, $id)
+    public function update(ProductVariantRequest $request, $product, $id)
     {
         $product = $this->productRepo->find($product);
 

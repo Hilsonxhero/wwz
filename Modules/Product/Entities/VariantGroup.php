@@ -21,10 +21,10 @@ class VariantGroup extends Model
     static $types = [self::CHECKBOX_TYPE, self::COLOR_TYPE, self::SELECT_TYPE, self::SIZE_TYPE];
 
 
-    // protected static function newFactory()
-    // {
-    //     return \Modules\Product\Database\factories\VariantGroupFactory::new();
-    // }
+    protected static function newFactory()
+    {
+        return \Modules\Product\Database\factories\VariantGroupFactory::new();
+    }
 
     public function variants()
     {

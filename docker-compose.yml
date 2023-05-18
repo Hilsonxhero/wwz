@@ -45,6 +45,15 @@ services:
             test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
             retries: 3
             timeout: 5s
+    sqlite:
+        image: nouchka/sqlite3:latest
+        stdin_open: true
+        tty: true
+        volumes: 
+            - "sail-sqlite:/root/db/"
+        ports:
+            - '9000:9000' 
+        restart: unless-stopped          
     redis:
         image: "redis:alpine"
         ports:
@@ -110,6 +119,8 @@ networks:
 volumes:
     sail-mysql:
         driver: local
+    sail-sqlite:
+        driver: local  
     sail-redis:
         driver: local
     sail-phpmyadmin:

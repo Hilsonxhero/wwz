@@ -19,10 +19,10 @@ class State extends Model
 
 
 
-    // protected static function newFactory()
-    // {
-    //     return \Modules\State\Database\factories\StateFactory::new();
-    // }
+    protected static function newFactory()
+    {
+        return \Modules\State\Database\factories\StateFactory::new();
+    }
 
     public function cities()
     {

@@ -9,6 +9,7 @@ use Modules\Warranty\Entities\Warranty;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Product\Database\factories\ProductVariantFactory;
 use Modules\Product\Enums\ProductAnnouncementType;
 use Modules\Seller\Entities\Seller;
 
@@ -203,5 +204,12 @@ class ProductVariant extends Model
         return Attribute::make(
             get: fn ($value) => $this->incredible || $this->discount_expire_at > now()
         );
+    }
+
+
+
+    protected static function newFactory()
+    {
+        return ProductVariantFactory::new();
     }
 }

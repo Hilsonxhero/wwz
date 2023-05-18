@@ -8,6 +8,7 @@ use Modules\Shipment\Entities\Delivery;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Shipment\Database\factories\ShipmentFactory;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Shipment extends Model implements HasMedia
@@ -44,5 +45,10 @@ class Shipment extends Model implements HasMedia
     public function dates()
     {
         return $this->hasMany(ShipmentDate::class, 'shipment_id');
+    }
+
+    protected static function newFactory()
+    {
+        return ShipmentFactory::new();
     }
 }

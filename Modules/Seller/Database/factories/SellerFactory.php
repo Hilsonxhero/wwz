@@ -24,8 +24,8 @@ class SellerFactory extends Factory
     public function definition()
     {
         return [
-            'state_id' => State::query()->first()->id,
-            'city_id' => City::query()->first()->id,
+            'state_id' => State::factory()->create()->first()->id,
+            'city_id' => City::factory()->create()->first()->id,
             'name' => "لورم ایپسوم ",
             'lname' => "لورم ",
             'title' => "لورم ایپسوم ",
@@ -35,7 +35,7 @@ class SellerFactory extends Factory
             'postal_code' => Str::random(8),
             'job' => "لورم ایپسوم ",
             'national_identity_number' => Str::random(10),
-            'email' => "info@web.com",
+            'email' => fake()->safeEmail(),
             'phone' => Str::random(11),
             'about' => "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم ",
             'website' => null,

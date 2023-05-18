@@ -79,7 +79,7 @@ class Product extends Model implements HasMedia, Explored
             'status' => $this->status,
             'category' => $this->category,
             'features' => $this->productFeatures,
-            'variants' => ProductVariantResource::collection($this->variants)->toArray(true),
+            'variants' => ProductVariantResource::collection($this->variants)->toArray(request()),
             'has_stock' => $this->has_stock,
         ];
     }
