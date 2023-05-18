@@ -61,10 +61,8 @@ class ArticleRepository implements ArticleRepositoryInterface
             'content' => $data->content,
             'description' => $data->description,
             'status' => $data->status,
-            'publisahed_at' => now(),
+            'published_at' => now(),
         ]);
-
-
 
         base64($data->image) ? $article->addMediaFromBase64($data->image)->toMediaCollection('main')
             : $article->addMedia($data->image)->toMediaCollection('main');
@@ -82,7 +80,7 @@ class ArticleRepository implements ArticleRepositoryInterface
             'content' => $data->content,
             'description' => $data->description,
             'status' => $data->status,
-            'publisahed_at' => now(),
+            'published_at' => now(),
         ]);
 
 

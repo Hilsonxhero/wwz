@@ -44,6 +44,7 @@ class BannerController extends Controller
             'type' => $request->type,
             'page' => $request->page,
             'status' => $request->status,
+            'position' => $request->position ?? 0
         ];
         $banner = $this->bannerRepo->create($data);
 

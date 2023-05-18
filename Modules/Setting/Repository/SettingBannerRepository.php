@@ -7,6 +7,7 @@ use Modules\Page\Entities\Page;
 use Modules\Banner\Entities\Banner;
 use Modules\Shipment\Entities\Shipment;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Modules\Banner\Enum\BannerStatus;
 
 class SettingBannerRepository implements SettingBannerRepositoryInterface
 {
@@ -23,7 +24,7 @@ class SettingBannerRepository implements SettingBannerRepositoryInterface
 
     public function allActive()
     {
-        return Banner::query()->where('bannerable_type', Page::class)->with('status', Banner::ENABLE_STATUS)
+        return Banner::query()->where('bannerable_type', Page::class)->with('status', BannerStatus::ENABLE)
             ->orderByDesc('created_at')->paginate();
     }
 

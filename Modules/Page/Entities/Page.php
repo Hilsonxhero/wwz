@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Modules\Banner\Entities\Banner;
+use Modules\Page\Database\factories\PageFactory;
 
 class Page extends Model
 {
@@ -32,5 +33,11 @@ class Page extends Model
                 'source' => 'title_en'
             ]
         ];
+    }
+
+
+    protected static function newFactory()
+    {
+        return PageFactory::new();
     }
 }

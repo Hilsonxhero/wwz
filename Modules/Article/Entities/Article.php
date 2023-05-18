@@ -38,10 +38,10 @@ class Article extends Model implements HasMedia
         'published_at' => 'datetime',
     ];
 
-    // protected static function newFactory()
-    // {
-    //     return \Modules\Article\Database\factories\ArticleFactory::new();
-    // }
+    protected static function newFactory()
+    {
+        return \Modules\Article\Database\factories\ArticleFactory::new();
+    }
 
 
     public static function booted()
