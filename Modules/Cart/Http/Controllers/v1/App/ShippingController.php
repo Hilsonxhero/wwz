@@ -137,7 +137,7 @@ class ShippingController extends Controller
 
         $submit_types = ShippingCostResource::collection($shipments);
 
-        $submit_types = $submit_types->toArray(false);
+        $submit_types = $submit_types->toArray(request());
 
         $shipping_cost = collect($submit_types)->reduce(function ($carry, $item) {
             return $carry + $item['cost'];

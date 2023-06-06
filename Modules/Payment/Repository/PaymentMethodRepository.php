@@ -6,6 +6,7 @@ use App\Services\ApiService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Modules\Category\Entities\Category;
 use Modules\Payment\Entities\PaymentMethod;
+use Modules\Payment\Enums\PaymentMethodStatus;
 
 class PaymentMethodRepository implements PaymentMethodRepositoryInterface
 {
@@ -19,7 +20,7 @@ class PaymentMethodRepository implements PaymentMethodRepositoryInterface
     public function allActive()
     {
         return PaymentMethod::orderBy('created_at', 'desc')
-            ->where('status', PaymentMethod::ENABLE_STATUS)
+            ->where('status', PaymentMethodStatus::ENABLE->value)
             ->paginate();
     }
 

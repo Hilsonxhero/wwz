@@ -5,10 +5,13 @@
 /storage/*.key
 /vendor
 .env
+.rnd
+rnd
 .env.backup
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml
+package-lock.json
 auth.json
 npm-debug.log
 yarn-error.log

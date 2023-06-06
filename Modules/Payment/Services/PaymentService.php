@@ -3,14 +3,15 @@
 
 namespace Modules\Payment\Services;
 
+use Illuminate\Http\Request;
+use Shetabit\Multipay\Invoice;
+use Modules\Cart\Enums\CartStatus;
+use Shetabit\Payment\Facade\Payment;
+use Modules\Payment\Entities\Gateway;
 use Modules\Payment\Enums\PaymentStatus;
 use Modules\Payment\Repository\PaymentRepository;
-use Shetabit\Multipay\Invoice;
-use Shetabit\Payment\Facade\Payment;
+use Modules\Payment\Events\App\PaymentWasSuccessful;
 use Shetabit\Multipay\Exceptions\InvalidPaymentException;
-use Illuminate\Http\Request;
-use Modules\Cart\Enums\CartStatus;
-use Modules\Payment\Entities\Gateway;
 use Modules\Payment\Repository\PaymentRepositoryInterface;
 
 class PaymentService
@@ -66,7 +67,7 @@ class PaymentService
                 'ref_num' => $ref_num
             ]);
 
-            // event(new PaymentWasSuccessful($payment));
+            event(new PaymentWasSuccessful($payment));
 
             return redirect()->to(env('FRONT_CHECKOUT_CALLBACK') . $payment->reference_code);
         } catch (InvalidPaymentException $exception) {

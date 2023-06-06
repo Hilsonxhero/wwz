@@ -37,7 +37,8 @@ return [
         'client_secret' => env('PASSPORT_CLIENT_SECRET'),
     ],
     'payment' => [
-        'callback' => '',
+        // 'callback' => 'http://localhost:8000/api/v1/application/payment/zarinpal/callback',
+        'callback' => env("PAYMENT_CALLBACK"),
     ],
     'elasticsearch' => [
         'hosts' => [
