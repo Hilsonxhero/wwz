@@ -39,7 +39,7 @@ class SettingDatabaseSeeder extends Seeder
             ])],
         );
 
-        // resolve(SettingRepositoryInterface::class)->insert($data);
+        resolve(SettingRepositoryInterface::class)->insert($data);
 
 
         // $this->call("OthersTableSeeder");

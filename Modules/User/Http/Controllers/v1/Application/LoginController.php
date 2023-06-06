@@ -39,20 +39,22 @@ class LoginController extends Controller
 
         try {
 
-            $response = Http::asForm()->post(config('services.passport.login_endpoint'), [
-                'grant_type' => 'password',
-                'client_id' => config('services.passport.client_id'),
-                'client_secret' => config('services.passport.client_secret'),
-                'username' => $phone,
-                'password' => $phone,
-                'scope' => '',
-            ]);
+            // $response = Http::asForm()->post(config('services.passport.login_endpoint'), [
+            //     'grant_type' => 'password',
+            //     'client_id' => config('services.passport.client_id'),
+            //     'client_secret' => config('services.passport.client_secret'),
+            //     'username' => $phone,
+            //     'password' => $phone,
+            //     'scope' => '',
+            // ]);
 
-            $data = json_decode($response->getBody());
+            $token = $user->createToken('accessToken')->accessToken;
+
+            // $data = json_decode($response->getBody());
 
             Cookie::queue(
                 'access_token',
-                $data->access_token,
+                $token,
                 45000,
                 null,
                 null,
@@ -64,11 +66,15 @@ class LoginController extends Controller
 
 
             $request->headers->add([
-                'Authorization' => 'Bearer ' . $data->access_token
+                'Authorization' => 'Bearer ' . $token
             ]);
 
             event(new UserAuthenticatied($user));
-            return new TokenResource($data);
+            // return new TokenResource($data);
+            return ApiService::_success([
+                'access_token' => $token,
+                "success" => true
+            ]);
         } catch (\GuzzleHttp\Exception\BadResponseException $e) {
             if ($e->getCode() === 400) {
                 ApiService::_response("Invalid Request. Please enter a username or a password.", $e->getCode());

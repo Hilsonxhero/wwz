@@ -55,6 +55,8 @@ class LandingController extends Controller
             'main_categories' => CategoryResource::collection($main_categories),
             'articles' => ArticleResource::collection($articles),
             'banners' =>  array(
+                'head_banners' => $landing_page ?
+                    SettingBannerResource::collection($landing_page->banners()->where('type', 'header')->get()) : array(),
                 'header_banners' => $landing_page ?
                     SettingBannerResource::collection($landing_page->banners()->where('type', 'hero')->get()) : array(),
                 'top_banners' => $landing_page ?
