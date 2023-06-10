@@ -45,15 +45,15 @@ services:
             test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
             retries: 3
             timeout: 5s
-    sqlite:
-        image: nouchka/sqlite3:latest
-        stdin_open: true
-        tty: true
-        volumes: 
-            - "sail-sqlite:/root/db/"
-        ports:
-            - '9000:9000' 
-        restart: unless-stopped          
+    # sqlite:
+    #     image: nouchka/sqlite3:latest
+    #     stdin_open: true
+    #     tty: true
+    #     volumes:
+    #         - "sail-sqlite:/root/db/"
+    #     ports:
+    #         - '9000:9000'
+    #     restart: unless-stopped
     redis:
         image: "redis:alpine"
         ports:
@@ -86,33 +86,33 @@ services:
             - sail
         links:
             - mysql
-    elasticsearch:
-        image: docker.elastic.co/elasticsearch/elasticsearch:8.6.0
-        container_name: elasticsearch
-        environment:
-            - xpack.security.enabled=false
-            - "discovery.type=single-node"
-        networks:
-            - sail
-        volumes:
-             - elasticdata:/usr/share/elasticsearch/data
-        ports:
-            - "9200:9200"
-        deploy:
-            resources:
-                limits:
-                    memory: "400M"
-    kibana:
-        container_name: kibana
-        image: docker.elastic.co/kibana/kibana:8.6.0
-        environment:
-            - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-        ports:
-            - "5601:5601"
-        networks:
-            - sail
-        depends_on:
-            - elasticsearch
+    # elasticsearch:
+    #     image: docker.elastic.co/elasticsearch/elasticsearch:8.6.0
+    #     container_name: elasticsearch
+    #     environment:
+    #         - xpack.security.enabled=false
+    #         - "discovery.type=single-node"
+    #     networks:
+    #         - sail
+    #     volumes:
+    #          - elasticdata:/usr/share/elasticsearch/data
+    #     ports:
+    #         - "9200:9200"
+    #     deploy:
+    #         resources:
+    #             limits:
+    #                 memory: "400M"
+    # kibana:
+    #     container_name: kibana
+    #     image: docker.elastic.co/kibana/kibana:8.6.0
+    #     environment:
+    #         - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    #     ports:
+    #         - "5601:5601"
+    #     networks:
+    #         - sail
+    #     depends_on:
+    #         - elasticsearch
 networks:
     sail:
         driver: bridge
@@ -120,11 +120,11 @@ volumes:
     sail-mysql:
         driver: local
     sail-sqlite:
-        driver: local  
+        driver: local
     sail-redis:
         driver: local
     sail-phpmyadmin:
         driver: local
     elasticdata:
         driver: local
-        
+
