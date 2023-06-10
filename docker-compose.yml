@@ -56,7 +56,7 @@ services:
     #     restart: unless-stopped
     redis:
         image: "redis:alpine"
-        command: redis-server --appendonly yes --replica-read-only no
+        # command: redis-server --appendonly yes --replica-read-only no
         ports:
             - "${FORWARD_REDIS_PORT:-6379}:6379"
         volumes:
