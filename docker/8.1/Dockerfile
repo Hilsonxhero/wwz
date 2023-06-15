@@ -10,7 +10,7 @@ WORKDIR /var/www/html
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV TZ=UTC
-RUN sed -i -e 's/archive.ubuntu.com\/ubuntu/mirror.aminidc.com\/ubuntu/g' /etc/apt/sources.list
+# RUN sed -i -e 's/archive.ubuntu.com\/ubuntu/mirror.aminidc.com\/ubuntu/g' /etc/apt/sources.list
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt-get update \
@@ -56,6 +56,7 @@ RUN useradd -ms /bin/bash --no-user-group -g $WWWGROUP -u 1337 sail
 COPY start-container /usr/local/bin/start-container
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY php.ini /etc/php/8.1/cli/conf.d/99-sail.ini
+# COPY php.ini /etc/php/8.1/cli/php.ini
 RUN chmod +x /usr/local/bin/start-container
 
 EXPOSE 8000

@@ -14,11 +14,9 @@ class RecommendationRepo implements RecommendationRepoInterface
     {
         return Recommendation::orderBy('created_at', 'desc')
             ->with(['category'])
+            ->with(['products.recommendation'])
             ->get();
     }
-
-
-
 
     public function all()
     {

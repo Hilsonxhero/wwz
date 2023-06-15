@@ -3,7 +3,7 @@
 namespace Modules\Product\Transformers\Panel;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use Modules\Product\Transformers\ProductResource;
+use Modules\Product\Transformers\App\Recommendation\ProductResource;
 
 class RecommendationProductResource extends JsonResource
 {

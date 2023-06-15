@@ -7,6 +7,7 @@ services:
             dockerfile: Dockerfile
             args:
                 WWWGROUP: "${WWWGROUP}"
+                WWWUSER: "${WWWUSER}"
         image: sail-8.1/app
         extra_hosts:
             - "host.docker.internal:host-gateway"
@@ -16,6 +17,7 @@ services:
 
         environment:
             WWWUSER: "${WWWUSER}"
+            WWWGROUP: "${WWWGROUP}"
             LARAVEL_SAIL: 1
             XDEBUG_MODE: "${SAIL_XDEBUG_MODE:-off}"
             XDEBUG_CONFIG: "${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}"
