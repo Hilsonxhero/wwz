@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Modules\Page\Entities\Page;
 use Illuminate\Routing\Controller;
 use Illuminate\Contracts\Support\Renderable;
+use Modules\Banner\Entities\Banner;
 use Modules\Web\Transformers\InitConfigResource;
 use Modules\Setting\Transformers\SettingResource;
 use Modules\Setting\Transformers\SettingBannerResource;
@@ -32,18 +33,19 @@ class InitController extends Controller
     {
 
         $settings = $this->settingrRepo->all();
-        $pages = Page::query()->where('title_en', 'all')->first();
+        // $pages = Page::query()->where('title_en', 'all')->first();
 
         $data = [
             'config' => SettingResource::collection($settings),
             'banners' => [],
         ];
 
-        if ($pages) {
-            $top_header_banner = $pages->banners()->where('type', 'header')->where('status', 'enable')->first();
-            // if ($top_header_banner) {
-            //     $data['banners']['top_header_banner'] = new  SettingBannerResource($top_header_banner);
-            // }
+        if (true) {
+            // $top_header_banner = $pages->banners()->where('type', 'header')->where('status', 'enable')->first();
+            $top_header_banner = Banner::query()->where('type', 'header')->where('status', 'enable')->first();
+            if ($top_header_banner) {
+                $data['banners']['top_header_banner'] = new  SettingBannerResource($top_header_banner);
+            }
         }
 
 
