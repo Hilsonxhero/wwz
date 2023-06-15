@@ -40,13 +40,13 @@ class InitController extends Controller
             'banners' => [],
         ];
 
-        if (true) {
-            // $top_header_banner = $pages->banners()->where('type', 'header')->where('status', 'enable')->first();
-            $top_header_banner = Banner::query()->where('type', 'header')->where('status', 'enable')->first();
-            if ($top_header_banner) {
-                $data['banners']['top_header_banner'] = new  SettingBannerResource($top_header_banner);
-            }
+
+        // $top_header_banner = $pages->banners()->where('type', 'header')->where('status', 'enable')->first();
+        $top_header_banner = Banner::query()->where('type', 'header')->where('status', 'enable')->first();
+        if ($top_header_banner) {
+            $data['banners']['top_header_banner'] = new  SettingBannerResource($top_header_banner);
         }
+
 
 
         ApiService::_success($data);
