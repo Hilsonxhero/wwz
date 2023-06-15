@@ -45,15 +45,15 @@ class Category extends Model implements HasMedia, Explored
             'id' => 'keyword',
             'title_en' => [
                 'type' => 'text',
-                'analyzer' => 'keyword',
+                // 'analyzer' => 'keyword',
             ],
             'title' => [
                 'type' => 'text',
-                'analyzer' => 'keyword',
+                // 'analyzer' => 'keyword',
             ],
             'status' => [
                 'type' => 'text',
-                'analyzer' => 'keyword',
+                // 'analyzer' => 'keyword',
             ],
         ];
     }
