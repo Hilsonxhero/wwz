@@ -27,6 +27,8 @@ class SettingBannerResource extends JsonResource
             ],
             'banner' =>  $this->getFirstMediaUrl('main'),
             'mobile_banner' => $this->getFirstMediaUrl('mobile'),
+            // 'banner' => isMobile() ? $this->getFirstMediaUrl('mobile') :  $this->getFirstMediaUrl('main'),
+
         ];
     }
 }
