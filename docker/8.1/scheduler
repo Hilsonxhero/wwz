@@ -1,2 +1,0 @@
-* * * * * root cd /var/www/html && php artisan queue:work >> /dev/null 2>&1
-* * * * * root cd /var/www/html && php artisan schedule:run >> /dev/null 2>&1
