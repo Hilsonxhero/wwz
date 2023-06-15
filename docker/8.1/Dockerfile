@@ -10,7 +10,7 @@ WORKDIR /var/www/html
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV TZ=UTC
-# RUN sed -i -e 's/archive.ubuntu.com\/ubuntu/mirror.aminidc.com\/ubuntu/g' /etc/apt/sources.list
+RUN sed -i -e 's/archive.ubuntu.com\/ubuntu/mirror.aminidc.com\/ubuntu/g' /etc/apt/sources.list
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt-get update \
