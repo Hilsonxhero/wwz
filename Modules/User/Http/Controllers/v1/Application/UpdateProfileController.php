@@ -88,7 +88,6 @@ class UpdateProfileController extends Controller
         ApiService::_success(trans('response.responses.200'));
     }
 
-
     /**
      * Update the user mobile.
      * @param Request $request

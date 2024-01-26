@@ -144,7 +144,6 @@ class DashboardRepository implements DashboardRepositoryInterface
                 return [
                     'label' => $jDate->format('%B'),
                     'value' => $count,
-
                 ];
             })
             ->toArray();

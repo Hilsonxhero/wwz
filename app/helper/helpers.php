@@ -29,7 +29,7 @@ function createDatetimeFromFormat($date, $format = 'Y/m/d H:i')
 
 function formatGregorian($date, $format = 'Y/m/d H:i')
 {
-    if ($date)  return \Morilog\Jalali\CalendarUtils::strftime($format, strtotime($date));
+    if ($date)  return \Morilog\Jalali\CalendarUtils::strftime($format, strtotime($date, "Y/m/d"));
     return null;
 }
 
